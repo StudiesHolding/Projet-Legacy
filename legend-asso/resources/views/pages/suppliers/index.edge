@@ -1,10 +1,8 @@
 @component('component/layouts/app')
   @slot('title')
-    suppliers
-  @endslot
-  
+    Liste des vendeurs
+  @end
   @slot('main')
     @include('component/supplier-card')
-    @include('component/pagination')
-  @end
-@endcomponent
+  @endslot
+@end

@@ -17,9 +17,15 @@ router
 
 router
   .get('catalogue', (ctx) => {
-    return ctx.view.render('pages/catalogue')
+    return ctx.view.render('pages/catalogue/index')
   })
   .as('catalogue')
+
+router
+  .get('catalogue/name', (ctx) => {
+    return ctx.view.render('pages/catalogue/name')
+  })
+  .as('show.product')
 
 router
   .get('suppliers', (ctx) => {
@@ -32,3 +38,9 @@ router
     return ctx.view.render('pages/suppliers/name')
   })
   .as('name')
+
+router
+  .get('checkout', (ctx) => {
+    return ctx.view.render('pages/checkout')
+  })
+  .as('checkout')
