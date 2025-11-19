@@ -44,3 +44,21 @@ router
     return ctx.view.render('pages/checkout')
   })
   .as('checkout')
+
+router
+  .get('login', (ctx) => {
+    return ctx.view.render('pages/login')
+  })
+  .as('login')
+
+router
+  .get('register-client', (ctx) => {
+    return ctx.view.render('pages/register-client')
+  })
+  .as('register-client')
+
+router
+  .get('register-supplier', (ctx) => {
+    return ctx.view.render('pages/register-supplier')
+  })
+  .as('login-client')
