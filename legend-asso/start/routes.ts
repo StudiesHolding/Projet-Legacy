@@ -62,3 +62,15 @@ router
     return ctx.view.render('pages/register-supplier')
   })
   .as('register-supplier')
+
+router.get('dashboard-client',(ctx)=>{
+  return ctx.view.render('pages/dashboard/client')
+}).as('dashboard-client')
+
+router.get('dashboard-seller',(ctx)=>{
+  return ctx.view.render('pages/dashboard/seller')
+}).as('dashboard-seller')
+
+router.get('dashboard-admin',(ctx)=>{
+  return ctx.view.render('pages/dashboard/client')
+}).as('dashboard-admin')

@@ -1,0 +1,114 @@
+@component('component/layouts/app')
+    @slot('title')
+    Espace Vendeur 
+    @endslot
+
+    @slot('main')
+    <div class="min-h-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+
+        <aside class="md:w-64 bg-white shadow-lg p-4 md:p-6 top-0 h-full">
+            <div class="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
+                Espace Vendeur
+            </div>
+
+            <nav class="space-y-2">
+                <a href="#dashboard" class="flex items-center p-3 rounded-lg bg-red-600 text-white font-medium transition duration-150 ease-in-out">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 001 1h3M11 10V6a2 2 0 00-2-2h-1"></path></svg>
+                    Tableau de bord
+                </a>
+
+                <a href="#articles" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition duration-150 ease-in-out">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m4 0v10m0 0v10"></path></svg>
+                    Mes Articles
+                </a>
+                
+                <a href="#ventes" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition duration-150 ease-in-out">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h6"></path></svg>
+                    Mes Ventes
+                </a>
+                
+                <a href="#reductions" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition duration-150 ease-in-out">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11h10m-2 4h4m-4 0a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v4"></path></svg>
+                    Réductions & Codes
+                </a>
+                
+                <a href="#messagerie" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition duration-150 ease-in-out relative">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.627A8.96 8.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    Messagerie
+                    <span class="absolute top-2 right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">3</span>
+                </a>
+                
+            </nav>
+
+            <div class="mt-8 border-t pt-4">
+                <a href="#profil-vendeur" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-50 transition duration-150 ease-in-out">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.526.34.825.405 1.066-.34z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Paramètres du Magasin
+                </a>
+            </div>
+        </aside>
+        
+        <main class="flex-1 p-4 md:p-8">
+            <h1 class="text-3xl font-semibold text-gray-900 mb-6">Résumé des Ventes</h1>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-red-600">
+                    <p class="text-sm font-medium text-gray-500">Revenu (Mois)</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">7 500,00 €</p>
+                    <span class="text-xs text-green-500 font-semibold">+12% vs Mois dernier</span>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+                    <p class="text-sm font-medium text-gray-500">Commandes Reçues</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">45</p>
+                    <span class="text-xs text-red-500 font-semibold">-5% vs Mois dernier</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500">
+                    <p class="text-sm font-medium text-gray-500">Nouveaux messages client</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">3</p>
+                    <span class="text-xs text-indigo-500 font-semibold">Répondre rapidement</span>
+                </div>
+            </div>
+
+            <a href="#ajouter-article" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-8 transition duration-150 ease-in-out">
+                <svg class="-ml-1 mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Ajouter un Nouvel Article
+            </a>
+
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Commandes en attente (À expédier)</h2>
+                
+                <ul class="divide-y divide-gray-200">
+                    <li class="flex justify-between items-center py-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-gray-700">Commande #1004 (Client: Dupont)</p>
+                            <p class="text-sm text-gray-500 truncate">500,50 € | 2 articles</p>
+                        </div>
+                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
+                        <a href="#ventes/1004" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir & Traiter →</a>
+                    </li>
+                    
+                    <li class="flex justify-between items-center py-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-gray-700">Commande #1008 (Client: Martin)</p>
+                            <p class="text-sm text-gray-500 truncate">125,99 € | 1 article</p>
+                        </div>
+                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
+                        <a href="#ventes/1008" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir & Traiter →</a>
+                    </li>
+                    
+                </ul>
+                <div class="mt-4 text-right">
+                    <a href="#ventes" class="text-red-600 hover:text-red-800 font-medium">Voir toutes les ventes →</a>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+</div>
+    @endslot
+@end
