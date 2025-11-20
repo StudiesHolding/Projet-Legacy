@@ -61,4 +61,4 @@ router
   .get('register-supplier', (ctx) => {
     return ctx.view.render('pages/register-supplier')
   })
-  .as('login-client')
+  .as('register-supplier')

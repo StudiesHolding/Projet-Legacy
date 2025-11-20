@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
+    {{-- {{{ await $slots.meta() }}} --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>
+      {{{ await $slots.title() || "page d'acceuil" }}}
+    </title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+      
+      @import url('https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap');
+      
+      body {
+        font-family: 'Epilogue', sans-serif;
+        background-color: #F7F7F7;
+      }
+    </style>
+  </head>
+
+  <body class=" flex justify-center items-center flex-col bg-[#F7F7F7]">
+    <main class="w-10/12 mt-10 bg-white">
+      {{{ await $slots.main() }}}
+    </main>
+    @include('component/footer')
+  </body>
+</html>
