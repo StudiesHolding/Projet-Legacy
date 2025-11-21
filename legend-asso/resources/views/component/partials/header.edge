@@ -39,7 +39,6 @@
       </button>
     </form>
   </div>
-
   <div class="inline-flex w-2/12 items-center lg:w-8/12 mx-5 justify-between">
     <nav class="hidden lg:flex gap-4 text-base justify-around items-center text-white w-5/12">
       <a href="{{ route('catalogue') }}" class="gap-2 text-xs">Catalogue</a>
@@ -52,12 +51,12 @@
         <div tabindex="0" role="button" class="btn m-1 w-40 text-[#171B99]">
           Creer un compte
         </div>
-        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-60 p-2 shadow-sm">
           <li>
-            <a href="{{ route('register-supplier') }}" class="hover:text-[#CE0000]">Vous souhaiter vendre</a>
+            <a href="{{ route('register-supplier') }}" class="hover:text-[#CE0000]">Creer un compte fournisseur</a>
           </li>
           <li>
-            <a href="{{ route('register-client') }}" class="hover:text-[#CE0000]">Vous souhaiter acheter</a>
+            <a href="{{ route('register-client') }}" class="hover:text-[#CE0000]">Creer un compte client</a>
           </li>
         </ul>
       </div>

@@ -1,0 +1,45 @@
+
+@component('component/layouts/app')
+@slot('title')
+    Espace compte
+@end
+@slot('main')
+<div class="min-h-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+        @include('component/partials/aside-navigation')
+        <main class="flex-1 p-4 md:p-8">
+            <h1 class="text-3xl font-semibold text-gray-900 mb-6">Liste des commandes</h1>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+            @include('component/partials/client-header-info')
+                <ul class="divide-y divide-gray-200">
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @include('component/partials/order-item')
+                    @partials('pagination')
+                </ul>
+                <div class="mt-4 text-right">
+                    <a href="#commandes" class="text-[#171B99] hover:text-indigo-800 font-medium">Voir toutes les commandes →</a>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+</div>
+@endslot
+@end

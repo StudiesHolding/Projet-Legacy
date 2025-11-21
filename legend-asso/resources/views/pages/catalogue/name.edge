@@ -17,7 +17,7 @@
         </div>
         <div class="w-2/3 px-2 flex-col items-center py-2 justify-evenly">
           <div>
-            @include('component/category-section')
+            @include('component/partials/category-section')
           </div>
           <div class="text-2xl">
             Café Arabica du Mont Oku – 100 % Made in Cameroon
@@ -41,7 +41,7 @@
           </form>
 
           <!-- Détails de Livraison et Frais -->
-          @include('component/delivery-details')
+          @include('component/partials/delivery-details')
         </div>
       </div>
       <h3 class="text-2xl font-semibold text-gray-800 mt-5">
@@ -72,9 +72,9 @@
           Autres produits du meme vendeur
         </h3>
         <div class="inline-flex">
-          @include('component/card')
-          @include('component/card')
-          @include('component/card')
+          @include('component/partials/card')
+          @include('component/partials/card')
+          @include('component/partials/card')
         </div>
       </div>
     </div>

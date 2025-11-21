@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
+        <script src="https://cdn.cinetpay.com/seamless/main.js"></script>
+
     {{-- {{{ await $slots.meta() }}} --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>
@@ -54,11 +56,11 @@
   </head>
 
   <body class=" flex justify-center items-center flex-col bg-[#F7F7F7]">
-    @include('component/header')
+    @include('component/partials/header')
     <main class="w-10/12 mt-30">
       {{{ await $slots.main() }}}
     </main>
-    @include('component/footer')
+    @include('component/partials/footer')
 
     <!-- ---------------------------------------------------- -->
     <!-- MODAL DE MENU (Sidebar) - Conserve la logique responsive -->

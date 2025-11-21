@@ -64,13 +64,13 @@ router
   .as('register-supplier')
 
 router.get('dashboard-client',(ctx)=>{
-  return ctx.view.render('pages/dashboard/client')
+  return ctx.view.render('pages/dashboard/client/index')
 }).as('dashboard-client')
 
 router.get('dashboard-seller',(ctx)=>{
-  return ctx.view.render('pages/dashboard/seller')
+  return ctx.view.render('pages/dashboard/seller/index')
 }).as('dashboard-seller')
 
 router.get('dashboard-admin',(ctx)=>{
-  return ctx.view.render('pages/dashboard/client')
+  return ctx.view.render('pages/dashboard/admin/index')
 }).as('dashboard-admin')
