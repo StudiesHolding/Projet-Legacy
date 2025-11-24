@@ -1,3 +1,4 @@
+@eval(await auth.check())
 <header
   class="bg-[#171B99] inline-flex w-12/12 flex-row justify-between items-center lg: h-20 fixed top-0"
 >
@@ -40,42 +41,51 @@
     </form>
   </div>
   <div class="inline-flex w-2/12 items-center lg:w-8/12 mx-5 justify-between">
-    <nav class="hidden lg:flex gap-4 text-base justify-around items-center text-white w-5/12">
-      <a href="{{ route('catalogue') }}" class="gap-2 text-xs">Catalogue</a>
+    <nav class="hidden lg:flex gap-4 text-base justify-around items-center text-white w-6/12">
+      <a href="{{ route('catalogue') }}" class="gap-2 text-xs">Boutique</a>
       <a href="{{ route('suppliers') }}" class="gap-2 text-xs">Créateurs locaux</a>
-      <a href="#" class="gap-2 text-xs">Blog</a>
+      <a href="#" class="gap-2 text-xs">Blog</a>  
     </nav>
 
-    <div class="hidden lg:inline-flex gap-5 w-4/12 justify-between items-center">
-      <div class="dropdown dropdown-center">
-        <div tabindex="0" role="button" class="btn m-1 w-40 text-[#171B99]">
-          Creer un compte
-        </div>
-        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-60 p-2 shadow-sm">
-          <li>
-            <a href="{{ route('register-supplier') }}" class="hover:text-[#CE0000]">Creer un compte fournisseur</a>
-          </li>
-          <li>
-            <a href="{{ route('register-client') }}" class="hover:text-[#CE0000]">Creer un compte client</a>
-          </li>
-        </ul>
+      @if(auth.isAuthenticated)
+      <div class="flex justify-end w-4/12">
+      <a href="{{route('dashboard-client')}}" class="text-white">
+        {{auth.user.name}}
+      </a>
       </div>
-        <a href="{{route('login')}}" class="btn bg-[#CE0000] text-white text-xs">
-          Connexion
-      </a>
-    </div>
-    <div class="w-1/3 lg:w-1/24 h-1/2">
-      <a href="{{ route('checkout') }}">
-        <img src="/images/shopping-bag.png" alt="cart" class="w-full" />
-      </a>
-    </div>
+      @else
+          <div class="hidden lg:inline-flex gap-5 w-4/12 justify-end  items-center">
+            <div class="dropdown dropdown-center">
+              <div tabindex="0" role="button" class="btn bg-[#CE0000] text-white text-xs">
+                Connexion
+              </div>
+              <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-70 p-2 shadow-sm">
+                <li>
+                  <a href="{{ route('login') }}" class="hover:text-[#CE0000]">Connectez-vous a votre compte</a>
+                </li>
+                <li>
+                  <a href="{{ route('register-client') }}" class="hover:text-[#CE0000]">Je souhaite creer mon compte</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+      @end
+
+    @if(route.name !== 'checkout')
+      <div class="w-1/3 lg:w-1/24 h-1/2">
+        <a href="{{ route('checkout') }}">
+          <img src="/images/shopping-bag.png" alt="cart" class="w-full" />
+        </a>
+      </div>
+    @endif
+
+
     <div class="w-1/2 h-auto lg:hidden">
       <button
         id="burger-button"
         class="p-2 rounded-lg text-white hover:border hover:bg-opacity-20 transition"
         aria-label="Ouvrir le menu"
       >
-        <!-- Icône Burger SVG -->
         <svg
           class="w-7 h-7"
           fill="none"

@@ -7,7 +7,9 @@
 |
 */
 
+import AuthController from '#controllers/auth_controller'
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
 
 router
   .get('/', (ctx) => {
@@ -49,13 +51,13 @@ router
   .get('login', (ctx) => {
     return ctx.view.render('pages/login')
   })
-  .as('login')
+  .as('login').use(middleware.guest())
 
 router
   .get('register-client', (ctx) => {
     return ctx.view.render('pages/register-client')
   })
-  .as('register-client')
+  .as('register-client').use(middleware.guest())
 
 router
   .get('register-supplier', (ctx) => {
@@ -65,7 +67,7 @@ router
 
 router.get('dashboard-client',(ctx)=>{
   return ctx.view.render('pages/dashboard/client/index')
-}).as('dashboard-client')
+}).as('dashboard-client').use(middleware.auth())
 
 router.get('dashboard-seller',(ctx)=>{
   return ctx.view.render('pages/dashboard/seller/index')
@@ -74,3 +76,7 @@ router.get('dashboard-seller',(ctx)=>{
 router.get('dashboard-admin',(ctx)=>{
   return ctx.view.render('pages/dashboard/admin/index')
 }).as('dashboard-admin')
+
+router.post('register',[AuthController , 'register']).as('client-register')
+router.post('login',[AuthController , 'login']).as('client-login')
+router.get('logout',[AuthController , 'logout']).as('client-logout')

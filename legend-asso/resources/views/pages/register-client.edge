@@ -3,30 +3,30 @@
     register
   @end
   @slot('main')
-    {{-- 1. Conteneur principal : Prend toute la hauteur et centre le contenu --}}
     <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
 
-      {{-- Logo --}}
       <div class="mb-6">
         <a href="{{ route('home') }}">
           <img src="/images/legaci-logo.png" alt="" class="h-12 w-auto" />
         </a>
       </div>
-      {{-- 2. Wrapper du formulaire : Définit la largeur max (responsive) --}}
       <div class="w-full max-w-md">
         <p>
           Ouvrez votre compte pour accéder à notre marché sécurisé, suivre vos commandes et profiter d’avantages exclusifs.
         </p>
 
-        {{-- 3. Le Formulaire --}}
-        {{-- J'ai remplacé bg-red-500 par bg-white et ajouté une ombre pour l'esthétique --}}
-        <form action="" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+
+        <form action="{{route('client-register')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+
+          {{ csrfField() }}
 
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Votre nom</label>
             <input
+              required
               type="text"
               id="name"
+              name="name"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -35,8 +35,10 @@
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Votre email</label>
             <input
+              required
               type="email"
               id="email"
+              name="email"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -45,8 +47,10 @@
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Téléphone</label>
             <input
+              required
               type="tel"
               id="phone"
+              name="phone"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -55,7 +59,9 @@
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mot de passe</label>
             <input
+              required
               type="password"
+              name="password"
               id="password"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -65,8 +71,10 @@
           <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="password-confirmation">Confirmation du mot de passe</label>
             <input
+              required
               type="password"
               id="password-confirmation"
+              name="password-confirmation"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
