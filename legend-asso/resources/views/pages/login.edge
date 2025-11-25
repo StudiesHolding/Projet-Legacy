@@ -1,4 +1,4 @@
-@component('component/layouts/form')
+{{-- @component('component/layouts/form')
   @slot('title')
     login
   @end
@@ -55,6 +55,83 @@
             >
               Connexion
               </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  @endslot
+@end --}}
+
+
+@component('component/layouts/form')
+  @slot('title')
+    login
+  @end
+  @slot('main')
+    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+
+      <div class="mb-5">
+        <a href="{{ route('home') }}">
+          <img src="/images/legaci-logo.png" alt="" class="h-12 w-auto" />
+        </a>
+      </div>
+      <div class="w-full max-w-md">
+        <p class="my-2">
+          Connectez-vous pour découvrir et commander les meilleurs produits “Made in Cameroon”, directement auprès de nos artisans et producteurs locaux.
+        </p>
+
+        <form action="{{route('login_client')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+          {{csrfField()}}
+          <a href="#" class="btn w-full py-2 bg-white">
+            <img src="/images/google.png" alt="google-icon" class="size-16" />
+          </a>
+          <div class="divider">
+            OU
+          </div>
+          
+          @if(flashMessages.has('errors.login'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+              @each(error in flashMessages.get('errors.login'))
+                <p>{{ error }}</p>
+              @end
+            </div>
+          @endif
+
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Votre email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Type here"
+              value="{{ old('email') || '' }}" 
+              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            @if(flashMessages.has('errors.email'))
+              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.email').join(', ') }}</p>
+            @endif
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mot de passe</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Type here"
+              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            @if(flashMessages.has('errors.password'))
+              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.password').join(', ') }}</p>
+            @endif
+          </div>
+
+          <div class="flex items-center justify-between">
+            <button
+              class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Connexion
+            </button>
           </div>
         </form>
       </div>

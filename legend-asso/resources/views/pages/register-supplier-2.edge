@@ -1,0 +1,81 @@
+@component('component/layouts/form')
+  @slot('title')
+    register
+  @end
+  @slot('main')
+    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+
+      <div class="mb-6">
+        <a href="{{ route('home') }}">
+          <img src="/images/legaci-logo.png" alt="" class="h-12 w-auto" />
+        </a>
+      </div>
+      <div class="w-full max-w-md">
+        <p>
+          Etape 2
+        </p>
+
+
+        <form action="{{route('finalize')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+          {{ csrfField() }}
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Secteur d'activité</label>
+            <select class="select w-full">
+                <option>Service</option>
+                <option>AgroAlimentaire</option>
+                <option>Cosmétique</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Localisation</label>
+            <input
+              required
+              type="text"
+              id="location"
+              name="location"
+              value="{{ old('location') || '' }}"
+              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            @if(flashMessages.has('errors.location'))
+              <p class="text-[#CE0000] text-xs italic mt-1 ">{{ flashMessages.get('errors.location').join(', ') }}</p>
+            @endif
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Vous faites déja partie de l'association ?</label>
+              <div class="w-full my-5 inline-flex w-full justify-around">
+                <div class="w-full inline-flex w-full justify-between">
+                  <input type="radio" id="member_yes" class="radio" name="is_member" value="true" {{ old('is_member') === 'true' ? 'checked' : '' }}>
+                  <label for="member_yes">Oui</label>
+                  <input type="radio" id="member_no"  class="radio" name="is_member" value="false" {{ old('is_member') === 'false' ? 'checked' : '' }}>
+                  <label for="member_no">Non</label>
+              </div>
+              </div>
+              </div>
+
+          <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="member_id">Entrer vos code de membre</label>
+            <input
+              type="text"
+              id="member_code"
+              name="member_code"
+              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          <div class="flex items-center justify-between">
+            <button
+              class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Ajouter mon compte/Soumettre au administrateur
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    </div>
+  @endslot
+@end
+

@@ -3,30 +3,33 @@
     register
   @end
   @slot('main')
-    {{-- 1. Conteneur principal : Prend toute la hauteur et centre le contenu --}}
     <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
 
-      {{-- Logo --}}
       <div class="mb-6">
         <a href="{{ route('home') }}">
           <img src="/images/legaci-logo.png" alt="" class="h-12 w-auto" />
         </a>
       </div>
-      {{-- 2. Wrapper du formulaire : Définit la largeur max (responsive) --}}
       <div class="w-full max-w-md">
         <p>
           Inscrivez votre entreprise et exposez vos produits à une clientèle qui valorise la qualité, l’authenticité et le savoir-faire local.
         </p>
 
-        {{-- 3. Le Formulaire --}}
-        {{-- J'ai remplacé bg-red-500 par bg-white et ajouté une ombre pour l'esthétique --}}
-        <form action="" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+        <form action="{{route('handleStepOne')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+                  {{csrfField()}}
+          <a href="#" class="btn w-full py-2 bg-white">
+            <img src="/images/google.png" alt="google-icon" class="size-16" />
+          </a>
+          <div class="divider">
+            OU
+          </div>
 
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Votre nom</label>
             <input
               type="text"
               id="name"
+              name="name"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -37,6 +40,7 @@
             <input
               type="email"
               id="email"
+              name="email"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -47,6 +51,7 @@
             <input
               type="tel"
               id="phone"
+              name="phone"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -57,6 +62,7 @@
             <input
               type="password"
               id="password"
+              name="password"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -67,6 +73,7 @@
             <input
               type="password"
               id="password-confirmation"
+              name="password_confirmation"
               placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />

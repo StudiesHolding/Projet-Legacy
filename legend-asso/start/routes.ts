@@ -10,6 +10,7 @@
 import AuthController from '#controllers/auth_controller'
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+import SellerRegistrationsController from '#controllers/seller_registrations_controller'
 
 router
   .get('/', (ctx) => {
@@ -65,6 +66,12 @@ router
   })
   .as('register-supplier')
 
+router
+  .get('register-supplier-2', (ctx) => {
+    return ctx.view.render('pages/register-supplier-2')
+  })
+  .as('register-supplier-2')
+
 router.get('dashboard-client',(ctx)=>{
   return ctx.view.render('pages/dashboard/client/index')
 }).as('dashboard-client').use(middleware.auth())
@@ -77,6 +84,8 @@ router.get('dashboard-admin',(ctx)=>{
   return ctx.view.render('pages/dashboard/admin/index')
 }).as('dashboard-admin')
 
-router.post('register',[AuthController , 'register']).as('client-register')
-router.post('login',[AuthController , 'login']).as('client-login')
-router.get('logout',[AuthController , 'logout']).as('client-logout')
+router.post('register',[AuthController , 'register_client']).as('register_client')
+router.post('login',[AuthController , 'login_client']).as('login_client')
+router.get('logout',[AuthController , 'logout_client']).as('logout_client')
+router.post('handleStepOne',[SellerRegistrationsController , 'handleStepOne']).as('handleStepOne')
+router.post('handleStepTwo',[SellerRegistrationsController , 'finalize']).as('finalize')

@@ -16,10 +16,14 @@
         </p>
 
 
-        <form action="{{route('client-register')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
-
+        <form action="{{route('register_client')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
           {{ csrfField() }}
-
+                   <a href="#" class="btn w-full py-2 bg-white">
+            <img src="/images/google.png" alt="google-icon" class="size-16" />
+          </a>
+          <div class="divider">
+            OU
+          </div>
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Votre nom</label>
             <input
@@ -27,9 +31,12 @@
               type="text"
               id="name"
               name="name"
-              placeholder="Type here"
+              value="{{old('name') || ''}}"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            @if(flashMessages.has('errors.name'))
+              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(', ') }}</p>
+            @endif
           </div>
 
           <div class="mb-4">
@@ -39,9 +46,12 @@
               type="email"
               id="email"
               name="email"
-              placeholder="Type here"
+              value="{{ old('email') || '' }}"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            @if(flashMessages.has('errors.email'))
+              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.email').join(', ') }}</p>
+            @endif
           </div>
 
           <div class="mb-4">
@@ -51,9 +61,12 @@
               type="tel"
               id="phone"
               name="phone"
-              placeholder="Type here"
+              value="{{ old('phone') || '' }}"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            @if(flashMessages.has('errors.phone'))
+              <p class="text-[#CE0000] text-xs italic mt-1 ">{{ flashMessages.get('errors.phone').join(', ') }}</p>
+            @endif
           </div>
 
           <div class="mb-4">
@@ -63,21 +76,25 @@
               type="password"
               name="password"
               id="password"
-              placeholder="Type here"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            @if(flashMessages.has('errors.password'))
+              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.password').join(', ') }}</p>
+            @endif
           </div>
 
           <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password-confirmation">Confirmation du mot de passe</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password_confirmation">Confirmation du mot de passe</label>
             <input
               required
               type="password"
-              id="password-confirmation"
-              name="password-confirmation"
-              placeholder="Type here"
+              id="password_confirmation"
+              name="password_confirmation"
               class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
+            @if(flashMessages.has('errors.password_confirmation'))
+              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.password_confirmation').join(', ') }}</p>
+            @endif
           </div>
 
           <div class="flex items-center justify-between">
@@ -85,7 +102,7 @@
               class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Ajouter mon compte
-              </button>
+            </button>
           </div>
 
         </form>

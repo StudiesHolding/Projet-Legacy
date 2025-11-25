@@ -50,7 +50,7 @@
       @if(auth.isAuthenticated)
       <div class="flex justify-end w-4/12">
       <a href="{{route('dashboard-client')}}" class="text-white">
-        {{auth.user.name}}
+        {{ auth.user.name?.toUpperCase() }}
       </a>
       </div>
       @else
