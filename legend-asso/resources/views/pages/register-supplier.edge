@@ -1,90 +1,123 @@
 @component('component/layouts/form')
   @slot('title')
-    register
-  @end
+    Inscription de l'Entreprise - Étape 1
+  @endslot
   @slot('main')
-    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50 p-4 sm:p-6">
 
-      <div class="mb-6">
+      <div class="mb-8">
         <a href="{{ route('home') }}">
-          <img src="/images/legaci-logo.png" alt="" class="h-12 w-auto" />
+          <img src="/images/legaci-logo.png" alt="Logo Legaci" class="h-14 w-auto" />
         </a>
       </div>
-      <div class="w-full max-w-md">
-        <p>
+
+      <div class="w-full max-w-lg">
+        <p class="text-center text-gray-600 mb-6 px-4">
           Inscrivez votre entreprise et exposez vos produits à une clientèle qui valorise la qualité, l’authenticité et le savoir-faire local.
         </p>
 
-        <form action="{{route('handleStepOne')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
-                  {{csrfField()}}
-          <a href="#" class="btn w-full py-2 bg-white">
-            <img src="/images/google.png" alt="google-icon" class="size-16" />
+        <form action="{{ route('handleStepOne') }}" method="POST" class="bg-white shadow-xl rounded-xl p-8 border border-gray-100 mb-4">
+          {{ csrfField() }}
+
+          <a href="#" class="btn w-full py-2 bg-white flex items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-150 mb-4">
+            <img src="/images/google.png" alt="S'inscrire avec Google" class="h-6 w-6 mr-3" /> 
+            <span class="text-gray-700 font-semibold">Continuer avec Google</span>
           </a>
-          <div class="divider">
+
+          <div class="divider text-gray-500 my-6">
             OU
           </div>
 
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Votre nom</label>
+          <div class="mb-5">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Votre nom / Nom de l'Entreprise</label>
             <input
+              required
               type="text"
               id="name"
               name="name"
-              placeholder="Type here"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value="{{ old('name') || '' }}" 
+              placeholder="Ex: Dupont Inc."
+              class="input w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
+              aria-required="true"
             />
+            @if(flashMessages.has('errors.name'))
+              <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.name').join(', ') }}</p>
+            @endif
           </div>
 
-          <div class="mb-4">
+          <div class="mb-5">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Votre email</label>
             <input
+              required
               type="email"
               id="email"
               name="email"
-              placeholder="Type here"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value="{{ old('email') || '' }}"
+              placeholder="Ex: contact@entreprise.com"
+              class="input w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
+              aria-required="true"
             />
+            @if(flashMessages.has('errors.email'))
+              <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.email').join(', ') }}</p>
+            @endif
           </div>
 
-          <div class="mb-4">
+          <div class="mb-5">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Téléphone</label>
             <input
+              required
               type="tel"
               id="phone"
               name="phone"
-              placeholder="Type here"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value="{{ old('phone') || '' }}"
+              placeholder="Ex: +33 1 23 45 67 89"
+              class="input w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
+              aria-required="true"
             />
+            @if(flashMessages.has('errors.phone'))
+              <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.phone').join(', ') }}</p>
+            @endif
           </div>
 
-          <div class="mb-4">
+          <div class="mb-5">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mot de passe</label>
             <input
+              required
               type="password"
               id="password"
               name="password"
-              placeholder="Type here"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Minimum 8 caractères"
+              class="input w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
+              aria-required="true"
             />
+            @if(flashMessages.has('errors.password'))
+              <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.password').join(', ') }}</p>
+            @endif
           </div>
 
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password-confirmation">Confirmation du mot de passe</label>
+          <div class="mb-8">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="password_confirmation">Confirmation du mot de passe</label>
             <input
+              required
               type="password"
-              id="password-confirmation"
+              id="password_confirmation"
               name="password_confirmation"
-              placeholder="Type here"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Confirmez votre mot de passe"
+              class="input w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
+              aria-required="true"
             />
+             @if(flashMessages.has('errors.password_confirmation'))
+              <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.password_confirmation').join(', ') }}</p>
+            @endif
           </div>
 
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-center">
             <button
-              class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+              class="btn w-full max-w-xs bg-[#171B99] transition duration-150 ease-in-out hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline focus:ring-4 focus:ring-[#171B99]/50"
             >
               Étape suivante
-              </button>
+            </button>
           </div>
 
         </form>

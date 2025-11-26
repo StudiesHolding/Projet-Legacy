@@ -30,7 +30,11 @@ export default class AuthController {
             const payload = await request.validateUsing(AuthValidator)
             const user = await User.verifyCredentials(payload.email , payload.password)
             await auth.use('web').login(user)
-            return response.redirect().toRoute('dashboard-client')
+            if(user.role = 'seller'){
+                return response.redirect().toRoute('dashboard-seller')
+            }else{
+                return response.redirect().toRoute('dashboard-client')
+            }
         } catch (error) {
             if (error.code === 'E_INVALID_CREDENTIALS') {
                 session.flash('errors.login', ['Identifiants invalides (Email ou mot de passe incorrect).'])
