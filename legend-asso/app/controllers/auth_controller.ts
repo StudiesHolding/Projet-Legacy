@@ -48,5 +48,4 @@ export default class AuthController {
         await auth.use('web').logout()
         return response.redirect('login')
     }
-
 }

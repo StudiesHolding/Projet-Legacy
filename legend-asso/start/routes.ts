@@ -11,6 +11,7 @@ import AuthController from '#controllers/auth_controller'
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import SellerRegistrationsController from '#controllers/seller_registrations_controller'
+import ArticlesController from '#controllers/articles_controller'
 
 router
   .get('/', (ctx) => {
@@ -89,3 +90,5 @@ router.post('login',[AuthController , 'login_client']).as('login_client')
 router.get('logout',[AuthController , 'logout_client']).as('logout_client')
 router.post('handleStepOne',[SellerRegistrationsController , 'handleStepOne']).as('handleStepOne')
 router.post('handleStepTwo',[SellerRegistrationsController , 'finalize']).as('finalize')
+
+router.resource('article', ArticlesController)

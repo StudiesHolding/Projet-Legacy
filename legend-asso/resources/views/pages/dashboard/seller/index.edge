@@ -1,13 +1,10 @@
-@component('component/layouts/app')
-    @slot('title')
-    Espace Vendeur 
-    @endslot
+@component('component/layouts/dashboard')
 
-    @slot('main')
+    @slot('content')
     <div class="min-h-screen bg-gray-100">
     <div class="flex flex-col md:flex-row">
 
-        <aside class="md:w-64 bg-white shadow-lg p-4 md:p-6 top-0 h-full">
+        {{-- <aside class="md:w-64 bg-white shadow-lg p-4 md:p-6 top-0 h-full">
             <div class="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
                 Espace Vendeur
             </div>
@@ -47,30 +44,13 @@
                     Paramètres du Magasin
                 </a>
             </div>
-        </aside>
+        </aside> --}}
         
         <main class="flex-1 p-4 md:p-8">
             <h1 class="text-3xl font-semibold text-gray-900 mb-6">Résumé des Ventes</h1>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                
-                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-red-600">
-                    <p class="text-sm font-medium text-gray-500">Revenu (Mois)</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">7 500,00 €</p>
-                    <span class="text-xs text-green-500 font-semibold">+12% vs Mois dernier</span>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
-                    <p class="text-sm font-medium text-gray-500">Commandes Reçues</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">45</p>
-                    <span class="text-xs text-red-500 font-semibold">-5% vs Mois dernier</span>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500">
-                    <p class="text-sm font-medium text-gray-500">Nouveaux messages client</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">3</p>
-                    <span class="text-xs text-indigo-500 font-semibold">Répondre rapidement</span>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg: gap-6 mb-8">
+                @include('component/partials/account-information')
             </div>
 
             <a href="#ajouter-article" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-8 transition duration-150 ease-in-out">
