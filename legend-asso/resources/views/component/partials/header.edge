@@ -1,13 +1,17 @@
 @eval(await auth.check())
-<header
-  class="bg-[#171B99] inline-flex w-12/12 flex-row justify-between items-center lg: h-20 fixed top-0"
->
-  <div class="yellow-500 w-1/12 flex h-full justify-center items-center">
-    <a href="{{ route('home') }}">
-      <img src="/images/icon.png" alt="legacy-market" class="p-2 size-15 mx-5 align-self-center" />
-    </a>
-  </div>
-  <div class="hidden lg:inline-flex items-center rounded-3xl bg-white w-4/12">
+
+<div class="drawer drawer-end">
+    <input id="cart-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content">
+        <header
+            class="bg-[#171B99] w-full flex flex-row justify-between items-center h-20 fixed top-0 z-50 px-4 lg:px-6 shadow-md"
+        >
+            <div class="flex h-full items-center w-auto lg:w-1/12">
+                <a href="{{ route('home') }}">
+                    <img src="/images/icon.png" alt="legacy-market" class="p-2 size-15 mx-5 align-self-center" />
+                </a>
+            </div>
+            <div class="hidden lg:inline-flex items-center rounded-3xl bg-white w-4/12">
     <form
       action=""
       method="get"
@@ -40,64 +44,69 @@
       </button>
     </form>
   </div>
-  <div class="inline-flex w-2/12 items-center lg:w-8/12 mx-5 justify-between">
-    <nav class="hidden lg:flex gap-4 text-base justify-around items-center text-white w-6/12">
-      <a href="{{ route('catalogue') }}" class="gap-2 text-xs">Boutique</a>
-      <a href="{{ route('suppliers') }}" class="gap-2 text-xs">Créateurs locaux</a>
-      <a href="#" class="gap-2 text-xs">Blog</a>  
-    </nav>
+            
+            <div class="inline-flex items-center mx-5 justify-between space-x-4 lg:space-x-8 w-auto lg:w-7/12">
+                
+                <nav class="hidden lg:flex gap-4 text-sm items-center text-white justify-around w-5/12">
+                    <a href="{{ route('catalogue') }}" class="hover:text-gray-300 transition">Boutique</a>
+                    <a href="{{ route('suppliers') }}" class="hover:text-gray-300 transition">Créateurs locaux</a>
+                    <a href="#" class="hover:text-gray-300 transition">Blog</a>  
+                </nav>
 
-      @if(auth.isAuthenticated)
-      <div class="flex justify-end w-4/12">
-      <a href="{{ auth.user.role === 'client' ? route('dashboard-client') : route('dashboard-seller') }}" class="text-white">
-        {{ auth.user.name?.toUpperCase() }}
-      </a>
-      </div>
-      @else
-          <div class="hidden lg:inline-flex gap-5 w-4/12 justify-end  items-center">
-            <div class="dropdown dropdown-center">
-              <div tabindex="0" role="button" class="btn bg-[#CE0000] text-white text-xs">
-                Connexion
-              </div>
-              <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-70 p-2 shadow-sm">
-                <li>
-                  <a href="{{ route('login') }}" class="hover:text-[#CE0000]">Connectez-vous a votre compte</a>
-                </li>
-                <li>
-                  <a href="{{ route('register-client') }}" class="hover:text-[#CE0000]">Je souhaite creer mon compte</a>
-                </li>
-              </ul>
+                @if(auth.isAuthenticated)
+                    <a href="{{ auth.user.role === 'client' ? route('dashboard-client') : route('dashboard-seller') }}" class="text-white text-sm font-semibold hidden lg:inline-flex">
+                        {{ auth.user.name?.toUpperCase() }}
+                    </a>
+                @else
+                    <div class="hidden lg:inline-flex">
+                        <div class="dropdown dropdown-hover dropdown-end">
+                            <div tabindex="0" role="button" class="btn bg-[#CE0000] hover:bg-[#A80000] text-white text-xs border-none">Connexion</div>
+                            <ul tabindex="-1" class="dropdown-content menu bg-white text-gray-800 rounded-box z-10 w-64 p-2 shadow-xl border border-gray-100 mt-2">
+                                <li><a href="{{ route('login') }}" class="hover:text-[#CE0000] p-2 text-sm">Connectez-vous à votre compte</a></li>
+                                <li><a href="{{ route('register-client') }}" class="hover:text-[#CE0000] p-2 text-sm">Je souhaite créer mon compte</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
+                @if(route.name !== 'checkout')
+                    <div class="w-auto h-auto">
+                        <label for="cart-drawer" class="cursor-pointer block p-1 relative hover:opacity-80 transition duration-150">
+                            <img src="/images/shopping-bag.png" alt="cart" class="w-6 h-6" />
+                        </label>
+                    </div>
+                @endif
+                <div class="w-auto h-auto lg:hidden">
+                </div>
             </div>
-          </div>
-      @end
+        </header>
 
-    @if(route.name !== 'checkout')
-      <div class="w-1/3 lg:w-1/24 h-1/2">
-        <a href="{{ route('checkout') }}">
-          <img src="/images/shopping-bag.png" alt="cart" class="w-full" />
-        </a>
-      </div>
-    @endif
-
-
-    <div class="w-1/2 h-auto lg:hidden">
-      <button
-        id="burger-button"
-        class="p-2 rounded-lg text-white hover:border hover:bg-opacity-20 transition"
-        aria-label="Ouvrir le menu"
-      >
-        <svg
-          class="w-7 h-7"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
     </div>
-  </div>
+
+    <div class="drawer-side z-50"> 
+        <label for="cart-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        
+        <div class="flex flex-col bg-white text-gray-800 min-h-full w-80 md:w-96 shadow-2xl">
+            
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+                <h3 class="text-xl font-bold">Votre Panier</h3>
+                <label for="cart-drawer" class="btn btn-sm btn-circle btn-ghost">✕</label>
+            </div>
+            
+            <div class="p-6 flex-grow overflow-y-auto">
+                <p class="text-gray-500 italic mb-4">Votre panier est prêt à être rempli !</p>
+            </div>
+            
+            <div class="p-6 border-t">
+                <div class="flex justify-between font-bold text-lg mb-4">
+                    <span>Total :</span>
+                    <span>0 FCFA</span>
+                </div>
+                <a href="{{ route('checkout') }}" class="btn w-full bg-[#CE0000] hover:bg-red-700 text-white font-bold py-2 rounded-lg transition">
+                    Finaliser la commande
+                </a>
+                <label for="cart-drawer" class="btn btn-ghost w-full mt-2 hover:bg-gray-100">Continuer mes achats</label>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-</header>

@@ -4,22 +4,34 @@ export default class ArticlesController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {}
-
+  async index({view}: HttpContext) {
+    return view.render('pages/dashboard/seller/my-articles')
+  }
   /**
    * Display form to create a new record
    */
-  async create({}: HttpContext) {}
+  async create({view}: HttpContext) {
+    return view.render('pages/dashboard/seller/add_article')
+  }
 
   /**
    * Handle form submission for the create action
    */
-  async store({ request }: HttpContext) {}
+  async store({ request }: HttpContext) {
+    const payload = request.only(['name', 'price', 'description', 'category', 'measure']);
+    const image = request.files('images')
+    
+    const finalPayload = {...payload,...image}
+    console.log(finalPayload)
+    
+  }
 
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params , view }: HttpContext) {
+    return view.render('')
+  }
 
   /**
    * Edit individual record

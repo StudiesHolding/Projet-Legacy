@@ -1,29 +1,27 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-md border-t-4 grid-cols-3 border-indigo-500">
             <p class="text-sm font-medium text-gray-500">{{ auth.user.role === 'seller' ? 'Revenu (Mois)' : 'Commandes totales'}}</p>
-            <p class="text-3xl font-bold text-gray-900 mt-1"></p>
-                {{ auth.user.role === 'seller' 
-            ? '<span class="text-xs text-green-500 font-semibold">+12% vs Mois dernier</span>' 
-            : '' 
-        }}
+            <p class="text-3xl font-bold text-gray-900 mt-1">{{ auth.user.role === 'seller' ? '25 000 F' : '12' }}</p>
+            {{-- @if(auth.user.role === 'seller')
+                <span class="text-xs text-green-500 font-semibold">+2% vs Mois dernier</span>
+            @end --}}
         </div>
 
         <div class="bg-white p-6 rounded-xl shadow-md border-t-4 grid-cols-3 border-indigo-500">
-            <p class="text-sm font-medium text-gray-500">{{ auth.user.role === 'seller' ? 'Commandes' : 'Dépenses totales'}}</p>
+            <p class="text-sm font-medium text-gray-500">{{ auth.user.role === 'seller' ? 'Commandes totales' : 'Dépenses totales'}}</p>
             <p class="text-3xl font-bold text-gray-900 mt-1">{{auth.user.role === 'seller' ? '14': '12 250 XAF'}}</p>
-            {{ auth.user.role === 'seller' 
-            ? '<span class="text-xs text-green-500 font-semibold">+12% vs Mois dernier</span>' 
-            : '' 
-        }}
+            {{-- @if(auth.user.role === 'seller')
+                <span class="text-xs text-green-500 font-semibold">+2% vs Mois dernier</span>
+            @end --}}
         </div>
 
         <div class="bg-white p-6 rounded-xl shadow-md border-t-4 grid-cols-3 border-indigo-500">
-            <p class="text-sm font-medium text-gray-500">{{ auth.user.role === 'seller' ? 'Commandes totales' : 'Commandes en cours'}}</p>
-            <p class="text-3xl font-bold text-gray-900 mt-1">{{ auth.user.role === 'seller' ? 'Quelques chose interessant' : '2' }}</p>
-                {{ auth.user.role === 'seller' 
-            ? '<span class="text-xs text-green-500 font-semibold">+12% vs Mois dernier</span>' 
-            : '' 
-        }}
+            <p class="text-sm font-medium text-gray-500">{{ auth.user.role === 'seller' ? 'En attente' : 'Commandes en cours'}}</p>
+            <p class="text-3xl font-bold text-gray-900 mt-1">{{ auth.user.role === 'seller' ? '2' : '2' }}</p>
+            {{-- @if(auth.user.role === 'seller')
+                <span class="text-xs text-green-500 font-semibold">+2% vs Mois dernier</span>
+            @end --}}
+
         </div>
     </div>
 

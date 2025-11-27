@@ -1,0 +1,25 @@
+@component('component/layouts/dashboard')
+    @slot('content')
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="flex items-center justify-between py-3 w-full">
+                    <h2 class="text-xl font-semibold text-gray-800">Mes articles</h2>
+                    <a href="{{route('article.create')}}" class="btn bg-red-500 text-white" >Ajouter un article</a>
+                </div>
+
+                <ul class="divide-y divide-gray-200">
+                    <li class="flex justify-between items-center py-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-gray-700">Commande #1004 (Client: Dupont)</p>
+                            <p class="text-sm text-gray-500 truncate">500,50 € | 2 articles</p>
+                        </div>
+                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
+                        {{-- <a href="{{route('article.show')}}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir  →</a> --}}
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir  →</a>
+                    </li>         
+                </ul>
+        {{-- <div class="mt-4 text-right">
+            <a href="#ventes" class="text-red-600 hover:text-red-800 font-medium">Voir toutes les ventes →</a>
+        </div> --}}
+    </div>
+    @end
+@end
