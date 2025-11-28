@@ -11,12 +11,12 @@
         required
         type="file"
         id="images"
-        name="images"
+        name="images[]"
         value="{{ old('images') || '' }}" 
         class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
-        @if(flashMessages.has('errors.email'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.email').join(', ') }}</p>
+        @if(flashMessages.has('errors.images'))
+        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.images').join(', ') }}</p>
         @endif
     </div>
     <div class="mb-4">
@@ -29,33 +29,22 @@
         value="{{ old('name') || '' }}" 
         class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
-        @if(flashMessages.has('errors.email'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.email').join(', ') }}</p>
+        @if(flashMessages.has('errors.name'))
+        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(',') }}</p>
         @endif
     </div>
     <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="description">Description</label>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="about">Description</label>
         <textarea
         required
-        id="description"
-        name="description"
+        id="about"
+        name="about"
         placeholder="Décrivez ici votre produit, vos motivations, ou tout autre détail pertinent (5 lignes minimum pour une bonne lisibilité)."
-        class="w-full 
-            p-4 
-            border border-gray-300 
-            rounded-xl 
-            text-gray-800 
-            text-base 
-            leading-relaxed 
-            focus:ring-2 focus:ring-[#171B99] focus:border-[#171B99] 
-            resize-none 
-            h-32 
-            transition duration-200 ease-in-out"
-        >
-            {{ old('description') ?? '' }}
+        class="w-full p-4 border border-gray-300 rounded-xl text-gray-800 text-base leading-relaxed focus:ring-2 focus:ring-[#171B99] focus:border-[#171B99] resize-none h-32 transition duration-200 ease-in-out">
+         {{ old('description') ?? '' }}
         </textarea>
 
-        @if(flashMessages.has('errors.email'))
+        @if(flashMessages.has('errors.description'))
         <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.description').join(', ') }}</p>
         @endif
     </div>
@@ -69,7 +58,7 @@
         value="{{ old('price') || '' }}" 
         class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
-        @if(flashMessages.has('errors.email'))
+        @if(flashMessages.has('errors.price'))
         <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.price').join(', ') }}</p>
         @endif
     </div>
@@ -87,7 +76,7 @@
             <option value="cat2" {{ old('cat2') === 'cat2' ? 'selected' : '' }}>cat2</option>
             <option value="cat3" {{ old('cat3') === 'cat3' ? 'selected' : '' }}>cat3</option>
         </select>
-        @if(flashMessages.has('errors.sector'))
+        @if(flashMessages.has('errors.category'))
             <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.category').join(', ') }}</p>
         @end
     </div>
@@ -102,7 +91,7 @@
         class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
         @if(flashMessages.has('errors.measure'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.price').join(', ') }}</p>
+        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.measure').join(', ') }}</p>
         @endif
     </div>
     <div class="flex items-center justify-between">
