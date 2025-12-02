@@ -12,7 +12,7 @@
         type="file"
         id="images"
         name="images[]"
-        value="{{ old('images') || '' }}" 
+        multiple
         class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
         @if(flashMessages.has('errors.images'))

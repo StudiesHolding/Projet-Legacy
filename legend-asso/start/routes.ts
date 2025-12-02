@@ -12,6 +12,7 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import SellerRegistrationsController from '#controllers/seller_registrations_controller'
 import ArticlesController from '#controllers/articles_controller'
+import ImagesController from '#controllers/images_controller'
 
 router
   .get('/', (ctx) => {
@@ -91,4 +92,5 @@ router.get('logout',[AuthController , 'logout_client']).as('logout_client')
 router.post('handleStepOne',[SellerRegistrationsController , 'handleStepOne']).as('handleStepOne')
 router.post('handleStepTwo',[SellerRegistrationsController , 'finalize']).as('finalize')
 
-router.resource('article', ArticlesController)
+router.resource('article', ArticlesController).use(middleware.auth())
+router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destroy')
