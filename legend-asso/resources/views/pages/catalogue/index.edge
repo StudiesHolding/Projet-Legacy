@@ -3,9 +3,15 @@
   @slot('title')
     catalogue
   @end
+
   @slot('main')
     @include('component/partials/category-section')
-    @include('component/partials/card-section')
+    <div class="w-full flex-wrap inline-flex">
+      @each(article in articles)
+        @component('component/partials/card',{'article':article})
+        @end
+      @end
+    </div>
     @include('component/partials/pagination')
   @endslot
 @end

@@ -10,15 +10,15 @@ export default class ArticlesController {
   /**
    * Display a list of resource
    */
-  async index({view , auth}: HttpContext) {
+  async index({ view, auth }: HttpContext) {
     const user = await auth.authenticate()
-    const articles = await Article.query().where('seller_id' , user.id)
-    return view.render('pages/dashboard/seller/my-articles',{ "myArticles":articles })
+    const articles = await Article.query().where('seller_id', user.id)
+    return view.render('pages/dashboard/seller/my-articles', { myArticles: articles })
   }
   /**
    * Display form to create a new record
    */
-  async create({view}: HttpContext) {
+  async create({ view }: HttpContext) {
     return view.render('pages/dashboard/seller/add_article')
   }
 
@@ -26,27 +26,27 @@ export default class ArticlesController {
    * Handle form submission for the create action
    */
 
-  async store({ request, auth, response , session}: HttpContext) {
-  const payload = await request.validateUsing(ArticleValidator)
+  async store({ request, auth, response, session }: HttpContext) {
+    const payload = await request.validateUsing(ArticleValidator)
 
-  const slug = string.slug(payload.name)
-  const user = await auth.authenticate()
-  const sellerId = user.id
+    const slug = string.slug(payload.name)
+    const user = await auth.authenticate()
+    const sellerId = user.id
 
-  const article = await Article.create({
-    seller_id: sellerId,
-    status: 'pending',
-    slug,
-    name: payload.name,
-    about:payload.about,
-    category:payload.category,
-    price: payload.price,
-    measure :payload.measure
-  })
+    const article = await Article.create({
+      seller_id: sellerId,
+      status: 'pending',
+      slug,
+      name: payload.name,
+      about: payload.about,
+      category: payload.category,
+      price: payload.price,
+      measure: payload.measure,
+    })
 
-  const imagesToStore: { imageUrl: string }[] = []
+    const imagesToStore: { imageUrl: string }[] = []
 
-  if (Array.isArray(payload.images)) {
+    if (Array.isArray(payload.images)) {
     for (const imageFile of payload.images) {
 
       if (!imageFile.isValid) {
@@ -96,7 +96,6 @@ async show({ params, view, response }: HttpContext) {
 
 async update({ params, request, response, auth, session }: HttpContext) {
   const article = await Article.query().where('id', params.id).firstOrFail()
-  const user = await auth.authenticate()
 
   if (article.seller_id !== user.id) {
     return response.unauthorized('Action non autorisée.')
