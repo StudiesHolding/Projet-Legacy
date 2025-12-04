@@ -1,4 +1,4 @@
-@eval(await auth.check())
+{{-- @eval(await auth.check())
 
 <div class="drawer drawer-end">
     <input id="cart-drawer" type="checkbox" class="drawer-toggle" />
@@ -72,8 +72,15 @@
                 @if(route.name !== 'checkout')
                     <div class="w-auto h-auto">
                         <label for="cart-drawer" class="cursor-pointer block p-1 relative hover:opacity-80 transition duration-150">
-                            <img src="/images/shopping-bag.png" alt="cart" class="w-6 h-6" />
-                        </label>
+    <img src="/images/shopping-bag.png" alt="cart" class="w-6 h-6" />
+    <div 
+        id="cart-count" 
+        class="text-white absolute top-0 right-0 transform translate-x-1 -translate-y-1 
+               bg-red-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+    >
+        {{ initialCartCount || 0 }}
+    </div>
+</label>
                     </div>
                 @endif
                 <div class="w-auto h-auto lg:hidden">
@@ -106,6 +113,178 @@
                     Finaliser la commande
                 </a>
                 <label for="cart-drawer" class="btn btn-ghost w-full mt-2 hover:bg-gray-100">Continuer mes achats</label>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+
+{{-- Assurez-vous que cette variable est passée au layout ou accessible via un "global" --}}
+{{-- @set(initialCartCount = auth.isAuthenticated ? await getCartCount() : 0) --}}
+
+<div class="drawer drawer-end">
+    {{-- La case à cocher pour l'état du tiroir --}}
+    <input id="cart-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" />
+    
+    {{-- Contenu principal de la page (le header y est inclus) --}}
+    <div class="drawer-content">
+        
+        <header 
+            class="
+                bg-[#171B99] w-full h-20 fixed top-0 z-50 px-4 lg:px-6 shadow-md 
+                flex justify-between items-center
+            "
+        >
+            {{-- Logo / Marque --}}
+            <div class="flex items-center h-full w-auto lg:w-1/12">
+                <a href="{{ route('home') }}" aria-label="Accueil">
+                    <img 
+                        src="/images/icon.png" 
+                        alt="Logo du site" 
+                        class="size-15 p-2 mx-5" 
+                    />
+                </a>
+            </div>
+
+            {{-- Barre de recherche (cachée en mobile) --}}
+            <div class="hidden lg:flex items-center rounded-3xl bg-white w-4/12">
+                <form
+                    action="#" {{-- Utilisation d'une route nommée --}}
+                    method="get"
+                    class="flex items-center border border-transparent rounded-3xl w-full h-10"
+                >
+                    <input
+                        type="search" {{-- type="search" est plus sémantique --}}
+                        name="q" {{-- 'q' ou 'query' est plus standard que 'search' --}}
+                        placeholder="Rechercher des produits, des créateurs..."
+                        class="rounded-l-3xl w-10/12 pl-3 ml-3 border-none outline-none focus:ring-0"
+                    />
+                    <button
+                        type="submit"
+                        class="bg-[#171B99] rounded-3xl mx-2 w-8 h-8 flex items-center justify-center cursor-pointer flex-shrink-0"
+                        aria-label="Lancer la recherche"
+                    >
+                        {{-- Icône Loupe (SVG nettoyé et intégré) --}}
+                        <svg width="16" height="16" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M221.09 64A157.09 157.09 0 10378.18 221.09 157.1 157.1 0 00221.09 64z"
+                                stroke="#ffffff" stroke-miterlimit="10" stroke-width="32"
+                            />
+                            <path
+                                d="M338.29 338.29L448 448"
+                                stroke="#ffffff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"
+                            />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            
+            {{-- Navigation et Actions Utilisateur --}}
+            <div class="inline-flex items-center mx-5 space-x-4 lg:space-x-8">
+                
+                <nav class="hidden lg:flex gap-6 text-sm items-center text-white">
+                    <a href="{{ route('catalogue') }}" class="hover:text-gray-300 transition font-medium">Boutique</a>
+                    <a href="#" class="hover:text-gray-300 transition font-medium">Créateurs locaux</a>
+                    <a href="#" class="hover:text-gray-300 transition font-medium">Blog</a>
+                </nav>
+
+                {{-- Authentication (Desktop) --}}
+                @if(auth.isAuthenticated)
+                    <a 
+                        href="{{ auth.user.role === 'client' ? route('dashboard-client') : route('dashboard-seller') }}" 
+                        class="text-white text-sm font-semibold hidden lg:inline-flex hover:text-gray-300 transition"
+                        aria-label="Accéder au tableau de bord de {{ auth.user.name }}"
+                    >
+                        {{ auth.user.name?.toUpperCase() || 'MON COMPTE' }}
+                    </a>
+                @else
+                    <div class="hidden lg:inline-flex">
+                        <div class="dropdown dropdown-hover dropdown-end">
+                            <div tabindex="0" role="button" class="btn bg-[#CE0000] hover:bg-[#A80000] text-white text-xs border-none min-h-8 h-8">Connexion</div>
+                            <ul tabindex="-1" class="dropdown-content menu bg-white text-gray-800 rounded-box z-10 w-64 p-2 shadow-xl border border-gray-100 mt-2">
+                                <li><a href="{{ route('login') }}" class="hover:text-[#CE0000] p-2 text-sm font-medium">Connectez-vous à votre compte</a></li>
+                                <li><a href="{{ route('register-client') }}" class="hover:text-[#CE0000] p-2 text-sm font-medium">Je souhaite créer mon compte</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Icône de Panier (Cart Drawer Trigger) --}}
+                @if(route.name !== 'checkout')
+                    <div class="w-auto h-auto">
+                        <label for="cart-drawer" class="cursor-pointer block p-1 relative hover:opacity-80 transition duration-150" aria-label="Ouvrir le panier">
+                            {{-- Image Panier --}}
+                            <img src="/images/shopping-bag.png" alt="Panier d'achat" class="w-6 h-6" />
+                            
+                            {{-- Compteur d'articles --}}
+                            <div 
+                                id="cart-count" 
+                                class="
+                                    text-white absolute top-0 right-0 transform translate-x-1 -translate-y-1 
+                                    bg-red-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold
+                                "
+                                role="status" 
+                                aria-live="polite" 
+                                aria-atomic="true"
+                            >
+                                {{ initialCartCount || 0 }}
+                            </div>
+                        </label>
+                    </div>
+                @endif
+                
+                {{-- Espace réservé (si nécessaire pour le menu mobile) --}}
+                <div class="w-auto h-auto lg:hidden">
+                    {{-- Ici, vous devriez inclure le bouton pour votre menu mobile (burger button) --}}
+                    {{-- @include('component/partials/burger_button') --}}
+                </div>
+            </div>
+        </header>
+    </div>
+
+    {{-- 2. Le Panier Tiroir (Drawer Sidebar) --}}
+    <div class="drawer-side z-50"> 
+        <label for="cart-drawer" aria-label="Fermer le panier" class="drawer-overlay"></label>
+        
+        <div class="flex flex-col bg-white text-gray-800 min-h-full w-80 md:w-96 shadow-2xl">
+            
+            {{-- Tête du Tiroir --}}
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50 flex-shrink-0"> {{-- flex-shrink-0 pour que ce div ne soit pas compressé --}}
+                <h3 class="text-xl font-bold" id="cart-sidebar-title">Votre Panier</h3>
+                <label for="cart-drawer" class="btn btn-sm btn-circle btn-ghost" aria-label="Fermer">✕</label>
+            </div>
+            
+            {{-- Contenu du Panier (C'est ici que le contenu dynamique ira) --}}
+            <div id="cart-items-container" class="p-6 flex-grow overflow-y-auto">
+                {{-- 
+                    Logique pour afficher les articles stockés en session.
+                    Ceci sera rempli soit par Edge lors du chargement initial, soit par JavaScript après AJAX. 
+                --}}
+                
+                {{-- Exemple de contenu par défaut vide: --}}
+                @if((initialCartCount || 0) === 0)
+                    <div id="empty-cart-message">
+                        <p class="text-gray-500 italic mb-4 text-center">Votre panier est vide pour l'instant.</p>
+                    </div>
+                @else
+                    {{-- Boucle ici pour afficher les articles si le panier n'est pas vide --}}
+                    {{-- @each(item in cartItems)
+                        @include('component/cart/item', { item: item })
+                    @endeach --}}
+                    <p>Liste des articles...</p>
+                @endif
+            </div>
+            
+            {{-- Pied du Tiroir (Actions et Total) --}}
+            <div class="p-6 border-t flex-shrink-0">
+                <div class="flex justify-between font-bold text-lg mb-4">
+                    <span>Total :</span>
+                    <span id="cart-total-amount">0 FCFA</span> {{-- ID pour mise à jour JS --}}
+                </div>
+                <a href="{{ route('checkout') }}" class="btn w-full bg-[#CE0000] hover:bg-red-700 text-white font-bold rounded-lg transition py-3">
+                    Finaliser la commande
+                </a>
+                <label for="cart-drawer" class="btn btn-ghost w-full mt-2 hover:bg-gray-100 font-medium">Continuer mes achats</label>
             </div>
         </div>
     </div>

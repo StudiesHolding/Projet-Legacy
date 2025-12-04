@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
@@ -197,5 +197,279 @@
         }
       });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <script>
+      // Assurez-vous qu'Axios est déjà chargé dans votre projet
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Sélecteur pour tous les boutons d'ajout au panier
+    {{-- const addToCartButtons = document.querySelectorAll('.btn.justify-center'); --}}
+    const allCartButtons = document.querySelectorAll('[data-article-id]');
+    allCartButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            // Récupérer l'ID de l'article depuis l'attribut data-article-id
+            const articleId = event.currentTarget.getAttribute('data-article-id');
+
+            if (!articleId) {
+                console.error('ID de l\'article non trouvé.');
+                return;
+            }
+
+            // URL de votre endpoint d'ajout au panier (à adapter)
+            const url = `http://localhost:3333/api/cart`; 
+
+            try {
+                // Effectuer la requête POST avec Axios
+                const response = await axios.get(url,{
+                  params:{
+                    'articleId':articleId
+                  }
+                });
+
+                console.log('Article ajouté au panier avec succès:', response.data);
+                const cartValue = document.getElementById('cart-count'); 
+                cartValue.textContent = response.data.totalItems
+
+                  // Optionnel : Déclencher un événement de mise à jour du panier
+                // window.dispatchEvent(new CustomEvent('cart-updated'));
+
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout au panier:', error);
+
+                // Réinitialiser le bouton et afficher un message d'erreur
+                event.currentTarget.textContent = 'Erreur d\'ajout';
+                event.currentTarget.classList.remove('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
+                event.currentTarget.classList.add('bg-red-500', 'text-white', 'border-red-500');
+                
+            } finally {
+                // Rétablir l'état initial après un court délai (sauf en cas de réussite permanente)
+                setTimeout(() => {
+                    event.currentTarget.disabled = false;
+                    event.currentTarget.textContent = 'Ajouter au panier';
+                    event.currentTarget.classList.remove('bg-red-500', 'text-white', 'border-red-500', 'bg-green-500', 'border-green-500');
+                    event.currentTarget.classList.add('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
+                }, 3000); // Rétablit après 3 secondes
+            }
+        });
+    });
+});
+    </script>
+  </body>
+</html> --}}
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
+
+
+    {{-- {{{ await $slots.meta() }}} --}}
+
+    <title>{{ await $slots.title() ? `${await $slots.title()} | Votre Site` : "Page d'accueil | Votre Site" }}</title>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap');
+      
+      body {
+        font-family: 'Epilogue', sans-serif;
+        background-color: #F7F7F7;
+      }
+      
+      .sidebar-overlay {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      }
+      
+      .sidebar-overlay.open {
+        visibility: visible;
+        opacity: 1;
+      }
+      
+      .sidebar-menu {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+      }
+      
+      .sidebar-menu.open {
+        transform: translateX(0);
+      }
+
+      /* Règle de sécurité pour le header si besoin, mais width: 100% est souvent suffisant */
+      .full-width-header {
+        width: 100%; /* Plus idiomatique que 100vw */
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col items-center bg-[#F7F7F7]">
+    
+    {{-- 5. Inclusion du Header (assurez-vous que le header contient le "burger-button" et l'élément "cart-count") --}}
+    @include('component/partials/header')
+
+    <main class="w-10/12 mt-28 md:mt-32 flex-grow"> {{-- Ajout de flex-grow pour un footer en bas --}}
+      {{{ await $slots.main() }}}
+    </main>
+
+    {{-- 5. Inclusion du Footer --}}
+    @include('component/partials/footer')
+
+    {{-- 6. MODALE/SIDEBAR MOBILE (Déplacée à la fin pour un chargement plus rapide) --}}
+    <div
+      id="mobile-sidebar-overlay"
+      class="sidebar-overlay fixed inset-0 z-40 bg-white sm:hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sidebar-title"
+    >
+      <div
+        id="mobile-sidebar-menu"
+        class="sidebar-menu fixed top-0 left-0 h-full w-64 bg-white shadow-xl flex flex-col z-50"
+      >
+        <div class="p-4 flex justify-between items-center border-b border-gray-100">
+          <img src="/images/icon.png" alt="Icone du site" class="size-8 self-center" />
+          <button
+            id="sidebar-close-button"
+            class="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+            aria-label="Fermer le menu de navigation mobile"
+          >
+            {{-- Icône X (Mieux de le rendre un composant si possible) --}}
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <nav class="flex flex-col p-4 space-y-2 overflow-y-auto flex-grow">
+          <a href="{{ route('home') }}" class="sidebar-link active">Accueil</a>
+          <a href="{{ route('catalogue') }}" class="sidebar-link">Catalogue</a>
+          <a href="#" class="sidebar-link">Créateurs Locaux</a>
+          <a href="#" class="sidebar-link">Blog</a>
+          <a href="#" class="sidebar-link">Panier</a>
+
+          <div class="pt-4 border-t mt-4 space-y-2">
+            <button class="w-full text-sm py-2 rounded-xl text-white bg-[#CE0000] hover:opacity-80 font-semibold transition">
+              Connexion
+            </button>
+            <button class="w-full text-sm py-2 rounded-xl text-[#171B99] border border-[#171B99] hover:bg-gray-100 transition">
+              Créer un compte
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    {{-- 7. IMPORTATIONS GLOBALES/LOGIQUE (À la fin du body) --}}
+    {{-- Axios est maintenant déplacé dans app.js ou importé via CDN après le script modale --}}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
+    
+    <script>
+      // 8. LOGIQUE MODALE (Sidebar)
+      
+      const selectors = {
+        overlay: "#mobile-sidebar-overlay",
+        menu: "#mobile-sidebar-menu",
+        closeBtn: "#sidebar-close-button",
+        // Assurez-vous d'avoir un ID 'burger-button' dans votre header
+        openBtn: "#burger-button", 
+      };
+
+      const elements = {
+        overlay: document.querySelector(selectors.overlay),
+        menu: document.querySelector(selectors.menu),
+        closeBtn: document.querySelector(selectors.closeBtn),
+        openBtn: document.querySelector(selectors.openBtn),
+      };
+
+      /**
+       * Gère l'état d'ouverture/fermeture du menu mobile.
+       * @param {boolean} open - true pour ouvrir, false pour fermer.
+       */
+      function toggleSidebar(open) {
+        if (!elements.overlay || !elements.menu) return;
+
+        elements.overlay.classList.toggle("open", open);
+        elements.menu.classList.toggle("open", open);
+        
+        document.body.style.overflow = open ? "hidden" : "";
+        
+        // Gestion du focus pour l'accessibilité
+        if (open) {
+          elements.closeBtn && elements.closeBtn.focus();
+        } else {
+          elements.openBtn && elements.openBtn.focus();
+        }
+      }
+
+      // Écouteurs d'événements
+      elements.openBtn && elements.openBtn.addEventListener("click", () => toggleSidebar(true));
+      elements.closeBtn && elements.closeBtn.addEventListener("click", () => toggleSidebar(false));
+      
+      // Fermeture par clic sur l'overlay
+      elements.overlay && elements.overlay.addEventListener("click", (event) => {
+        if (event.target === elements.overlay) {
+          toggleSidebar(false);
+        }
+      });
+      
+      // Fermeture par la touche ESC
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && elements.overlay && elements.overlay.classList.contains("open")) {
+          toggleSidebar(false);
+        }
+      });
+    </script>
+
+    <script>
+      // 9. LOGIQUE D'AJOUT AU PANIER (AXIOS)
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const cartCountElement = document.getElementById('cart-count'); 
+        const cartButtons = document.querySelectorAll('[data-article-id]');
+        const apiUrl = 'http://localhost:3333/api/cart';
+        cartButtons.forEach(button => {
+          button.addEventListener('click', async (event) => {
+            const articleId = event.currentTarget.getAttribute('data-article-id');
+            console.log(articleId)
+
+            if (!articleId) {
+              console.error('ID de l\'article non trouvé sur le bouton.');
+              return;
+            }
+
+            try {
+              // NOTE IMPORTANTE: Votre contrôleur Adonis s'attend à un GET avec paramètres.
+              // En production, il est STRONGOEMENT recommandé d'utiliser une méthode POST 
+              // pour les actions qui modifient l'état du serveur (comme l'ajout au panier).
+              const response = await axios.get(apiUrl, {
+                params: { 'articleId': articleId }
+              });
+
+              console.log('Ajout réussi:', response.data);
+              
+              // 10. Mise à jour de l'affichage du panier
+              if (cartCountElement && response.data.totalItems !== undefined) {
+                cartCountElement.textContent = response.data.totalItems;
+              }
+
+            } catch (error) {
+              console.error('Erreur lors de l\'ajout au panier:', error);
+
+              // Feedback visuel d'échec
+              event.currentTarget.textContent = 'Erreur d\'ajout';
+              event.currentTarget.classList.add('bg-red-500', 'text-white', 'border-red-500');
+
+            } 
+          });
+        });
+      });
+    </script>
+    
   </body>
 </html>

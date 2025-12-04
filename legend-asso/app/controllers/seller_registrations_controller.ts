@@ -29,7 +29,9 @@ export default class SellerRegistrationsController {
         
         const stepOneData = session.get(SESSION_KEY)
         if (!stepOneData || typeof stepOneData !== 'object') {
-            session.flash('error', 'Session expirée ou étape précédente non complétée. Veuillez recommencer.')
+      session.flash(
+        'error',
+        'Session expirée ou étape précédente non complétée. Veuillez recommencer.'
             return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
         }
 

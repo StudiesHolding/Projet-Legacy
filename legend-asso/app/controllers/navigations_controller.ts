@@ -8,7 +8,6 @@ export default class NavigationsController {
 
   public async catalogue({ view }: HttpContext) {
     const articles = await Article.all()
-    console.log(articles)
     return view.render('pages/catalogue/index', { articles: articles })
   }
 
