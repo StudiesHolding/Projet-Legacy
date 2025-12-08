@@ -52,9 +52,12 @@ export default class ArticlesController {
 
     if (Array.isArray(payload.images)) {
       for (const imageFile of payload.images) {
+<<<<<<< HEAD
         if (!imageFile.isValid) {
           continue
         }
+=======
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 
         const imageName = `${cuid()}.${imageFile.extname}`
         const folder = app.publicPath('uploads/articles')

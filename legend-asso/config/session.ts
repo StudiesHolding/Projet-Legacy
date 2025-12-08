@@ -42,6 +42,10 @@ const sessionConfig = defineConfig({
    */
   stores: {
     cookie: stores.cookie(),
+    database: stores.database({
+      connection: 'sqlite',
+      table: 'sessions',
+    }),
   },
 })
 

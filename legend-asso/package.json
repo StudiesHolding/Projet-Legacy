@@ -64,6 +64,7 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/vite": "^4.1.17",
     "@vinejs/vine": "^3.0.1",
+    "axios": "^1.13.2",
     "better-sqlite3": "^12.4.1",
     "edge.js": "^6.0.0-10",
     "luxon": "^3.7.2",

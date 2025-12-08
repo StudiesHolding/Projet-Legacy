@@ -197,9 +197,69 @@
         }
       });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <script>
+      // Assurez-vous qu'Axios est déjà chargé dans votre projet
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Sélecteur pour tous les boutons d'ajout au panier
+    {{-- const addToCartButtons = document.querySelectorAll('.btn.justify-center'); --}}
+    const allCartButtons = document.querySelectorAll('[data-article-id]');
+    allCartButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            // Récupérer l'ID de l'article depuis l'attribut data-article-id
+            const articleId = event.currentTarget.getAttribute('data-article-id');
+
+            if (!articleId) {
+                console.error('ID de l\'article non trouvé.');
+                return;
+            }
+
+            // URL de votre endpoint d'ajout au panier (à adapter)
+            const url = `http://localhost:3333/api/cart`; 
+
+            try {
+                // Effectuer la requête POST avec Axios
+                const response = await axios.get(url,{
+                  params:{
+                    'articleId':articleId
+                  }
+                });
+
+                console.log('Article ajouté au panier avec succès:', response.data);
+                const cartValue = document.getElementById('cart-count'); 
+                cartValue.textContent = response.data.totalItems
+
+                  // Optionnel : Déclencher un événement de mise à jour du panier
+                // window.dispatchEvent(new CustomEvent('cart-updated'));
+
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout au panier:', error);
+
+                // Réinitialiser le bouton et afficher un message d'erreur
+                event.currentTarget.textContent = 'Erreur d\'ajout';
+                event.currentTarget.classList.remove('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
+                event.currentTarget.classList.add('bg-red-500', 'text-white', 'border-red-500');
+                
+            } finally {
+                // Rétablir l'état initial après un court délai (sauf en cas de réussite permanente)
+                setTimeout(() => {
+                    event.currentTarget.disabled = false;
+                    event.currentTarget.textContent = 'Ajouter au panier';
+                    event.currentTarget.classList.remove('bg-red-500', 'text-white', 'border-red-500', 'bg-green-500', 'border-green-500');
+                    event.currentTarget.classList.add('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
+                }, 3000); // Rétablit après 3 secondes
+            }
+        });
+    });
+});
+    </script>
   </body>
 </html> --}}
 
+<<<<<<< HEAD
 
 {{-- <!DOCTYPE html>
 <html lang="fr">
@@ -462,6 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
   </body>
 </html> --}}
 
+=======
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 <!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -630,6 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
 
     <script>
+<<<<<<< HEAD
       document.addEventListener('DOMContentLoaded', () => {
         const cartCountElement = document.getElementById('cart-count');
         const cartListElement = document.getElementById('cart-items');
@@ -747,5 +810,51 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchCart();
       });
     </script>
+=======
+      // 9. LOGIQUE D'AJOUT AU PANIER (AXIOS)
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const cartCountElement = document.getElementById('cart-count'); 
+        const cartButtons = document.querySelectorAll('[data-article-id]');
+        const apiUrl = 'http://localhost:3333/api/cart';
+        cartButtons.forEach(button => {
+          button.addEventListener('click', async (event) => {
+            const articleId = event.currentTarget.getAttribute('data-article-id');
+            console.log(articleId)
+
+            if (!articleId) {
+              console.error('ID de l\'article non trouvé sur le bouton.');
+              return;
+            }
+
+            try {
+              // NOTE IMPORTANTE: Votre contrôleur Adonis s'attend à un GET avec paramètres.
+              // En production, il est STRONGOEMENT recommandé d'utiliser une méthode POST 
+              // pour les actions qui modifient l'état du serveur (comme l'ajout au panier).
+              const response = await axios.get(apiUrl, {
+                params: { 'articleId': articleId }
+              });
+
+              console.log('Ajout réussi:', response.data);
+              
+              // 10. Mise à jour de l'affichage du panier
+              if (cartCountElement && response.data.totalItems !== undefined) {
+                cartCountElement.textContent = response.data.totalItems;
+              }
+
+            } catch (error) {
+              console.error('Erreur lors de l\'ajout au panier:', error);
+
+              // Feedback visuel d'échec
+              event.currentTarget.textContent = 'Erreur d\'ajout';
+              event.currentTarget.classList.add('bg-red-500', 'text-white', 'border-red-500');
+
+            } 
+          });
+        });
+      });
+    </script>
+    
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
   </body>
 </html>

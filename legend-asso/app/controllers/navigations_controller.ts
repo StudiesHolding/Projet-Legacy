@@ -6,10 +6,15 @@ export default class NavigationsController {
     return view.render('pages/home')
   }
 
+<<<<<<< HEAD
   public async catalogue({ view, request }: HttpContext) {
     const page = request.input('page', 1)
     const articles = await Article.query().orderBy('created_at', 'desc').paginate(page, 12)
     articles.baseUrl('/catalogue')
+=======
+  public async catalogue({ view }: HttpContext) {
+    const articles = await Article.all()
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
     return view.render('pages/catalogue/index', { articles: articles })
   }
 

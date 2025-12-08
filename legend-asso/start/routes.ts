@@ -7,9 +7,15 @@
 |
 */
 
+<<<<<<< HEAD
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 const AuthController = () => import('#controllers/auth_controller')
+=======
+const AuthController = () => import('#controllers/auth_controller')
+import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 const SellerRegistrationsController = () => import('#controllers/seller_registrations_controller')
 const ArticlesController = () => import('#controllers/articles_controller')
 const ImagesController = () => import('#controllers/images_controller')
@@ -20,7 +26,11 @@ router.get('/', [NavigationsController, 'home']).as('home')
 router.get('catalogue', [NavigationsController, 'catalogue']).as('catalogue')
 router.get('catalogue/:slug', [NavigationsController, 'showArticleBySlug']).as('show.product')
 router.get('checkout', [NavigationsController, 'checkout']).as('checkout')
+<<<<<<< HEAD
 router.get('login', [NavigationsController, 'login']).as('login')
+=======
+router.get('login', [NavigationsController, 'checkout']).as('login')
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 router
   .get('register-client', [NavigationsController, 'registerClient'])
   .as('register-client')
@@ -41,7 +51,11 @@ router
   .get('dashboard-client', [NavigationsController, 'showClientDashboard'])
   .as('dashboard-client')
   .use(middleware.auth())
+<<<<<<< HEAD
 
+=======
+router.get('cart', [CartsController, 'addToCart']).as('cart').prefix('/api')
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 router.post('register', [AuthController, 'register_client']).as('register_client')
 router.post('login', [AuthController, 'login_client']).as('login_client')
 router.get('logout', [AuthController, 'logout_client']).as('logout_client')

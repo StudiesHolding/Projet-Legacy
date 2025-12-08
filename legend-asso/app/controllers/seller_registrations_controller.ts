@@ -41,6 +41,7 @@ export default class SellerRegistrationsController {
       role: DEFAULT_ROLE,
     }
 
+<<<<<<< HEAD
     try {
       const newUser = await User.create(finalUserData)
       const sellerProfileData = {
@@ -62,6 +63,51 @@ export default class SellerRegistrationsController {
       }
       console.error("Erreur lors de la finalisation de l'inscription:", error)
       return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
+=======
+    public async finalize({ request, response, auth, session }: HttpContext) {
+        
+        const stepOneData = session.get(SESSION_KEY)
+        if (!stepOneData || typeof stepOneData !== 'object') {
+      session.flash(
+        'error',
+        'Session expirée ou étape précédente non complétée. Veuillez recommencer.'
+            return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
+        }
+
+        const stepTwoData = await request.validateUsing(stepTwoValidator)
+        
+        const finalUserData = { 
+            ...stepOneData, 
+            role: DEFAULT_ROLE 
+        }
+
+        try {
+            const newUser = await User.create(finalUserData)
+            
+            const sellerProfileData = {
+                id: newUser.id, 
+                ...stepTwoData
+            }
+
+            await Seller.create(sellerProfileData)
+            
+            session.forget(SESSION_KEY)
+            await auth.use('web').login(newUser)
+            
+            return response.redirect().toRoute(DASHBOARD_SELLER_ROUTE)
+
+        } catch (error) {
+        
+            if (error.code === '23505' || error.message.includes('unique constraint')) {
+                 session.flash('error', 'L\'adresse e-mail est déjà utilisée. Veuillez vous connecter ou utiliser une autre adresse.')
+            } else {
+                 session.flash('error', 'Une erreur inattendue est survenue lors de l\'inscription.')
+            }
+            console.error('Erreur lors de la finalisation de l\'inscription:', error)
+
+            return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
+        }
+>>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
     }
   }
 }

@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
-import Image  from '#models/image'
+import Image from '#models/image'
+import { HasMany } from '@adonisjs/lucid/types/relations'
 
 export default class Article extends BaseModel {
-
   @column({ isPrimary: true })
   declare id: number
 
@@ -37,6 +37,6 @@ export default class Article extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @hasMany(()=>Image)
-  public images: HasMany<typeof Image>
+  @hasMany(() => Image)
+  public images: HasMany<typeof Image> | undefined
 }
