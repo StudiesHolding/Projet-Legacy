@@ -6,9 +6,10 @@ export default class NavigationsController {
     return view.render('pages/home')
   }
 
-  public async catalogue({ view }: HttpContext) {
-    const articles = await Article.all()
-    console.log(articles)
+  public async catalogue({ view, request }: HttpContext) {
+    const page = request.input('page', 1)
+    const articles = await Article.query().orderBy('created_at', 'desc').paginate(page, 12)
+    articles.baseUrl('/catalogue')
     return view.render('pages/catalogue/index', { articles: articles })
   }
 
@@ -38,7 +39,7 @@ export default class NavigationsController {
   }
 
   public async showSellerDashboard({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/index')
+    return view.render('pages/dashboard/seller/index')
   }
 
   public async showClientDashboard({ view }: HttpContext) {

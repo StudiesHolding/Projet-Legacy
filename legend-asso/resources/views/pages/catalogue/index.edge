@@ -12,6 +12,13 @@
         @end
       @end
     </div>
+<div>
+  @each(anchor in articles.getUrlsForRange(1, articles.lastPage))
+    <a href="{{ anchor.url }}">
+      {{ anchor.page }}
+    </a>
+  @endeach
+</div>
     @include('component/partials/pagination')
   @endslot
 @end

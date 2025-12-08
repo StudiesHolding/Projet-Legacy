@@ -1,5 +1,5 @@
 import User from '#models/user'
-import Seller from '#models/seller' 
+import Seller from '#models/seller'
 import { createUserValidator } from '#validators/register'
 import { stepTwoValidator } from '#validators/step_two'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -11,60 +11,57 @@ const DEFAULT_ROLE = 'seller'
 const SESSION_KEY = 'registration_data'
 
 export default class SellerRegistrationsController {
-    public async handleStepOne({ request, response, session }: HttpContext) {
-        const payload = await request.validateUsing(createUserValidator)
-        session.put(SESSION_KEY, payload)
-        return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
+  public async handleStepOne({ request, response, session }: HttpContext) {
+    const payload = await request.validateUsing(createUserValidator)
+    session.put(SESSION_KEY, payload)
+    return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
+  }
+
+  public async stepTwo({ response, session }: HttpContext) {
+    if (!session.has(SESSION_KEY)) {
+      session.flash('error', 'Veuillez remplir la première étape avant de continuer.')
+      return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
+    }
+    return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
+  }
+
+  public async finalize({ request, response, auth, session }: HttpContext) {
+    const stepOneData = session.get(SESSION_KEY)
+    if (!stepOneData || typeof stepOneData !== 'object') {
+      session.flash(
+        'error',
+        'Session expirée ou étape précédente non complétée. Veuillez recommencer.'
+      )
+      return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
     }
 
-    public async stepTwo({ response, session }: HttpContext) {
-        if (!session.has(SESSION_KEY)) {
-            session.flash('error', 'Veuillez remplir la première étape avant de continuer.')
-            return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
-        }
-        return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
+    const stepTwoData = await request.validateUsing(stepTwoValidator)
+    const finalUserData = {
+      ...stepOneData,
+      role: DEFAULT_ROLE,
     }
 
-    public async finalize({ request, response, auth, session }: HttpContext) {
-        
-        const stepOneData = session.get(SESSION_KEY)
-        if (!stepOneData || typeof stepOneData !== 'object') {
-            session.flash('error', 'Session expirée ou étape précédente non complétée. Veuillez recommencer.')
-            return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
-        }
-
-        const stepTwoData = await request.validateUsing(stepTwoValidator)
-        
-        const finalUserData = { 
-            ...stepOneData, 
-            role: DEFAULT_ROLE 
-        }
-
-        try {
-            const newUser = await User.create(finalUserData)
-            
-            const sellerProfileData = {
-                id: newUser.id, 
-                ...stepTwoData
-            }
-
-            await Seller.create(sellerProfileData)
-            
-            session.forget(SESSION_KEY)
-            await auth.use('web').login(newUser)
-            
-            return response.redirect().toRoute(DASHBOARD_SELLER_ROUTE)
-
-        } catch (error) {
-        
-            if (error.code === '23505' || error.message.includes('unique constraint')) {
-                 session.flash('error', 'L\'adresse e-mail est déjà utilisée. Veuillez vous connecter ou utiliser une autre adresse.')
-            } else {
-                 session.flash('error', 'Une erreur inattendue est survenue lors de l\'inscription.')
-            }
-            console.error('Erreur lors de la finalisation de l\'inscription:', error)
-
-            return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
-        }
+    try {
+      const newUser = await User.create(finalUserData)
+      const sellerProfileData = {
+        id: newUser.id,
+        ...stepTwoData,
+      }
+      await Seller.create(sellerProfileData)
+      session.forget(SESSION_KEY)
+      await auth.use('web').login(newUser)
+      return response.redirect().toRoute(DASHBOARD_SELLER_ROUTE)
+    } catch (error) {
+      if (error.code === '23505' || error.message.includes('unique constraint')) {
+        session.flash(
+          'error',
+          "L'adresse e-mail est déjà utilisée. Veuillez vous connecter ou utiliser une autre adresse."
+        )
+      } else {
+        session.flash('error', "Une erreur inattendue est survenue lors de l'inscription.")
+      }
+      console.error("Erreur lors de la finalisation de l'inscription:", error)
+      return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
     }
+  }
 }

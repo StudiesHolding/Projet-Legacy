@@ -70,11 +70,16 @@
                 @endif
 
                 @if(route.name !== 'checkout')
-                    <div class="w-auto h-auto">
-                        <label for="cart-drawer" class="cursor-pointer block p-1 relative hover:opacity-80 transition duration-150">
-                            <img src="/images/shopping-bag.png" alt="cart" class="w-6 h-6" />
-                        </label>
-                    </div>
+                    <div class="w-auto h-auto relative">
+    <label for="cart-drawer" class="cursor-pointer block p-1 hover:opacity-80 transition duration-150 relative">
+        <img src="/images/shopping-bag.png" alt="cart" class="w-6 h-6" />
+
+        <!-- Badge du nombre total d'articles -->
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+            0
+        </span>
+    </label>
+</div>
                 @endif
                 <div class="w-auto h-auto lg:hidden">
                 </div>
@@ -93,15 +98,17 @@
                 <label for="cart-drawer" class="btn btn-sm btn-circle btn-ghost">✕</label>
             </div>
             
-            <div class="p-6 flex-grow overflow-y-auto">
-                <p class="text-gray-500 italic mb-4">Votre panier est prêt à être rempli !</p>
+            <div class="p-6 flex-grow overflow-y-auto" id="cart-items-container">
+                <p id="cart-empty" class="text-gray-500 italic mb-4">Votre panier est prêt à être rempli !</p>
+                <ul id="cart-items" class="space-y-4"></ul>
             </div>
             
             <div class="p-6 border-t">
                 <div class="flex justify-between font-bold text-lg mb-4">
                     <span>Total :</span>
-                    <span>0 FCFA</span>
+                    <span id="cart-total-price">0 FCFA</span>
                 </div>
+                <button id="clear-cart-btn" class="btn btn-outline w-full mb-2">Vider le panier</button>
                 <a href="{{ route('checkout') }}" class="btn w-full bg-[#CE0000] hover:bg-red-700 text-white font-bold py-2 rounded-lg transition">
                     Finaliser la commande
                 </a>

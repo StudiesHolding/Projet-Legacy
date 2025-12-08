@@ -20,20 +20,27 @@
             <li class="flex justify-between items-center py-3">
                 <div class="flex-1 min-w-0">
                     <p class="font-medium text-gray-700">{{article.name}}</p>
-                    <p class="text-sm text-gray-500 truncate">{{article.price}} FCFA</p>
+                    <p class="text-sm text-gray-500 truncate">{{ article.price }} FCFA</p>
                 </div>
                 @if(article.status === 'pending') 
                     <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
                 @else(article.status === 'accepted')
-                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
+                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800 mr-4">accepté</span>
                 @end
                 <a href="{{route('article.show',{id:article.id})}}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir  →</a>
-            </li>         
+            </li>    
         </ul>
         @end
         {{-- <div class="mt-4 text-right">
             <a href="#ventes" class="text-red-600 hover:text-red-800 font-medium">Voir toutes les ventes →</a>
         </div> --}}
     </div>
+    <div>
+  @each(anchor in myArticles.getUrlsForRange(1, myArticles.lastPage))
+    <a href="{{ anchor.url }}">
+      {{ anchor.page }}
+    </a>
+  @endeach
+</div>
     @end
 @end
