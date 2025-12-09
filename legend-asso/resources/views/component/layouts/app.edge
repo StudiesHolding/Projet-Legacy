@@ -1,529 +1,3 @@
-{{-- <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
-        <script src="https://cdn.cinetpay.com/seamless/main.js"></script>
-
-    {{-- {{{ await $slots.meta() }}} --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>
-      {{{ await $slots.title() || "page d'acceuil" }}}
-    </title>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-      
-      @import url('https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap');
-      
-      body {
-        font-family: 'Epilogue', sans-serif;
-        background-color: #F7F7F7;
-      }
-      
-      /* Styles pour le Modal Menu (Sidebar) */
-      
-      .modal-overlay {
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.3s, visibility 0.3s;
-      }
-      
-      .modal-overlay.open {
-        visibility: visible;
-        opacity: 1;
-      }
-      
-      /* Le menu slide de gauche à droite */
-      
-      .modal-menu {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-out;
-      }
-      
-      .modal-menu.open {
-        transform: translateX(0);
-      }
-      
-      /* Assurer que le header fixed prend 100% de la largeur du viewport */
-      
-      .full-width-header {
-        width: 100vw;
-        left: 0;
-        right: 0;
-      }
-    </style>
-  </head>
-
-  <body class=" flex justify-center items-center flex-col bg-[#F7F7F7]">
-    @include('component/partials/header')
-    <main class="w-10/12 mt-30">
-      {{{ await $slots.main() }}}
-    </main>
-    @include('component/partials/footer')
-    <div
-      id="modal-overlay"
-      class="modal-overlay fixed inset-0 z-40 bg-white sm:hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-    >
-
-      <!-- Menu Modale (Le contenu du menu qui glisse) -->
-      <div
-        id="modal-menu"
-        class="modal-menu fixed top-0 left-0 h-full w-64 bg-white shadow-xl flex flex-col z-50"
-      >
-        <!-- Tête de la Modale (Titre et Bouton Fermer) -->
-        <div class="p-4 flex justify-between items-center border-b border-gray-100">
-          <img src="/images/icon.png" alt="icon" class="flex size-8 self-center" />
-          <button
-            id="close-button"
-            class="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
-            aria-label="Fermer le menu"
-          >
-            <!-- Icône X -->
-            <svg
-              class="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Liens de Navigation -->
-        <nav class="flex flex-col p-4 space-y-2">
-          <a
-            href="{{ route('home') }}"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Accueil</a>
-          <a
-            href="{{ route('catalogue') }}"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Catalogue</a>
-          <a
-            {{-- href="{{ route('suppliers') }}" --}}
-            href="#"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Créateurs Locaux</a>
-          <a
-            href="#"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Blog</a>
-          <a
-            href="#"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Panier</a>
-
-          <!-- Boutons d'Authentification (Mobile) -->
-          <div class="pt-4 border-t mt-4 space-y-2">
-            <button
-              class="w-full text-sm py-2 rounded-xl text-white bg-[#CE0000] hover:bg-opacity-80 font-semibold transition"
-            >
-              Connexion
-                    </button>
-            <button
-              class="w-full text-sm py-2 rounded-xl text-[#171B99] border border-[#171B99] hover:bg-gray-100 transition"
-            >
-              Créer un compte
-                    </button>
-          </div>
-        </nav>
-      </div>
-
-    </div>
-    <script>
-      // Références mises à jour
-      const burgerButton = document.getElementById("burger-button");
-
-      const closeButton = document.getElementById("close-button");
-
-      const modalOverlay = document.getElementById("modal-overlay");
-
-      const modalMenu = document.getElementById("modal-menu");
-      /**
-                                                                                                                                                                                                                   * Fonction pour ouvrir la modale (menu)
-                                                                                                                                                                                                                   */
-
-      function openModal() {
-        modalOverlay.classList.add("open");
-        modalMenu.classList.add("open");
-        // Geler le défilement du corps de la page
-        document.body.style.overflow = "hidden";
-        // Rendre le bouton de fermeture prioritaire pour l'accessibilité
-        closeButton.focus();
-      }
-      /**
-                                                                                                                                                                                                                   * Fonction pour fermer la modale (menu)
-                                                                                                                                                                                                                   */
-
-      function closeModal() {
-        modalOverlay.classList.remove("open");
-        modalMenu.classList.remove("open");
-        // Rétablir le défilement
-        document.body.style.overflow = "";
-        // Rendre le focus au bouton burger
-        burgerButton.focus();
-      }
-      // 1. Ouvre la modale quand on clique sur le bouton burger
-
-      if (burgerButton) {
-        burgerButton.addEventListener("click", openModal);
-      }
-      // 2. Ferme la modale quand on clique sur le bouton "X"
-
-      if (closeButton) {
-        closeButton.addEventListener("click", closeModal);
-      }
-      // 3. Ferme la modale quand on clique sur l'overlay (en dehors du menu)
-
-      if (modalOverlay) {
-        modalOverlay.addEventListener("click", function(event) {
-          // Vérifie si l'élément cliqué est bien l'overlay lui-même (et non un enfant du menu)
-          if (event.target === modalOverlay) {
-            closeModal();
-          }
-        });
-      }
-      // 4. Ferme la modale en appuyant sur la touche ESC
-
-      document.addEventListener("keydown", function(event) {
-        if (event.key === "Escape" && modalOverlay && modalOverlay.classList.contains("open")) {
-          closeModal();
-        }
-      });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-
-    <script>
-      // Assurez-vous qu'Axios est déjà chargé dans votre projet
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Sélecteur pour tous les boutons d'ajout au panier
-    {{-- const addToCartButtons = document.querySelectorAll('.btn.justify-center'); --}}
-    const allCartButtons = document.querySelectorAll('[data-article-id]');
-    allCartButtons.forEach(button => {
-        button.addEventListener('click', async (event) => {
-            // Récupérer l'ID de l'article depuis l'attribut data-article-id
-            const articleId = event.currentTarget.getAttribute('data-article-id');
-
-            if (!articleId) {
-                console.error('ID de l\'article non trouvé.');
-                return;
-            }
-
-            // URL de votre endpoint d'ajout au panier (à adapter)
-            const url = `http://localhost:3333/api/cart`; 
-
-            try {
-                // Effectuer la requête POST avec Axios
-                const response = await axios.get(url,{
-                  params:{
-                    'articleId':articleId
-                  }
-                });
-
-                console.log('Article ajouté au panier avec succès:', response.data);
-                const cartValue = document.getElementById('cart-count'); 
-                cartValue.textContent = response.data.totalItems
-
-                  // Optionnel : Déclencher un événement de mise à jour du panier
-                // window.dispatchEvent(new CustomEvent('cart-updated'));
-
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout au panier:', error);
-
-                // Réinitialiser le bouton et afficher un message d'erreur
-                event.currentTarget.textContent = 'Erreur d\'ajout';
-                event.currentTarget.classList.remove('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
-                event.currentTarget.classList.add('bg-red-500', 'text-white', 'border-red-500');
-                
-            } finally {
-                // Rétablir l'état initial après un court délai (sauf en cas de réussite permanente)
-                setTimeout(() => {
-                    event.currentTarget.disabled = false;
-                    event.currentTarget.textContent = 'Ajouter au panier';
-                    event.currentTarget.classList.remove('bg-red-500', 'text-white', 'border-red-500', 'bg-green-500', 'border-green-500');
-                    event.currentTarget.classList.add('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
-                }, 3000); // Rétablit après 3 secondes
-            }
-        });
-    });
-});
-    </script>
-  </body>
-</html> --}}
-
-<<<<<<< HEAD
-
-{{-- <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
-        <script src="https://cdn.cinetpay.com/seamless/main.js"></script>
-
-    {{-- {{{ await $slots.meta() }}} --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>
-      {{{ await $slots.title() || "page d'acceuil" }}}
-    </title>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-      
-      @import url('https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap');
-      
-      body {
-        font-family: 'Epilogue', sans-serif;
-        background-color: #F7F7F7;
-      }
-      
-      /* Styles pour le Modal Menu (Sidebar) */
-      
-      .modal-overlay {
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.3s, visibility 0.3s;
-      }
-      
-      .modal-overlay.open {
-        visibility: visible;
-        opacity: 1;
-      }
-      
-      /* Le menu slide de gauche à droite */
-      
-      .modal-menu {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-out;
-      }
-      
-      .modal-menu.open {
-        transform: translateX(0);
-      }
-      
-      /* Assurer que le header fixed prend 100% de la largeur du viewport */
-      
-      .full-width-header {
-        width: 100vw;
-        left: 0;
-        right: 0;
-      }
-    </style>
-  </head>
-
-  <body class=" flex justify-center items-center flex-col bg-[#F7F7F7]">
-    @include('component/partials/header')
-    <main class="w-10/12 mt-30">
-      {{{ await $slots.main() }}}
-    </main>
-    @include('component/partials/footer')
-    <div
-      id="modal-overlay"
-      class="modal-overlay fixed inset-0 z-40 bg-white sm:hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-    >
-
-      <!-- Menu Modale (Le contenu du menu qui glisse) -->
-      <div
-        id="modal-menu"
-        class="modal-menu fixed top-0 left-0 h-full w-64 bg-white shadow-xl flex flex-col z-50"
-      >
-        <!-- Tête de la Modale (Titre et Bouton Fermer) -->
-        <div class="p-4 flex justify-between items-center border-b border-gray-100">
-          <img src="/images/icon.png" alt="icon" class="flex size-8 self-center" />
-          <button
-            id="close-button"
-            class="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
-            aria-label="Fermer le menu"
-          >
-            <!-- Icône X -->
-            <svg
-              class="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Liens de Navigation -->
-        <nav class="flex flex-col p-4 space-y-2">
-          <a
-            href="{{ route('home') }}"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Accueil</a>
-          <a
-            href="{{ route('catalogue') }}"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Catalogue</a>
-          <a
-            {{-- href="{{ route('suppliers') }}" --}}
-            href="#"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Créateurs Locaux</a>
-          <a
-            href="#"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Blog</a>
-          <a
-            href="#"
-            class="block p-3 rounded-lg text-gray-700 hover:bg-[#F0F0F0] hover:text-[#CE0000] font-medium transition"
-          >Panier</a>
-
-          <!-- Boutons d'Authentification (Mobile) -->
-          <div class="pt-4 border-t mt-4 space-y-2">
-            <button
-              class="w-full text-sm py-2 rounded-xl text-white bg-[#CE0000] hover:bg-opacity-80 font-semibold transition"
-            >
-              Connexion
-                    </button>
-            <button
-              class="w-full text-sm py-2 rounded-xl text-[#171B99] border border-[#171B99] hover:bg-gray-100 transition"
-            >
-              Créer un compte
-                    </button>
-          </div>
-        </nav>
-      </div>
-
-    </div>
-    <script>
-      // Références mises à jour
-      const burgerButton = document.getElementById("burger-button");
-
-      const closeButton = document.getElementById("close-button");
-
-      const modalOverlay = document.getElementById("modal-overlay");
-
-      const modalMenu = document.getElementById("modal-menu");
-      /**
-                                                                                                                                                                                                                   * Fonction pour ouvrir la modale (menu)
-                                                                                                                                                                                                                   */
-
-      function openModal() {
-        modalOverlay.classList.add("open");
-        modalMenu.classList.add("open");
-        // Geler le défilement du corps de la page
-        document.body.style.overflow = "hidden";
-        // Rendre le bouton de fermeture prioritaire pour l'accessibilité
-        closeButton.focus();
-      }
-      /**
-                                                                                                                                                                                                                   * Fonction pour fermer la modale (menu)
-                                                                                                                                                                                                                   */
-
-      function closeModal() {
-        modalOverlay.classList.remove("open");
-        modalMenu.classList.remove("open");
-        // Rétablir le défilement
-        document.body.style.overflow = "";
-        // Rendre le focus au bouton burger
-        burgerButton.focus();
-      }
-      // 1. Ouvre la modale quand on clique sur le bouton burger
-
-      if (burgerButton) {
-        burgerButton.addEventListener("click", openModal);
-      }
-      // 2. Ferme la modale quand on clique sur le bouton "X"
-
-      if (closeButton) {
-        closeButton.addEventListener("click", closeModal);
-      }
-      // 3. Ferme la modale quand on clique sur l'overlay (en dehors du menu)
-
-      if (modalOverlay) {
-        modalOverlay.addEventListener("click", function(event) {
-          // Vérifie si l'élément cliqué est bien l'overlay lui-même (et non un enfant du menu)
-          if (event.target === modalOverlay) {
-            closeModal();
-          }
-        });
-      }
-      // 4. Ferme la modale en appuyant sur la touche ESC
-
-      document.addEventListener("keydown", function(event) {
-        if (event.key === "Escape" && modalOverlay && modalOverlay.classList.contains("open")) {
-          closeModal();
-        }
-      });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-
-    <script>
-      // Assurez-vous qu'Axios est déjà chargé dans votre projet
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Sélecteur pour tous les boutons d'ajout au panier
-    {{-- const addToCartButtons = document.querySelectorAll('.btn.justify-center'); --}}
-    const allCartButtons = document.querySelectorAll('[data-article-id]');
-    allCartButtons.forEach(button => {
-        button.addEventListener('click', async (event) => {
-            // Récupérer l'ID de l'article depuis l'attribut data-article-id
-            const articleId = event.currentTarget.getAttribute('data-article-id');
-
-            if (!articleId) {
-                console.error('ID de l\'article non trouvé.');
-                return;
-            }
-
-            // URL de votre endpoint d'ajout au panier (à adapter)
-            const url = `http://localhost:3333/api/cart`; 
-
-            try {
-                // Effectuer la requête POST avec Axios
-                const response = await axios.get(url,{
-                  params:{
-                    'articleId':articleId
-                  }
-                });
-
-                console.log('Article ajouté au panier avec succès:', response.data);
-                const cartValue = document.getElementById('cart-count'); 
-                cartValue.textContent = response.data.totalItems
-
-                  // Optionnel : Déclencher un événement de mise à jour du panier
-                // window.dispatchEvent(new CustomEvent('cart-updated'));
-
-            } catch (error) {
-                console.error('Erreur lors de l\'ajout au panier:', error);
-
-                // Réinitialiser le bouton et afficher un message d'erreur
-                event.currentTarget.textContent = 'Erreur d\'ajout';
-                event.currentTarget.classList.remove('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
-                event.currentTarget.classList.add('bg-red-500', 'text-white', 'border-red-500');
-                
-            } finally {
-                // Rétablir l'état initial après un court délai (sauf en cas de réussite permanente)
-                setTimeout(() => {
-                    event.currentTarget.disabled = false;
-                    event.currentTarget.textContent = 'Ajouter au panier';
-                    event.currentTarget.classList.remove('bg-red-500', 'text-white', 'border-red-500', 'bg-green-500', 'border-green-500');
-                    event.currentTarget.classList.add('hover:bg-[#171B99]', 'hover:text-white', 'text-[#171B99]');
-                }, 3000); // Rétablit après 3 secondes
-            }
-        });
-    });
-});
-    </script>
-  </body>
-</html> --}}
-
-=======
->>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 <!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -604,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
             class="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
             aria-label="Fermer le menu de navigation mobile"
           >
-            {{-- Icône X (Mieux de le rendre un composant si possible) --}}
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -692,169 +165,264 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
 
     <script>
-<<<<<<< HEAD
-      document.addEventListener('DOMContentLoaded', () => {
-        const cartCountElement = document.getElementById('cart-count');
-        const cartListElement = document.getElementById('cart-items');
-        const cartEmptyElement = document.getElementById('cart-empty');
-        const cartTotalPriceEl = document.getElementById('cart-total-price');
-        const clearCartBtn = document.getElementById('clear-cart-btn');
-        const addButtons = document.querySelectorAll('[data-article-id]');
-        const apiUrl = '/api/cart';
+      // ============================================
+      // CART MANAGEMENT SYSTEM - Functions modulaires
+      // ============================================
 
-        async function fetchCart() {
-          try {
-            const res = await axios.get(apiUrl);
-            const data = res.data || {};
-            const cart = data.cart || { items: [] };
-            const totalItems = data.totalItems || 0;
-            const totalPrice = data.totalPrice || 0;
+      const BASE_URL = 'http://localhost:3333';
+      const API_URL = `${BASE_URL}/api/addToCart`;
 
-            if (cartCountElement) cartCountElement.textContent = totalItems;
-            if (cartTotalPriceEl) cartTotalPriceEl.textContent = `${totalPrice} FCFA`;
+      // Configure axios to always send cookies with requests (needed for session persistence)
+      axios.defaults.withCredentials = true;
 
-            renderCartItems(cart.items || []);
-          } catch (err) {
-            console.error('Erreur lors de la récupération du panier :', err);
-          }
+      // Éléments DOM réutilisables
+      const cart = {
+        countElement: document.getElementById('cart-count'),
+        itemsElement: document.getElementById('cart-items'),
+        emptyElement: document.getElementById('cart-empty'),
+        totalPriceElement: document.getElementById('cart-total-price'),
+        clearButton: document.getElementById('clear-cart-btn'),
+      };
+
+      /**
+       * Récupère l'état actuel du panier depuis le serveur
+       * GET /api/cart
+       * @returns {Promise<{cart: Object, totalItems: number, totalPrice: number}>}
+       */
+      async function fetchCart() {
+        try {
+          // GET /api/cart (pas de paramètres)
+          const res = await axios.get(API_URL);
+          const data = res.data || {};
+          console.log('Réponse API du panier :', res);
+          console.log('Données du panier récupérées :', data);
+          return data;
+        } catch (err) {
+          console.error('Erreur lors de la récupération du panier :', err);
+          return { cart: { items: [] }, totalItems: 0, totalPrice: 0 };
+        }
+      }
+
+      /**
+       * Met à jour l'UI du panier (badge, total, liste)
+       * @param {Object} cartData - Données du panier retournées par l'API
+       */
+      function updateCartUI(cartData) {
+        const { cart: cartObj = { items: [] }, totalItems = 0, totalPrice = 0 } = cartData;
+
+        if (cart.countElement) cart.countElement.textContent = totalItems;
+        if (cart.totalPriceElement) cart.totalPriceElement.textContent = `${totalPrice} FCFA`;
+
+        renderCartItems(cartObj.items || []);
+      }
+
+      /**
+       * Affiche la liste des articles dans le panier
+       * @param {Array} items - Tableau des articles du panier
+       */
+      function renderCartItems(items) {
+        if (!cart.itemsElement) return;
+
+        cart.itemsElement.innerHTML = '';
+
+        if (!items || items.length === 0) {
+          if (cart.emptyElement) cart.emptyElement.style.display = '';
+          return;
         }
 
-        function renderCartItems(items) {
-          if (!cartListElement) return;
-          cartListElement.innerHTML = '';
+        if (cart.emptyElement) cart.emptyElement.style.display = 'none';
 
-          if (!items || items.length === 0) {
-            if (cartEmptyElement) cartEmptyElement.style.display = '';
-            return;
-          }
+        items.forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'flex items-center justify-between p-2 border-b';
+          li.innerHTML = `
+            <div class="flex flex-col flex-1">
+              <span class="font-semibold">${item.name}</span>
+              <span class="text-sm text-gray-500">${item.quantity} × ${item.price} FCFA</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button data-remove-id="${item.id}" class="btn btn-xs btn-ghost text-red-500 hover:bg-red-50">Supprimer</button>
+            </div>
+          `;
+          cart.itemsElement.appendChild(li);
+        });
+      }
 
-          if (cartEmptyElement) cartEmptyElement.style.display = 'none';
+      /**
+       * Ajoute un article au panier
+       * POST /api/cart
+       * @param {number} articleId - ID de l'article à ajouter
+       * @param {number} quantity - Quantité (par défaut 1)
+       * @param {HTMLElement} button - (Optionnel) Bouton pour affichage du feedback
+       * @returns {Promise<{success: boolean, data?: Object, error?: string}>}
+       */
+      async function addToCart(articleId, quantity = 1, button = null) {
+        if (!articleId) {
+          console.error('ID de l\'article manquant');
+          return { success: false, error: 'ID manquant' };
+        }
 
-          items.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'flex items-center justify-between';
-            li.innerHTML = `
-              <div class="flex flex-col">
-                <span class="font-semibold">${item.name}</span>
-                <span class="text-sm text-gray-500">${item.quantity} × ${item.price} FCFA</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <button data-remove-id="${item.id}" class="btn btn-xs btn-ghost text-red-500">Supprimer</button>
-              </div>
-            `;
-            cartListElement.appendChild(li);
+        const btn = button;
+        if (btn) {
+          btn.disabled = true;
+          btn.dataset.originalText = btn.dataset.originalText || btn.textContent;
+          btn.textContent = 'Ajout...';
+        }
+
+        try {
+          await axios.post(API_URL, { 
+            articleId: Number(articleId), 
+            quantity: Number(quantity) 
           });
+          console.log('Article ajouté au panier :', articleId, 'Quantité :', quantity);
+          const cartData = await fetchCart();
+          updateCartUI(cartData);
+
+          if (btn) {
+            btn.textContent = 'Ajouté ✓';
+            btn.classList.add('bg-green-500', 'text-white');
+          }
+
+          return { success: true, data: cartData };
+        } catch (err) {
+          console.error('Erreur lors de l\'ajout au panier :', err);
+
+          if (btn) {
+            btn.textContent = 'Erreur';
+            btn.classList.add('bg-red-500', 'text-white');
+          }
+
+          return { success: false, error: err.message };
+        } finally {
+          if (btn) {
+            setTimeout(() => {
+              btn.disabled = false;
+              btn.textContent = btn.dataset.originalText || 'Ajouter au panier';
+              btn.classList.remove('bg-green-500', 'text-white', 'bg-red-500');
+            }, 1200);
+          }
+        }
+      }
+
+      /**
+       * Supprime un article du panier
+       * DELETE /api/cart/:id
+       * @param {number} articleId - ID de l'article à supprimer
+       * @param {boolean} showConfirm - Afficher une confirmation (par défaut false)
+       * @returns {Promise<{success: boolean, data?: Object, error?: string, cancelled?: boolean}>}
+       */
+      async function removeFromCart(articleId, showConfirm = false) {
+        if (!articleId) {
+          console.error('ID de l\'article manquant');
+          return { success: false, error: 'ID manquant' };
         }
 
-        // Event delegation for remove buttons inside cart list
-        if (cartListElement) {
-          cartListElement.addEventListener('click', async (event) => {
+        if (showConfirm && !confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+          return { success: false, cancelled: true };
+        }
+
+        try {
+          // DELETE /api/cart/:id (paramètre dans l'URL)
+          await axios.delete(`${API_URL}/${articleId}`);
+          const cartData = await fetchCart();
+          updateCartUI(cartData);
+
+          console.log('Article supprimé du panier :', articleId);
+          return { success: true, data: cartData };
+        } catch (err) {
+          console.error('Erreur lors de la suppression de l\'article :', err);
+          return { success: false, error: err.message };
+        }
+      }
+
+      /**
+       * Vide complètement le panier
+       * DELETE /api/cart
+       * @param {boolean} showConfirm - Afficher une confirmation (par défaut true)
+       * @returns {Promise<{success: boolean, data?: Object, error?: string, cancelled?: boolean}>}
+       */
+      async function clearCart(showConfirm = true) {
+        if (showConfirm && !confirm('Voulez-vous vraiment vider le panier ?')) {
+          return { success: false, cancelled: true };
+        }
+
+        try {
+          // DELETE /api/cart (pas de paramètres)
+          await axios.delete(API_URL);
+          const cartData = await fetchCart();
+          updateCartUI(cartData);
+
+          console.log('Panier vidé');
+          return { success: true, data: cartData };
+        } catch (err) {
+          console.error('Erreur lors du vidage du panier :', err);
+          return { success: false, error: err.message };
+        }
+      }
+
+      /**
+       * Modifie la quantité d'un article
+       * (Utilise removeFromCart + addToCart jusqu'à une route PUT/PATCH dédiée)
+       * @param {number} articleId - ID de l'article
+       * @param {number} newQuantity - Nouvelle quantité
+       * @returns {Promise<{success: boolean, data?: Object, error?: string}>}
+       */
+      async function updateQuantity(articleId, newQuantity) {
+        if (!articleId || newQuantity < 1) {
+          console.error('Paramètres invalides');
+          return { success: false, error: 'Paramètres invalides' };
+        }
+
+        try {
+          await removeFromCart(articleId, false);
+          const result = await addToCart(articleId, newQuantity);
+          return result;
+        } catch (err) {
+          console.error('Erreur lors de la mise à jour de la quantité :', err);
+          return { success: false, error: err.message };
+        }
+      }
+
+      // ============================================
+      // INITIALISATION & EVENT LISTENERS
+      // ============================================
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        console.log('🛒 Initialisation du système de panier');
+
+        // Récupération initiale du panier
+        const initialData = await fetchCart();
+        updateCartUI(initialData);
+
+        // Event listener: Boutons "Ajouter au panier" (via data-article-id)
+        document.querySelectorAll('[data-article-id]').forEach(button => {
+          button.addEventListener('click', async (event) => {
+            const articleId = event.currentTarget.getAttribute('data-article-id');
+            if (!articleId) {
+              console.error('ID de l\'article non trouvé sur le bouton');
+              return;
+            }
+            await addToCart(articleId, 1, event.currentTarget);
+          });
+        });
+
+        // Event delegation: Boutons "Supprimer" dans la liste du panier
+        if (cart.itemsElement) {
+          cart.itemsElement.addEventListener('click', async (event) => {
             const btn = event.target.closest('[data-remove-id]');
             if (!btn) return;
             const id = btn.getAttribute('data-remove-id');
-            if (!id) return;
-            try {
-              await axios.delete(`${apiUrl}/${id}`);
-              await fetchCart();
-            } catch (err) {
-              console.error('Erreur lors de la suppression de l\'article :', err);
-            }
+            await removeFromCart(id, false);
           });
         }
 
-        // Clear cart button
-        if (clearCartBtn) {
-          clearCartBtn.addEventListener('click', async () => {
-            if (!confirm('Voulez-vous vraiment vider le panier ?')) return;
-            try {
-              await axios.delete(apiUrl);
-              await fetchCart();
-            } catch (err) {
-              console.error('Erreur lors du vidage du panier :', err);
-            }
-          });
+        // Event listener: Bouton "Vider le panier"
+        if (cart.clearButton) {
+          cart.clearButton.addEventListener('click', () => clearCart(true));
         }
 
-        // Add to cart buttons
-        addButtons.forEach(button => {
-          button.addEventListener('click', async (event) => {
-            const articleId = event.currentTarget.getAttribute('data-article-id');
-            if (!articleId) return console.error('ID de l\'article non trouvé sur le bouton.');
-
-            const btn = event.currentTarget;
-            btn.disabled = true;
-            const originalText = btn.textContent;
-            btn.textContent = 'Ajout...';
-
-            try {
-              await axios.post(apiUrl, { articleId: Number(articleId), quantity: 1 });
-              await fetchCart();
-              // feedback
-              btn.textContent = 'Ajouté';
-              btn.classList.add('bg-green-500', 'text-white');
-            } catch (err) {
-              console.error('Erreur lors de l\'ajout au panier :', err);
-              btn.textContent = 'Erreur';
-              btn.classList.add('bg-red-500', 'text-white');
-            } finally {
-              setTimeout(() => {
-                btn.disabled = false;
-                btn.textContent = originalText;
-                btn.classList.remove('bg-green-500', 'text-white', 'bg-red-500');
-              }, 1200);
-            }
-          });
-        });
-
-        // Initial load
-        fetchCart();
+        console.log('✓ Système de panier initialisé');
       });
     </script>
-=======
-      // 9. LOGIQUE D'AJOUT AU PANIER (AXIOS)
-      
-      document.addEventListener('DOMContentLoaded', () => {
-        const cartCountElement = document.getElementById('cart-count'); 
-        const cartButtons = document.querySelectorAll('[data-article-id]');
-        const apiUrl = 'http://localhost:3333/api/cart';
-        cartButtons.forEach(button => {
-          button.addEventListener('click', async (event) => {
-            const articleId = event.currentTarget.getAttribute('data-article-id');
-            console.log(articleId)
-
-            if (!articleId) {
-              console.error('ID de l\'article non trouvé sur le bouton.');
-              return;
-            }
-
-            try {
-              // NOTE IMPORTANTE: Votre contrôleur Adonis s'attend à un GET avec paramètres.
-              // En production, il est STRONGOEMENT recommandé d'utiliser une méthode POST 
-              // pour les actions qui modifient l'état du serveur (comme l'ajout au panier).
-              const response = await axios.get(apiUrl, {
-                params: { 'articleId': articleId }
-              });
-
-              console.log('Ajout réussi:', response.data);
-              
-              // 10. Mise à jour de l'affichage du panier
-              if (cartCountElement && response.data.totalItems !== undefined) {
-                cartCountElement.textContent = response.data.totalItems;
-              }
-
-            } catch (error) {
-              console.error('Erreur lors de l\'ajout au panier:', error);
-
-              // Feedback visuel d'échec
-              event.currentTarget.textContent = 'Erreur d\'ajout';
-              event.currentTarget.classList.add('bg-red-500', 'text-white', 'border-red-500');
-
-            } 
-          });
-        });
-      });
-    </script>
-    
->>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
   </body>
 </html>

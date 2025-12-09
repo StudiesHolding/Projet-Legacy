@@ -7,15 +7,9 @@
 |
 */
 
-<<<<<<< HEAD
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 const AuthController = () => import('#controllers/auth_controller')
-=======
-const AuthController = () => import('#controllers/auth_controller')
-import router from '@adonisjs/core/services/router'
-import { middleware } from './kernel.js'
->>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 const SellerRegistrationsController = () => import('#controllers/seller_registrations_controller')
 const ArticlesController = () => import('#controllers/articles_controller')
 const ImagesController = () => import('#controllers/images_controller')
@@ -26,11 +20,7 @@ router.get('/', [NavigationsController, 'home']).as('home')
 router.get('catalogue', [NavigationsController, 'catalogue']).as('catalogue')
 router.get('catalogue/:slug', [NavigationsController, 'showArticleBySlug']).as('show.product')
 router.get('checkout', [NavigationsController, 'checkout']).as('checkout')
-<<<<<<< HEAD
 router.get('login', [NavigationsController, 'login']).as('login')
-=======
-router.get('login', [NavigationsController, 'checkout']).as('login')
->>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
 router
   .get('register-client', [NavigationsController, 'registerClient'])
   .as('register-client')
@@ -49,13 +39,8 @@ router
   .use(middleware.auth())
 router
   .get('dashboard-client', [NavigationsController, 'showClientDashboard'])
-  .as('dashboard-client')
   .use(middleware.auth())
-<<<<<<< HEAD
-
-=======
-router.get('cart', [CartsController, 'addToCart']).as('cart').prefix('/api')
->>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
+  .as('dashboard-client')
 router.post('register', [AuthController, 'register_client']).as('register_client')
 router.post('login', [AuthController, 'login_client']).as('login_client')
 router.get('logout', [AuthController, 'logout_client']).as('logout_client')
@@ -64,8 +49,14 @@ router.post('handleStepTwo', [SellerRegistrationsController, 'finalize']).as('fi
 
 router.resource('article', ArticlesController).use(middleware.auth())
 router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destroy')
-// Cart API routes
-router.get('cart', [CartsController, 'getCart']).prefix('/api').as('api.cart.get')
-router.post('cart', [CartsController, 'addToCart']).prefix('/api').as('api.cart.add')
-router.delete('cart/:id', [CartsController, 'removeFromCart']).prefix('/api').as('api.cart.remove')
-router.delete('cart', [CartsController, 'clearCart']).prefix('/api').as('api.cart.clear')
+
+// Cart API routes with session middleware
+router
+  .group(() => {
+    router.get('cart', [CartsController, 'getCart']).as('api.cart.get')
+    router.post('cart', [CartsController, 'addToCart']).as('api.cart.add')
+    router.delete('cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
+    router.delete('cart', [CartsController, 'clearCart']).as('api.cart.clear')
+  })
+  .prefix('/api')
+  .use(middleware.session())
