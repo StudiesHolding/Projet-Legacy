@@ -3,7 +3,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class CartsController {
   public async addToCart({ request, session, response }: HttpContext) {
-    console.log('me voici dans addToCart')
     const articleId = Number(request.input('articleId'))
     const quantity = Number(request.input('quantity')) || 1
 
@@ -21,12 +20,10 @@ export default class CartsController {
     if (!Array.isArray(cart.items)) {
       cart.items = []
     }
-    console.log('1) Panier actuel avant ajout :', cart)
 
     // Vérifier si l’article existe déjà dans le panier
     const existingItem = cart.items.find((item: { id: number }) => item.id === article.id)
 
-    console.log('2) Article trouvé pour ajout au panier :', existingItem)
     if (existingItem) {
       existingItem.quantity += quantity
     } else {
@@ -38,19 +35,16 @@ export default class CartsController {
       })
     }
     session.put('cart', cart)
-    console.log('3) Panier après ajout :', cart)
 
     // Calcul totals
     const totalItems = cart.items.reduce(
       (sum: any, item: { quantity: any }) => sum + item.quantity,
       0
     )
-    console.log('Total des articles dans le panier :', totalItems)
     const totalPrice = cart.items.reduce(
       (sum: number, item: { quantity: number; price: number }) => sum + item.quantity * item.price,
       0
     )
-    console.log('Prix total du panier :', totalPrice)
     return response.ok({
       message: 'Produit ajouté au panier.',
       cart,
@@ -60,7 +54,6 @@ export default class CartsController {
   }
 
   public async getCart({ session, response }: HttpContext) {
-    console.log('je suis dans la fonction getCart')
     const cart = session.get('cart') || { items: [] }
     if (!Array.isArray(cart.items)) cart.items = []
 
@@ -74,7 +67,6 @@ export default class CartsController {
   }
 
   public async removeFromCart({ request, session, response }: HttpContext) {
-    // Support both DELETE /api/cart/:id and body param { articleId }
     const paramId = Number(request.param('id'))
     const bodyId = Number(request.input('articleId'))
     const articleId = paramId || bodyId
@@ -85,24 +77,33 @@ export default class CartsController {
 
     const cart = session.get('cart') || { items: [] }
     if (!Array.isArray(cart.items)) cart.items = []
-
     const initialLength = cart.items.length
-    cart.items = cart.items.filter((item: any) => item.id !== articleId)
 
-    // Save session
-    session.put('cart', cart)
-
-    const totalItems = cart.items.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0)
-    const totalPrice = cart.items.reduce(
-      (sum: number, item: any) => sum + (item.quantity || 0) * (item.price || 0),
-      0
-    )
-
-    if (cart.items.length === initialLength) {
+    // Find the item in the cart
+    const itemIndex = cart.items.findIndex((item: any) => item.id === articleId)
+    if (itemIndex === -1) {
       return response.notFound({ message: 'Article non trouvé dans le panier.' })
     }
 
-    return response.ok({ message: 'Article supprimé du panier.', cart, totalItems, totalPrice })
+    const item = cart.items[itemIndex]
+
+    // If quantity > 1, decrement quantity by 1. Otherwise remove the item.
+    if (item.quantity && item.quantity > 1) {
+      item.quantity -= 1
+    } else {
+      cart.items.splice(itemIndex, 1)
+    }
+
+    // Save updated cart to session
+    session.put('cart', cart)
+
+    const totalItems = cart.items.reduce((sum: number, it: any) => sum + (it.quantity || 0), 0)
+    const totalPrice = cart.items.reduce(
+      (sum: number, it: any) => sum + (it.quantity || 0) * (it.price || 0),
+      0
+    )
+
+    return response.ok({ message: 'Panier mis à jour.', cart, totalItems, totalPrice })
   }
 
   public async clearCart({ session, response }: HttpContext) {

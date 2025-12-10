@@ -19,8 +19,9 @@ export default class NavigationsController {
     return view.render('pages/catalogue/show_article', { article: article })
   }
 
-  public async checkout({ view }: HttpContext) {
-    return view.render('pages/checkout')
+  public async checkout({ view, session }: HttpContext) {
+    const cart = session.get('cart') || { items: [] }
+    return view.render('pages/checkout', { cart })
   }
 
   public async login({ view }: HttpContext) {

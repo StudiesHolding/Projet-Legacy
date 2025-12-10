@@ -170,7 +170,7 @@
       // ============================================
 
       const BASE_URL = 'http://localhost:3333';
-      const API_URL = `${BASE_URL}/api/addToCart`;
+      const API_URL = `${BASE_URL}/api/cart`;
 
       // Configure axios to always send cookies with requests (needed for session persistence)
       axios.defaults.withCredentials = true;
@@ -192,10 +192,8 @@
       async function fetchCart() {
         try {
           // GET /api/cart (pas de paramètres)
-          const res = await axios.get(API_URL);
+          const res = await axios.get(`${API_URL}/getCart`);
           const data = res.data || {};
-          console.log('Réponse API du panier :', res);
-          console.log('Données du panier récupérées :', data);
           return data;
         } catch (err) {
           console.error('Erreur lors de la récupération du panier :', err);
@@ -221,6 +219,7 @@
        * @param {Array} items - Tableau des articles du panier
        */
       function renderCartItems(items) {
+        console.log('Affichage des articles du panier :', items);
         if (!cart.itemsElement) return;
 
         cart.itemsElement.innerHTML = '';
@@ -231,7 +230,6 @@
         }
 
         if (cart.emptyElement) cart.emptyElement.style.display = 'none';
-
         items.forEach(item => {
           const li = document.createElement('li');
           li.className = 'flex items-center justify-between p-2 border-b';
@@ -245,6 +243,7 @@
             </div>
           `;
           cart.itemsElement.appendChild(li);
+          {{-- console.log('Article ajouté à l\'UI du panier :', item) --}}
         });
       }
 
@@ -270,10 +269,12 @@
         }
 
         try {
-          await axios.post(API_URL, { 
-            articleId: Number(articleId), 
-            quantity: Number(quantity) 
-          });
+
+          await axios.get(`${API_URL}/addToCart`, { 
+          params: {
+            articleId: Number(articleId)
+          }
+        });
           console.log('Article ajouté au panier :', articleId, 'Quantité :', quantity);
           const cartData = await fetchCart();
           updateCartUI(cartData);
@@ -317,13 +318,17 @@
           return { success: false, error: 'ID manquant' };
         }
 
+        console.log('Tentative de suppression de l\'article ID:', articleId);
+
         if (showConfirm && !confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
           return { success: false, cancelled: true };
         }
 
         try {
-          // DELETE /api/cart/:id (paramètre dans l'URL)
-          await axios.delete(`${API_URL}/${articleId}`);
+          const deleteUrl = `${API_URL}/${articleId}`;
+          console.log('URL de suppression:', deleteUrl);
+          await axios.delete(deleteUrl);
+          console.log('Article supprimé avec succès');
           const cartData = await fetchCart();
           updateCartUI(cartData);
 
@@ -409,9 +414,14 @@
         // Event delegation: Boutons "Supprimer" dans la liste du panier
         if (cart.itemsElement) {
           cart.itemsElement.addEventListener('click', async (event) => {
+            console.log('Clic détecté sur l\'élément:', event.target);
             const btn = event.target.closest('[data-remove-id]');
-            if (!btn) return;
+            if (!btn) {
+              console.log('Pas de bouton de suppression trouvé');
+              return;
+            }
             const id = btn.getAttribute('data-remove-id');
+            console.log('Suppression de l\'article ID:', id);
             await removeFromCart(id, false);
           });
         }

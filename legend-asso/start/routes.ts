@@ -9,6 +9,10 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+import transmit from '@adonisjs/transmit/services/main'
+transmit.registerRoutes()
+
+
 const AuthController = () => import('#controllers/auth_controller')
 const SellerRegistrationsController = () => import('#controllers/seller_registrations_controller')
 const ArticlesController = () => import('#controllers/articles_controller')
@@ -53,10 +57,9 @@ router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destro
 // Cart API routes with session middleware
 router
   .group(() => {
-    router.get('cart', [CartsController, 'getCart']).as('api.cart.get')
-    router.post('cart', [CartsController, 'addToCart']).as('api.cart.add')
-    router.delete('cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
-    router.delete('cart', [CartsController, 'clearCart']).as('api.cart.clear')
+    router.get('/cart/getCart', [CartsController, 'getCart']).as('api.cart.get')
+    router.get('/cart/addToCart', [CartsController, 'addToCart']).as('api.cart.add')
+    router.delete('/cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
+    router.delete('/cart', [CartsController, 'clearCart']).as('api.cart.clear')
   })
   .prefix('/api')
-  .use(middleware.session())

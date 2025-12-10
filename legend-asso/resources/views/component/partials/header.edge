@@ -1,141 +1,4 @@
-{{-- @eval(await auth.check())
-
-<div class="drawer drawer-end">
-    <input id="cart-drawer" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content">
-        <header
-            class="bg-[#171B99] w-full flex flex-row justify-between items-center h-20 fixed top-0 z-50 px-4 lg:px-6 shadow-md"
-        >
-            <div class="flex h-full items-center w-auto lg:w-1/12">
-                <a href="{{ route('home') }}">
-                    <img src="/images/icon.png" alt="legacy-market" class="p-2 size-15 mx-5 align-self-center" />
-                </a>
-            </div>
-            <div class="hidden lg:inline-flex items-center rounded-3xl bg-white w-4/12">
-    <form
-      action=""
-      method="get"
-      class="flex items-center border rounded-3xl justify-between lg:w-12/12 h-10"
-    >
-      <input
-        type="text"
-        name="search"
-        placeholder="Rechercher des produits, des créateurs..."
-        class="rounded-l-3xl w-10/12 pl-3 ml-3 border-none outline-none"
-      />
-      <button
-        type="submit"
-        class="bg-[#171B99] rounded-3xl mx-2 w-8 h-10/12 flex items-center justify-center cursor-pointer"
-      >
-
-        <svg width="16px" height="16px" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M221.09,64A157.09,157.09,0,1,0,378.18,221.09,157.1,157.1,0,0,0,221.09,64Z"
-            style="fill:none;stroke:#ffffff;stroke-miterlimit:10;stroke-width:32px"
-          />
-          <line
-            x1="338.29"
-            y1="338.29"
-            x2="448"
-            y2="448"
-            style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"
-          />
-        </svg>
-      </button>
-    </form>
-  </div>
-            
-            <div class="inline-flex items-center mx-5 justify-between space-x-4 lg:space-x-8 w-auto lg:w-7/12">
-                
-                <nav class="hidden lg:flex gap-4 text-sm items-center text-white justify-around w-5/12">
-                    <a href="{{ route('catalogue') }}" class="hover:text-gray-300 transition">Boutique</a>
-                    <a href="#" class="hover:text-gray-300 transition">Créateurs locaux</a>
-                    <a href="#" class="hover:text-gray-300 transition">Blog</a>  
-                </nav>
-
-                @if(auth.isAuthenticated)
-                    <a href="{{ auth.user.role === 'client' ? route('dashboard-client') : route('dashboard-seller') }}" class="text-white text-sm font-semibold hidden lg:inline-flex">
-                        {{ auth.user.name?.toUpperCase() }}
-                    </a>
-                @else
-                    <div class="hidden lg:inline-flex">
-                        <div class="dropdown dropdown-hover dropdown-end">
-                            <div tabindex="0" role="button" class="btn bg-[#CE0000] hover:bg-[#A80000] text-white text-xs border-none">Connexion</div>
-                            <ul tabindex="-1" class="dropdown-content menu bg-white text-gray-800 rounded-box z-10 w-64 p-2 shadow-xl border border-gray-100 mt-2">
-                                <li><a href="{{ route('login') }}" class="hover:text-[#CE0000] p-2 text-sm">Connectez-vous à votre compte</a></li>
-                                <li><a href="{{ route('register-client') }}" class="hover:text-[#CE0000] p-2 text-sm">Je souhaite créer mon compte</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                @endif
-
-                @if(route.name !== 'checkout')
-<<<<<<< HEAD
-                    <div class="w-auto h-auto relative">
-    <label for="cart-drawer" class="cursor-pointer block p-1 hover:opacity-80 transition duration-150 relative">
-        <img src="/images/shopping-bag.png" alt="cart" class="w-6 h-6" />
-
-        <!-- Badge du nombre total d'articles -->
-        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-            0
-        </span>
-    </label>
-</div>
-=======
-                    <div class="w-auto h-auto">
-                        <label for="cart-drawer" class="cursor-pointer block p-1 relative hover:opacity-80 transition duration-150">
-    <img src="/images/shopping-bag.png" alt="cart" class="w-6 h-6" />
-    <div 
-        id="cart-count" 
-        class="text-white absolute top-0 right-0 transform translate-x-1 -translate-y-1 
-               bg-red-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
-    >
-        {{ initialCartCount || 0 }}
-    </div>
-</label>
-                    </div>
->>>>>>> e15151918d96fdc9505a1e2062728863df42b4da
-                @endif
-                <div class="w-auto h-auto lg:hidden">
-                </div>
-            </div>
-        </header>
-
-    </div>
-
-    <div class="drawer-side z-50"> 
-        <label for="cart-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        
-        <div class="flex flex-col bg-white text-gray-800 min-h-full w-80 md:w-96 shadow-2xl">
-            
-            <div class="p-6 border-b flex justify-between items-center bg-gray-50">
-                <h3 class="text-xl font-bold">Votre Panier</h3>
-                <label for="cart-drawer" class="btn btn-sm btn-circle btn-ghost">✕</label>
-            </div>
-            
-            <div class="p-6 flex-grow overflow-y-auto" id="cart-items-container">
-                <p id="cart-empty" class="text-gray-500 italic mb-4">Votre panier est prêt à être rempli !</p>
-                <ul id="cart-items" class="space-y-4"></ul>
-            </div>
-            
-            <div class="p-6 border-t">
-                <div class="flex justify-between font-bold text-lg mb-4">
-                    <span>Total :</span>
-                    <span id="cart-total-price">0 FCFA</span>
-                </div>
-                <button id="clear-cart-btn" class="btn btn-outline w-full mb-2">Vider le panier</button>
-                <a href="{{ route('checkout') }}" class="btn w-full bg-[#CE0000] hover:bg-red-700 text-white font-bold py-2 rounded-lg transition">
-                    Finaliser la commande
-                </a>
-                <label for="cart-drawer" class="btn btn-ghost w-full mt-2 hover:bg-gray-100">Continuer mes achats</label>
-            </div>
-        </div>
-    </div>
-</div> --}}
-
-
-{{-- Assurez-vous que cette variable est passée au layout ou accessible via un "global" --}}
-{{-- @set(initialCartCount = auth.isAuthenticated ? await getCartCount() : 0) --}}
+@eval(await auth.check())
 
 <div class="drawer drawer-end">
     {{-- La case à cocher pour l'état du tiroir --}}
@@ -150,7 +13,6 @@
                 flex justify-between items-center
             "
         >
-            {{-- Logo / Marque --}}
             <div class="flex items-center h-full w-auto lg:w-1/12">
                 <a href="{{ route('home') }}" aria-label="Accueil">
                     <img 
@@ -179,7 +41,6 @@
                         class="bg-[#171B99] rounded-3xl mx-2 w-8 h-8 flex items-center justify-center cursor-pointer flex-shrink-0"
                         aria-label="Lancer la recherche"
                     >
-                        {{-- Icône Loupe (SVG nettoyé et intégré) --}}
                         <svg width="16" height="16" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M221.09 64A157.09 157.09 0 10378.18 221.09 157.1 157.1 0 00221.09 64z"
@@ -236,8 +97,7 @@
                                 id="cart-count" 
                                 class="
                                     text-white absolute top-0 right-0 transform translate-x-1 -translate-y-1 
-                                    bg-red-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold
-                                "
+                                    bg-red-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold                                "
                                 role="status" 
                                 aria-live="polite" 
                                 aria-atomic="true"
@@ -250,52 +110,37 @@
                 
                 {{-- Espace réservé (si nécessaire pour le menu mobile) --}}
                 <div class="w-auto h-auto lg:hidden">
-                    {{-- Ici, vous devriez inclure le bouton pour votre menu mobile (burger button) --}}
                     {{-- @include('component/partials/burger_button') --}}
                 </div>
             </div>
         </header>
     </div>
 
-    {{-- 2. Le Panier Tiroir (Drawer Sidebar) --}}
+{{-- 2. Le Panier Tiroir (Drawer Sidebar) --}}
     <div class="drawer-side z-50"> 
         <label for="cart-drawer" aria-label="Fermer le panier" class="drawer-overlay"></label>
         
         <div class="flex flex-col bg-white text-gray-800 min-h-full w-80 md:w-96 shadow-2xl">
             
             {{-- Tête du Tiroir --}}
-            <div class="p-6 border-b flex justify-between items-center bg-gray-50 flex-shrink-0"> {{-- flex-shrink-0 pour que ce div ne soit pas compressé --}}
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50 flex-shrink-0">
                 <h3 class="text-xl font-bold" id="cart-sidebar-title">Votre Panier</h3>
                 <label for="cart-drawer" class="btn btn-sm btn-circle btn-ghost" aria-label="Fermer">✕</label>
             </div>
             
-            {{-- Contenu du Panier (C'est ici que le contenu dynamique ira) --}}
+            {{-- Contenu du Panier (articles dynamiques) --}}
             <div id="cart-items-container" class="p-6 flex-grow overflow-y-auto">
-                {{-- 
-                    Logique pour afficher les articles stockés en session.
-                    Ceci sera rempli soit par Edge lors du chargement initial, soit par JavaScript après AJAX. 
-                --}}
-                
-                {{-- Exemple de contenu par défaut vide: --}}
-                @if((initialCartCount || 0) === 0)
-                    <div id="empty-cart-message">
-                        <p class="text-gray-500 italic mb-4 text-center">Votre panier est vide pour l'instant.</p>
-                    </div>
-                @else
-                    {{-- Boucle ici pour afficher les articles si le panier n'est pas vide --}}
-                    {{-- @each(item in cartItems)
-                        @include('component/cart/item', { item: item })
-                    @endeach --}}
-                    <p>Liste des articles...</p>
-                @endif
+                <p id="cart-empty" class="text-gray-500 italic mb-4 text-center">Votre panier est vide pour l'instant.</p>
+                <ul id="cart-items" class="space-y-4"></ul>
             </div>
             
             {{-- Pied du Tiroir (Actions et Total) --}}
             <div class="p-6 border-t flex-shrink-0">
                 <div class="flex justify-between font-bold text-lg mb-4">
                     <span>Total :</span>
-                    <span id="cart-total-amount">0 FCFA</span> {{-- ID pour mise à jour JS --}}
+                    <span id="cart-total-price">0 FCFA</span>
                 </div>
+                <button id="clear-cart-btn" class="btn btn-outline w-full mb-2">Vider le panier</button>
                 <a href="{{ route('checkout') }}" class="btn w-full bg-[#CE0000] hover:bg-red-700 text-white font-bold rounded-lg transition py-3">
                     Finaliser la commande
                 </a>

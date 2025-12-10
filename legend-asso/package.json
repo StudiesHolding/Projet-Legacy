@@ -60,6 +60,8 @@
     "@adonisjs/session": "^7.6.0",
     "@adonisjs/shield": "^8.2.0",
     "@adonisjs/static": "^1.1.1",
+    "@adonisjs/transmit": "^2.0.2",
+    "@adonisjs/transmit-client": "^1.0.0",
     "@adonisjs/vite": "^4.0.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/vite": "^4.1.17",
