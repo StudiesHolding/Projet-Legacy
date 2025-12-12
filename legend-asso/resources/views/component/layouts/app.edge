@@ -271,10 +271,11 @@
         try {
 
           await axios.get(`${API_URL}/addToCart`, { 
-          params: {
-            articleId: Number(articleId)
-          }
-        });
+            params: {
+              articleId: Number(articleId),
+              quantity: Number(quantity) || 1,
+            }
+          });
           console.log('Article ajouté au panier :', articleId, 'Quantité :', quantity);
           const cartData = await fetchCart();
           updateCartUI(cartData);
@@ -429,6 +430,22 @@
         // Event listener: Bouton "Vider le panier"
         if (cart.clearButton) {
           cart.clearButton.addEventListener('click', () => clearCart(true));
+        }
+
+        // Close mobile menu when clicking a link
+        const mobileMenuLinks = document.getElementById('mobile-menu-links');
+        if (mobileMenuLinks) {
+          const links = mobileMenuLinks.querySelectorAll('a');
+          const mobileMenuCheckbox = document.getElementById('mobile-menu-drawer');
+          links.forEach(link => {
+            link.addEventListener('click', (e) => {
+              // Fermer le drawer sans empêcher la navigation
+              if (mobileMenuCheckbox) {
+                mobileMenuCheckbox.checked = false;
+              }
+              // Laisser le navigateur suivre le lien naturellement
+            });
+          });
         }
 
         console.log('✓ Système de panier initialisé');

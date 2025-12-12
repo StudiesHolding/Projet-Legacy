@@ -11,11 +11,14 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   passwordColumnName: 'password',
 })
 
-type RoleType = 'admin'|'client'|'seller'
+type RoleType = 'admin' | 'client' | 'seller'
 
 export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare user_id: number
 
   @column()
   declare name: string | null
@@ -35,11 +38,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @hasOne(() => Seller)
   declare seller: HasOne<typeof Seller>
 
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
-
 }

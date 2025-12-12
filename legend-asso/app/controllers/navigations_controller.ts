@@ -15,7 +15,12 @@ export default class NavigationsController {
 
   public async showArticleBySlug({ view, params }: HttpContext) {
     const slug = params.slug
-    const article = await Article.query().where('slug', slug).first()
+    const article = await Article.query()
+      .where('slug', slug)
+      .preload('seller', (sellerQuery) => {
+        sellerQuery.select('*').preload('user')
+      })
+      .first()
     return view.render('pages/catalogue/show_article', { article: article })
   }
 

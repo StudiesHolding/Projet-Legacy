@@ -1,0 +1,108 @@
+<header 
+    class="
+        bg-[#171B99] w-full h-20 fixed top-0 z-50 px-4 lg:px-6 shadow-md 
+        flex justify-between items-center
+    "
+>
+    {{-- 1. Logo --}}
+    <div class="flex items-center h-full">
+        <a href="{{ route('home') }}" aria-label="Accueil">
+            <img 
+                src="/images/icon.png" 
+                alt="Logo du site" 
+                class="size-15 p-2" 
+            />
+        </a>
+    </div>
+
+    {{-- 2. Barre de recherche (Desktop seulement) --}}
+    <div class="hidden lg:flex items-center rounded-3xl bg-white w-3/12">
+        <form action="#" method="get" class="flex items-center w-full h-10">
+            <input
+                type="search"
+                name="q"
+                placeholder="Rechercher des produits, des créateurs..."
+                class="rounded-l-3xl w-full pl-3 ml-3 border-none outline-none focus:ring-0"
+            />
+            <button
+                type="submit"
+                class="bg-[#171B99] rounded-3xl mx-2 w-8 h-8 flex items-center justify-center flex-shrink-0"
+                aria-label="Lancer la recherche"
+            >
+                <svg width="16" height="16" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M221.09 64A157.09 157.09 0 10378.18 221.09 157.1 157.1 0 00221.09 64z" stroke="#ffffff" stroke-miterlimit="10" stroke-width="32"/>
+                    <path d="M338.29 338.29L448 448" stroke="#ffffff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+    
+    {{-- 3. Navigation et Actions Utilisateur --}}
+    <div class="flex items-center space-x-4 lg:space-x-8">
+        
+        {{-- Navigation Desktop (Liée aux 4 catégories) --}}
+        <nav class="hidden lg:flex gap-6 text-sm items-center text-white">
+            <a href="{{ route('catalogue') }}" class="hover:text-gray-300 transition font-medium">Produits</a>
+            <a href="#" class="hover:text-gray-300 transition font-medium">Services</a>
+            <a href="#" class="hover:text-gray-300 transition font-medium">Construction</a>
+            <a href="#" class="hover:text-gray-300 transition font-medium">Loisirs/Voyages</a>
+        </nav>
+
+        {{-- Section Actions (Compte, Panier, Menu Mobile) --}}
+        <div class="inline-flex items-center space-x-4 lg:space-x-8">
+            
+            {{-- Authentication (Desktop) --}}
+            @if(auth.isAuthenticated)
+                <a 
+                    href="{{ auth.user.role === 'client' ? route('dashboard-client') : route('dashboard-seller') }}" 
+                    class="text-white text-sm font-semibold hidden lg:inline-flex hover:text-gray-300 transition"
+                    aria-label="Accéder au tableau de bord"
+                >
+                    {{ auth.user.name?.toUpperCase() || 'MON COMPTE' }}
+                </a>
+            @else
+                <div class="hidden lg:inline-flex">
+                    <div class="dropdown dropdown-hover dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-ghost border-none min-h-8 h-8 w-8 p-0" aria-label="Connexion">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 hover:opacity-75 transition">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <ul tabindex="-1" class="dropdown-content menu bg-white text-gray-800 rounded-box z-10 w-64 p-2 shadow-xl border border-gray-100 mt-2">
+                            <li><a href="{{ route('login') }}" class="hover:text-[#CE0000] p-2 text-sm font-medium">Connectez-vous à votre compte</a></li>
+                            <li><a href="{{ route('register-client') }}" class="hover:text-[#CE0000] p-2 text-sm font-medium">Je souhaite créer mon compte</a></li>
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Icône de Panier (Cart Drawer Trigger) --}}
+            @if(route.name !== 'checkout')
+                <div class="relative">
+                    <label for="cart-drawer" class="cursor-pointer block p-1 relative hover:opacity-80 transition duration-150" aria-label="Ouvrir le panier">
+                        <img src="/images/shopping-bag.png" alt="Panier d'achat" class="w-6 h-6" />
+                        <div 
+                            id="cart-count" 
+                            class="text-white absolute top-0 right-0 transform translate-x-1 -translate-y-1 bg-red-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+                            role="status" aria-live="polite"
+                        >
+                            {{ initialCartCount || 0 }}
+                        </div>
+                    </label>
+                </div>
+            @endif
+            
+            {{-- Icône Hamburger (Mobile seulement) --}}
+            <div class="block lg:hidden">
+                <label for="mobile-menu-drawer" class="cursor-pointer block p-1 hover:opacity-80 transition" aria-label="Ouvrir le menu mobile">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </label>
+            </div>
+        </div>
+    </div>
+</header>

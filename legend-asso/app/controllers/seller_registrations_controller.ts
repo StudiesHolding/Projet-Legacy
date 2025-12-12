@@ -44,7 +44,7 @@ export default class SellerRegistrationsController {
     try {
       const newUser = await User.create(finalUserData)
       const sellerProfileData = {
-        id: newUser.id,
+        user_id: newUser.id,
         ...stepTwoData,
       }
       await Seller.create(sellerProfileData)

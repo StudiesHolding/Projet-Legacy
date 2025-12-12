@@ -1,0 +1,33 @@
+<div class="drawer-side z-50"> 
+    <label for="cart-drawer" aria-label="Fermer le panier" class="drawer-overlay"></label>
+    
+    <div class="flex flex-col bg-white text-gray-800 min-h-full w-80 md:w-96 shadow-2xl">
+        
+        {{-- Tête du Tiroir --}}
+        <div class="p-6 border-b flex justify-between items-center bg-gray-50 flex-shrink-0">
+            <h3 class="text-xl font-bold" id="cart-sidebar-title">Votre Panier</h3>
+            <label for="cart-drawer" class="btn btn-sm btn-circle btn-ghost" aria-label="Fermer">✕</label>
+        </div>
+        
+        {{-- Contenu du Panier (articles dynamiques) --}}
+        <div id="cart-items-container" class="p-6 flex-grow overflow-y-auto">
+            <p id="cart-empty" class="text-gray-500 italic mb-4 text-center">Votre panier est vide pour l'instant.</p>
+            <ul id="cart-items" class="space-y-4">
+                {{-- Les articles du panier seraient injectés ici --}}
+            </ul>
+        </div>
+        
+        {{-- Pied du Tiroir (Actions et Total) --}}
+        <div class="p-6 border-t flex-shrink-0">
+            <div class="flex justify-between font-bold text-lg mb-4">
+                <span>Total :</span>
+                <span id="cart-total-price">0 FCFA</span>
+            </div>
+            <button id="clear-cart-btn" class="btn btn-outline w-full mb-2">Vider le panier</button>
+            <a href="{{ route('checkout') }}" class="btn w-full bg-[#CE0000] hover:bg-red-700 text-white font-bold rounded-lg transition py-3">
+                Finaliser la commande
+            </a>
+            <label for="cart-drawer" class="btn btn-ghost w-full mt-2 hover:bg-gray-100 font-medium">Continuer mes achats</label>
+        </div>
+    </div>
+</div>

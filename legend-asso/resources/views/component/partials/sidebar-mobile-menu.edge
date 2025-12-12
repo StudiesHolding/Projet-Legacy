@@ -1,0 +1,31 @@
+<div class="drawer-side z-40"> 
+    <label for="mobile-menu-drawer" aria-label="Fermer le menu" class="drawer-overlay"></label>
+    
+    <div class="bg-white text-gray-800 min-h-full w-80 shadow-xl flex flex-col">
+        {{-- En-tête du tiroir mobile --}}
+        <div class="p-4 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+            <h3 class="text-lg font-bold">Menu de Navigation</h3>
+            <label for="mobile-menu-drawer" class="btn btn-sm btn-circle btn-ghost" aria-label="Fermer">✕</label>
+        </div>
+        
+        {{-- Liens de navigation --}}
+        <ul class="menu p-4 flex-grow space-y-2">
+            <li class="menu-title text-base font-semibold text-gray-500 uppercase tracking-wider">Catégories</li>
+            <li><a href="{{ route('catalogue') }}" class="hover:text-[#CE0000] font-medium">Produits</a></li>
+            <li><a href="#" class="hover:text-[#CE0000] font-medium">Services</a></li>
+            <li><a href="#" class="hover:text-[#CE0000] font-medium">Construction</a></li>
+            <li><a href="#" class="hover:text-[#CE0000] font-medium">Loisirs/Voyages</a></li>
+
+            {{-- Liens d'Authentification / Compte --}}
+            @if(!auth.isAuthenticated)
+                <li class="menu-title mt-6 text-base font-semibold text-gray-500 uppercase tracking-wider">Mon Compte</li>
+                <li><a href="{{ route('login') }}" class="hover:text-[#CE0000] bg-gray-100 font-semibold">Se connecter</a></li>
+                <li><a href="{{ route('register-client') }}" class="hover:text-[#CE0000] font-semibold">Créer un compte</a></li>
+            @else
+                <li class="menu-title mt-6 text-base font-semibold text-gray-500 uppercase tracking-wider">Espace Utilisateur</li>
+                <li><a href="{{ auth.user.role === 'client' ? route('dashboard-client') : route('dashboard-seller') }}" class="hover:text-[#CE0000] bg-gray-100 font-semibold">Tableau de bord</a></li>
+                {{-- Vous pouvez ajouter ici un lien de déconnexion si nécessaire --}}
+            @endif
+        </ul>
+    </div>
+</div>

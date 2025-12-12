@@ -1,83 +1,121 @@
 @component('component/layouts/app')
   @slot("title")
-    name
+    {{article.name}}
   @end
-  
   @slot('main')
-
-    <div>
-      <div class="w-full inline-flex">
-        <div class="w-1/3 m-2">
-          <img src="https://placehold.co/400" alt="product" class="rounded-3xl" />
-          <div class="inline-flex my-5 justify-between">
-            <img src="https://placehold.co/400" alt="" class="w-1/4 rounded-lg" />
-            <img src="https://placehold.co/400" alt="" class="w-1/4  mx-1 rounded-lg" />
-            <img src="https://placehold.co/400" alt="" class="w-1/4  rounded-lg" />
-          </div>
+    <div class="w-full">
+        <div class="m-1">
+          <img src="https://placehold.co/300" alt="product" class="rounded" />
         </div>
-        <div class="w-2/3 px-2 flex-col items-center py-2 justify-evenly">
+        <div class="px-2 flex-col items-center py-2 justify-evenly">
           <div>
             @include('component/partials/category-section')
           </div>
-          <div class="text-2xl">
-  {{-- @dd(article) --}}
+          <div class="text-xl">
             {{article.name}}
           </div>
-          <div class="font-[chivo] text-[#CE0000] text-3xl">
-            {{article.price}}
+          <div class="text-[#CE0000] text-lg my-2">
+            {{article.price}} FCFA
           </div>
-          <p>
-           {{article.about}}.
-          </p>
-          <form action="" method="post">
-            <label for="quantity">Quantité:</label>
-            <input
-              type="number"
-              name="quantity"
-              id="quantity"
-              class="m-2 border-[#171B99] border rounded-lg px-2 w-1/8"
-            />
-            <br />
-            <button class="btn bg-[#171B99] text-white btn-xs sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl">Ajouter au panier</button>
-          </form>
+          <div class="ml-3 flex-1">
+            <div class="flex items-center justify-around m-3">
+              <button data-decrement-id="{{ article.id }}" class="btn">-</button>
+              <span data-qty-id="{{ article.id }}">{{ article.quantity || 1 }}</span>
+              <button data-increment-id="{{ article.id }}" class="btn">+</button>
+            </div>
+          </div>
+            <button data-article-id="{{ article.id }}" id="add-to-cart-{{ article.id }}" class="btn bg-[#171B99] text-white w-full py-2 sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl">Ajouter au panier</button>
 
           <!-- Détails de Livraison et Frais -->
+          <p class="mt-5">
+           {{article.about}}.
+          </p>
           @include('component/partials/delivery-details')
         </div>
       </div>
-      <h3 class="text-2xl font-semibold text-gray-800 mt-5">
+      <h3 class="text-lg font-semibold text-gray-800 mt-5">
         A propos du vendeur
       </h3>
       <div class="inline-flex mt-5 items-center">
         <img src="https://placehold.co/400" alt="" class="size-1/12 rounded-4xl" />
-        <p class="mx-2 text-[#CE0000] text-lg">{{article.seller_id}}</p>
+        <p class="mx-2 text-[#CE0000] text-lg">{{  article.seller.user.name?.toUpperCase() }}</p>
       </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const id = '{{ article.id }}';
+      const inc = document.querySelector(`[data-increment-id='${id}']`);
+      const dec = document.querySelector(`[data-decrement-id='${id}']`);
+      const qtyEl = document.querySelector(`[data-qty-id='${id}']`);
+      const addBtn = document.getElementById(`add-to-cart-${id}`);
+
+      // Ensure default quantity is 1
+      if (qtyEl && (!qtyEl.textContent || Number(qtyEl.textContent) < 1)) {
+        qtyEl.textContent = '1';
+      }
+
+      if (inc) {
+        inc.addEventListener('click', (e) => {
+          e.preventDefault();
+          let q = Number(qtyEl.textContent || 1) || 1;
+          q = q + 1;
+          qtyEl.textContent = q;
+        });
+      }
+
+      if (dec) {
+        dec.addEventListener('click', (e) => {
+          e.preventDefault();
+          let q = Number(qtyEl.textContent || 1) || 1;
+          q = Math.max(1, q - 1);
+          qtyEl.textContent = q;
+        });
+      }
+
+      if (addBtn) {
+        addBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const q = Number(qtyEl.textContent || 1) || 1;
+          // Use global addToCart function defined in layout
+          if (typeof addToCart === 'function') {
+            await addToCart(Number(id), q, addBtn);
+          } else {
+            // Fallback: call API directly
+            try {
+              await axios.get(`/api/cart/addToCart`, { params: { articleId: Number(id), quantity: q }, withCredentials: true });
+              // Refresh UI if fetchCart exists
+              if (typeof fetchCart === 'function' && typeof updateCartUI === 'function') {
+                const cartData = await fetchCart();
+                updateCartUI(cartData);
+              }
+            } catch (err) {
+              console.error('Erreur ajout au panier (fallback) :', err);
+            }
+          }
+        });
+      }
+    });
+  </script>
       <div>
-        <h3 class="text-2xl font-semibold text-gray-800 mt-2">
-          Description
+        <h3 class="text-lg font-semibold text-gray-800 mt-2">
+          Categorie
         </h3>
         <p>
-          {{article.about}}.
+          {{article.category}}
         </p>
-      </div>
-      <div>
-        <h3 class="text-2xl font-semibold text-gray-800 mt-2">
+        <h3 class="text-lg font-semibold text-gray-800 mt-2">
           Localisation
         </h3>
         <p>
-          Oku, Région du Nord-Ouest, Cameroun
+          {{article.seller.location}}
         </p>
       </div>
       <div>
-        <h3 class="text-2xl font-semibold text-gray-800 mt-2">
+        <h3 class="text-large font-semibold text-gray-800 mt-2">
           Autres produits du meme vendeur
         </h3>
         <div class="inline-flex">
-          {{-- @include('component/partials/card')
-          {{-- @include('component/partials/card')
-          {{-- @include('component/partials/card') --}} --}} --}}
+          {{-- @each(article.seller.articles, 'component/partials/article-card', article) --}}
         </div>
       </div>
-    </div>
   @endslot
 @end
