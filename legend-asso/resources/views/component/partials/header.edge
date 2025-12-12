@@ -1,26 +1,18 @@
 @eval(await auth.check())
 
 <div class="drawer drawer-end">
-    {{-- Input pour la gestion de l'état du tiroir Panier --}}
     <input id="cart-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" />
 
-    {{-- 1. Contenu Principal (Header/Navbar inclus) --}}
     <div class="drawer-content">
         @include('component/partials/header-navbar')
-        {{-- Ici irait le contenu spécifique de la page (Yield) --}}
     </div>
-
-    {{-- 2. Tiroir Panier --}}
         @include('component/partials/sidebar-cart')
-
-        {{-- 3. Tiroir Menu Mobile --}}
-                @include('component/partials/sidebar-mobile-menu')
+        @include('component/partials/sidebar-mobile-menu')
 </div>
 
-<!-- Mobile menu as a separate drawer to avoid conflicting with cart drawer -->
 <div class="drawer">
     <input id="mobile-menu-drawer" type="checkbox" class="drawer-toggle" aria-hidden="true" />
-    <div class="drawer-content"><!-- empty, the menu will overlay -->
+    <div class="drawer-content">
     </div>
     @include('component/partials/sidebar-mobile-menu')
 </div>

@@ -1,6 +1,5 @@
 <nav class="flex items-center justify-center pt-8 mb-20 p-5" aria-label="Pagination">
   <div class="flex items-center space-x-2">
-
     <a
       href="#"
       class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition duration-150 ease-in-out"
@@ -19,42 +18,28 @@
       Précédent
     </a>
 
-    <div class="hidden sm:flex space-x-1">
+  @each(anchor in pagination)
+    <a href="{{ anchor.url }}" class="
+        rounded-lg px-4 py-2 mx-2 text-sm font-medium shadow-sm 
+        
+        {{-- Logique Ternaire pour les couleurs --}}
+        {{ anchor.isActive ? 
+            "rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm" :      // Style pour la page COURANTE (plus visible)
+            "rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" // Style pour les autres pages
+        }}
+        
+        {{-- Gestion du cas où l'élément n'est pas un numéro (comme '...') --}}
+        {{ anchor.page === null ? 'pointer-events-none opacity-50' : '' }}
+    ">
+        @if(anchor.page === null)
+            ...
+        @else
+            {{ anchor.page }}
+        @end
+    </a>
+@endeach
 
       <a
-        href="#"
-        aria-current="page"
-        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm"
-      >
-        1
-      </a>
-
-      <a
-        href="#"
-        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
-      >
-        2
-      </a>
-      <a
-        href="#"
-        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
-      >
-        3
-      </a>
-
-      <span class="px-4 py-2 text-sm font-medium text-gray-500">
-        ...
-      </span>
-
-      <a
-        href="#"
-        class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
-      >
-        10
-      </a>
-    </div>
-
-    <a
       href="#"
       class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition duration-150 ease-in-out"
       aria-label="Page suivante"
@@ -71,6 +56,5 @@
 
       </svg>
     </a>
-
   </div>
 </nav>

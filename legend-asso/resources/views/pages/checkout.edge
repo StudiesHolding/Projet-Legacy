@@ -9,6 +9,7 @@
           @else
             <div id="checkout-cart-items">
               @each(item in cart.items)
+          {{-- @dd(item) --}}
                 <div class="inline-flex items-center mb-4 w-full" data-cart-item-id="{{ item.id }}">
                   <img src="https://placehold.co/400" alt="" class="w-1/4 rounded-lg" />
                   <div class="ml-3 flex-1">
@@ -18,7 +19,7 @@
                       <span data-qty-id="{{ item.id }}">{{ item.quantity }}</span>
                       <button data-increment-id="{{ item.id }}" class="btn">+</button>
                     </div>
-                      <span class="text-sm">Total: <span data-line-total-id="{{ item.id }}">{{ item.price * item.quantity }}</span> Fcfa</span>
+                      <span class="text-sm">Total: <span data-line-total-id="{{ item.id }}">{{ formatNumber(item.price) * item.quantity }}</span> Fcfa</span>
                   </div>
                 </div>
               @endeach

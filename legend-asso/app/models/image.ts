@@ -7,10 +7,10 @@ export default class Image extends BaseModel {
   declare id: number
 
   @column()
-  declare articleId: number 
+  declare articleId: number
 
   @column()
-  declare imageUrl: string 
+  declare imageUrl: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -106,6 +106,37 @@ export default class ArticlesController {
       measure: payload.measure,
     })
     await article.save()
+
+    // Supprimer les images existantes
+    await article.related('images').query().delete()
+
+    // Gérer les nouvelles images
+    const imagesToStore: { imageUrl: string }[] = []
+
+    if (Array.isArray(payload.images)) {
+      for (const imageFile of payload.images) {
+        if (!imageFile.isValid) {
+          continue
+        }
+
+        const imageName = `${cuid()}.${imageFile.extname}`
+        const folder = app.publicPath('uploads/articles')
+
+        await imageFile.move(folder, {
+          name: imageName,
+          overwrite: true,
+        })
+
+        imagesToStore.push({
+          imageUrl: `/uploads/articles/${imageName}`,
+        })
+      }
+    }
+
+    if (imagesToStore.length > 0) {
+      await article.related('images').createMany(imagesToStore)
+    }
+
     session.flash('success', 'Article mis à jour avec succès.')
     return response.redirect().toRoute('article.index')
   }

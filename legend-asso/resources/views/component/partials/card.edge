@@ -1,12 +1,13 @@
 <div
   class="flex flex-col bg-white p-1 rounded-2xl m-2 mt-2   hover:shadow-lg transition-shadow duration-300 w-80"
 >
+{{-- @dd(article) --}}
   <a href="{{ route(`show.product`,{
     'slug':article.slug
   })}}">
     <div class="p-2.5 h-80 overflow-hidden rounded-xl bg-clip-border">
       <img
-        src="https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=927&amp;q=80"
+        src="{{ article.images[0]?.imageUrl || 'https://placehold.co/600x400?text=No+Image' }}"
         {{-- {{{ await $slots.images()}}} --}}
         alt="card-image"
         class="h-full w-full rounded-xl object-cover"
@@ -18,7 +19,7 @@
           {{ article.name }}
         </p>
         <p class="text-cyan-600 text-xl font-semibold p-2">
-          {{ article.price}} FCFA
+          {{ formatNumber(article.price)}} FCFA
         </p>
       </div>
     </div>
