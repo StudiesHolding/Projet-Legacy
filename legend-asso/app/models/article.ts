@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import Image from '#models/image'
-import { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Seller from './seller.js'
 
 export default class Article extends BaseModel {
@@ -39,11 +39,11 @@ export default class Article extends BaseModel {
   declare updatedAt: DateTime
 
   @hasMany(() => Image)
-  public images: HasMany<typeof Image> | undefined
+  declare images: HasMany<typeof Image>
 
   @belongsTo(() => Seller, {
     localKey: 'id',
     foreignKey: 'seller_id',
   })
-  public seller: BelongsTo<typeof Seller> | undefined
+  declare seller: BelongsTo<typeof Seller>
 }

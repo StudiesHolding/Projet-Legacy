@@ -1,4 +1,3 @@
-import env from '#start/env'
 import app from '@adonisjs/core/services/app'
 import { defineConfig, store, drivers } from '@adonisjs/cache'
 
@@ -10,12 +9,12 @@ const cacheConfig = defineConfig({
 
     default: store()
       .useL1Layer(drivers.memory())
-    
-      .useL2Layer(drivers.file({
-        directory: app.tmpPath('cache')
-      }))
-    
-  }
+      .useL2Layer(
+        drivers.file({
+          directory: app.tmpPath('cache'),
+        })
+      ),
+  },
 })
 
 export default cacheConfig

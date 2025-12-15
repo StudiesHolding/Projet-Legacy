@@ -40,5 +40,5 @@ export default class Seller extends BaseModel {
     localKey: 'id',
     foreignKey: 'seller_id',
   })
-  public articles: HasMany<typeof Article> | undefined
+  declare articles: HasMany<typeof Article>
 }

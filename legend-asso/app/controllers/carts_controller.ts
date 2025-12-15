@@ -77,7 +77,6 @@ export default class CartsController {
 
     const cart = session.get('cart') || { items: [] }
     if (!Array.isArray(cart.items)) cart.items = []
-    const initialLength = cart.items.length
 
     // Find the item in the cart
     const itemIndex = cart.items.findIndex((item: any) => item.id === articleId)

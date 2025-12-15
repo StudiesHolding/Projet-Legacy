@@ -12,7 +12,6 @@ import { middleware } from './kernel.js'
 import transmit from '@adonisjs/transmit/services/main'
 transmit.registerRoutes()
 
-
 const AuthController = () => import('#controllers/auth_controller')
 const SellerRegistrationsController = () => import('#controllers/seller_registrations_controller')
 const ArticlesController = () => import('#controllers/articles_controller')
@@ -51,10 +50,9 @@ router.get('logout', [AuthController, 'logout_client']).as('logout_client')
 router.post('handleStepOne', [SellerRegistrationsController, 'handleStepOne']).as('handleStepOne')
 router.post('handleStepTwo', [SellerRegistrationsController, 'finalize']).as('finalize')
 
-router.resource('article', ArticlesController).use(middleware.auth())
+router.resource('article', ArticlesController).use('*', middleware.auth())
 router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destroy')
 
-// Cart API routes with session middleware
 router
   .group(() => {
     router.get('/cart/getCart', [CartsController, 'getCart']).as('api.cart.get')

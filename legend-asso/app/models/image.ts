@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import Article from '#models/article'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 export default class Image extends BaseModel {
   @column({ isPrimary: true })

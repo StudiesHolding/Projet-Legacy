@@ -49,7 +49,6 @@ export default class ArticlesController {
     })
 
     const imagesToStore: { imageUrl: string }[] = []
-
     if (Array.isArray(payload.images)) {
       for (const imageFile of payload.images) {
         if (!imageFile.isValid) {

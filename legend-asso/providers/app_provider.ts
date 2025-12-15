@@ -1,7 +1,6 @@
 import type { ApplicationService } from '@adonisjs/core/types'
 import edge from 'edge.js'
 import string from '@adonisjs/core/helpers/string'
-declare const Intl: { NumberFormat: typeof NumberFormat }
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}

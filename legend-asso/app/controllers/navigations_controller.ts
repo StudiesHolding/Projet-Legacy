@@ -1,5 +1,4 @@
 import Article from '#models/article'
-import { a } from '@adonisjs/cache/types'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
