@@ -2,8 +2,25 @@ import Article from '#models/article'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
-  public async home({ view }: HttpContext) {
-    return view.render('pages/home')
+  public async home({ view, request }: HttpContext) {
+    // return view.render('pages/home')
+    const page = request.input('page', 1)
+    const articles = await Article.query()
+      .preload('images')
+      .orderBy('created_at', 'desc')
+      .paginate(page, 12)
+    articles.baseUrl('/catalogue')
+
+    const rangeMin = Math.max(1, articles.currentPage - 1)
+    const rangeMax = Math.max(1, articles.currentPage + 1)
+
+    const pagination = articles.getUrlsForRange(1, articles.lastPage).filter((item) => {
+      if (item.page === 1 || item.page === articles.lastPage) {
+        return true
+      }
+      return item.page >= rangeMin && item.page <= rangeMax
+    })
+    return view.render('pages/catalogue/index', { articles: articles, pagination: pagination })
   }
 
   public async catalogue({ view, request }: HttpContext) {
