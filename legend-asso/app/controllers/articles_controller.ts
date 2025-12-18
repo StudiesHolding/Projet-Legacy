@@ -17,7 +17,20 @@ export default class ArticlesController {
       .where('seller_id', user.id)
       .paginate(page, 12)
     articles.baseUrl('/article')
-    return view.render('pages/dashboard/seller/my-articles', { myArticles: articles })
+
+    const rangeMin = Math.max(1, articles.currentPage - 1)
+    const rangeMax = Math.max(1, articles.currentPage + 1)
+
+    const pagination = articles.getUrlsForRange(1, articles.lastPage).filter((item) => {
+      if (item.page === 1 || item.page === articles.lastPage) {
+        return true
+      }
+      return item.page >= rangeMin && item.page <= rangeMax
+    })
+    return view.render('pages/dashboard/seller/my-articles', {
+      myArticles: articles,
+      pagination: pagination,
+    })
   }
   /**
    * Display form to create a new record
@@ -34,6 +47,7 @@ export default class ArticlesController {
     const payload = await request.validateUsing(ArticleValidator)
 
     const slug = string.slug(payload.name)
+    const available = true
     const user = await auth.authenticate()
     const sellerId = user.id
 
@@ -46,6 +60,7 @@ export default class ArticlesController {
       category: payload.category,
       price: payload.price,
       measure: payload.measure,
+      available: available,
     })
 
     const imagesToStore: { imageUrl: string }[] = []
@@ -96,6 +111,7 @@ export default class ArticlesController {
       return response.unauthorized('Action non autorisée.')
     }
     const payload = await request.validateUsing(ArticleValidator)
+    console.log(payload)
     article.merge({
       slug: string.slug(payload.name),
       name: payload.name,
@@ -103,6 +119,7 @@ export default class ArticlesController {
       category: payload.category,
       price: payload.price,
       measure: payload.measure,
+      available: payload.available,
     })
     await article.save()
 

@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator } from '#validators/register'
 import { AuthValidator } from '#validators/auth'
+import RequestService from '#services/request_service'
 
 export default class AuthController {
 
@@ -26,15 +27,24 @@ export default class AuthController {
     }
 
     public async login_client ({request , auth , response, session}: HttpContext){ 
-        try {
+    try {
             const payload = await request.validateUsing(AuthValidator)
-            const user = await User.verifyCredentials(payload.email , payload.password)
-            await auth.use('web').login(user)
-            if(user.role = 'seller'){
+      const user = await User.verifyCredentials(payload.email, payload.password)
+        await auth.use('web').login(user)
+        const forward = RequestService.getForwardUrl(payload.forward)
+        if(forward){
+            return response.redirect().toPath(forward)
+        }
+
+        switch(user.role){
+            case 'seller':
                 return response.redirect().toRoute('dashboard-seller')
-            }else{
+            case 'client':
                 return response.redirect().toRoute('dashboard-client')
-            }
+            default:
+                return response.redirect().toRoute('home')
+        }
+
         } catch (error) {
             if (error.code === 'E_INVALID_CREDENTIALS') {
                 session.flash('errors.login', ['Identifiants invalides (Email ou mot de passe incorrect).'])

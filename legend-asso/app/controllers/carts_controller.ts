@@ -10,7 +10,7 @@ export default class CartsController {
       return response.badRequest({ message: "ID de l'article manquant" })
     }
 
-    const article = await Article.find(articleId)
+    const article = await Article.query().where('id', articleId).preload('images').first()
     if (!article) {
       return response.notFound({ message: 'Article introuvable.' })
     }
@@ -32,6 +32,7 @@ export default class CartsController {
         name: article.name,
         price: article.price,
         quantity,
+        image: article.images[0]?.imageUrl || null,
       })
     }
     session.put('cart', cart)

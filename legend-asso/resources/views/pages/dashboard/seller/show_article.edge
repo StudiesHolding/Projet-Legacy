@@ -1,115 +1,114 @@
 @component('component/layouts/dashboard')
 @slot('content')
-    <div class="bg-white p-6 rounded-xl shadow-md">
-{{-- @dd(article) --}}
-        <h2 class="text-xl font-semibold text-gray-800">Modifier l'article</h2>
-        <form action="{{route('article.update',{id:article.id})}}?_method=PATCH" method="POST" enctype="multipart/form-data">
+<div class="bg-white p-6 rounded-xl shadow-md">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Modifier l'article</h2>
     
-    {{csrfField()}}
-    <div class="inline-flex">
-        @each(image in article.images)
-        <div class="w-1/4">
-            <img src="{{image.imageUrl}}"/>
+    <form action="{{ route('article.update', { id: article.id }) }}?_method=PATCH" method="POST" enctype="multipart/form-data">
+        {{ csrfField() }}
+
+        {{-- Affichage des images actuelles --}}
+        <div class="flex flex-wrap gap-2 mb-4">
+            @each(image in article.images)
+            <div class="w-24 h-24 border rounded overflow-hidden">
+                <img src="{{ image.imageUrl }}" class="object-cover w-full h-full" />
+            </div>
+            @end
         </div>
-        @end
-    </div>
 
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="images">Image de l'article</label>
-        <input
-        required
-        type="file"
-        id="images"
-        name="images[]"
-        multiple
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.images'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.images').join(', ') }}</p>
-        @endif
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Nom de l'article</label>
-        <input
-        required
-        type="text"
-        id="name"
-        name="name"
-        value="{{ old('name') || article.name || '' }}"
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.name'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(',') }}</p>
-        @endif
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="about">Description</label>
-        <textarea
-        required
-        id="about"
-        name="about"
-        placeholder="Décrivez ici votre produit, vos motivations, ou tout autre détail pertinent (5 lignes minimum pour une bonne lisibilité)."
-        class="w-full p-4 border border-gray-300 rounded-xl text-gray-800 text-base leading-relaxed focus:ring-2 focus:ring-[#171B99] focus:border-[#171B99] resize-none h-32 transition duration-200 ease-in-out">
-         {{ old('about') || article.about || '' }}
-        </textarea>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="images">Remplacer les images (optionnel)</label>
+            <input
+                type="file"
+                id="images"
+                name="images[]"
+                multiple
+                class="input w-full border rounded py-2 px-3 text-gray-700"
+            />
+            @if(flashMessages.has('errors.images'))
+                <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.images').join(', ') }}</p>
+            @endif
+        </div>
 
-        @if(flashMessages.has('errors.description'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.description').join(', ') }}</p>
-        @endif
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="price">Prix</label>
-        <input
-        required
-        type="number"
-        id="price"
-        name="price"
-        value="{{ old('about') || article.price || '' }}" 
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.price'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.price').join(', ') }}</p>
-        @endif
-    </div>
-            
-    <div class="mb-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="category">catégorie</label>
-        <select
-            id="category"
-            name="category"
-            class="input select w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
-            required
-        >
-            <option value="" disabled selected>Sélectionnez une catégorie</option>
-            <option value="cat1" {{ old('cat1') === 'cat1' ? 'selected' : '' }}>cat1</option>
-            <option value="cat2" {{ old('cat2') === 'cat2' ? 'selected' : '' }}>cat2</option>
-            <option value="cat3" {{ old('cat3') === 'cat3' ? 'selected' : '' }}>cat3</option>
-        </select>
-        @if(flashMessages.has('errors.category'))
-            <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.category').join(', ') }}</p>
-        @end
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="measure">Volume/Poids</label>
-        <input
-        required
-        type="number"
-        id="measure"
-        name="measure"
-        value="{{ old('about') || article.measure || '' }}"
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.measure'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.measure').join(', ') }}</p>
-        @endif
-    </div>
-    <div class="flex items-center justify-between">
-            <button
-              class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Nom de l'article</label>
+            <input
+                required
+                type="text"
+                id="name"
+                name="name"
+                value="{{ old('name', article.name) }}"
+                class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            @if(flashMessages.has('errors.name'))
+                <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(',') }}</p>
+            @endif
+        </div>
+
+        <div class="inline-flex justify-between items-center w-full mb-4 p-2 bg-gray-50 rounded">
+            <span class="text-gray-700 font-bold text-sm">Disponible</span>
+            <label class="toggle text-base-content">
+                <input type="checkbox" name="is_available" value="1" {{ article.is_available ? 'checked' : '' }} />
+                </label>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="about">Description</label>
+            <textarea
+                required
+                id="about"
+                name="about"
+                class="w-full p-4 border border-gray-300 rounded-xl text-gray-800 text-base h-32 focus:ring-2 focus:ring-[#171B99] resize-none"
+            >{{ old('about', article.about) }}</textarea>
+            @if(flashMessages.has('errors.about'))
+                <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.about').join(', ') }}</p>
+            @endif
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="price">Prix</label>
+                <input
+                    required
+                    type="number"
+                    id="price"
+                    name="price"
+                    value="{{ old('price', article.price) }}" 
+                    class="input w-full border rounded py-2 px-3 text-gray-700"
+                />
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="measure">Volume/Poids</label>
+                <input
+                    required
+                    type="number"
+                    id="measure"
+                    name="measure"
+                    value="{{ old('measure', article.measure) }}"
+                    class="input w-full border rounded py-2 px-3 text-gray-700"
+                />
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Catégorie</label>
+            <select
+                id="category"
+                name="category"
+                class="input w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700"
+                required
             >
-              Ajouter mon article
-            </button>
-    </div>  
+                <option value="" disabled>Sélectionnez une catégorie</option>
+                {{-- Note: Remplacez 'category_id' par le nom de votre colonne en DB --}}
+                <option value="cat1" {{ old('category', article.category) === 'cat1' ? 'selected' : '' }}>cat1</option>
+                <option value="cat2" {{ old('category', article.category) === 'cat2' ? 'selected' : '' }}>cat2</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition duration-200">
+            Enregistrer les modifications
+        </button>
     </form>
+</div>
 @endslot
 @end

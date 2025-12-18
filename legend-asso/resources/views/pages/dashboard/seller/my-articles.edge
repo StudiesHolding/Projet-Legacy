@@ -37,11 +37,8 @@
             @end
         </div>
     <div>
-    @each(anchor in myArticles.getUrlsForRange(1, myArticles.lastPage))
-        <a href="{{ anchor.url }}">
-        {{ anchor.page }}
-        </a>
-    @endeach
+        @component('component/partials/pagination', { 'pagination': pagination })
+        @endcomponent
 </div>
     @end
 @end

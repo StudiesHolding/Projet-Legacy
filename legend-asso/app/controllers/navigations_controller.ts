@@ -3,9 +3,9 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
   public async home({ view, request }: HttpContext) {
-    // return view.render('pages/home')
     const page = request.input('page', 1)
     const articles = await Article.query()
+      .where('available', true)
       .preload('images')
       .orderBy('created_at', 'desc')
       .paginate(page, 12)
@@ -61,6 +61,10 @@ export default class NavigationsController {
   }
 
   public async login({ view }: HttpContext) {
+    return view.render('pages/login')
+  }
+
+  public async payement({ view }: HttpContext) {
     return view.render('pages/login')
   }
 

@@ -22,6 +22,7 @@ export default class extends BaseSeeder {
         measure: faker.number.int({ min: 1, max: 100 }),
         seller_id: faker.number.int({ min: 1, max: 5 }),
         status: faker.helpers.arrayElement(possibleStatuses),
+        available: faker.datatype.boolean(),
       })
     }
     await Article.createMany(articleData)

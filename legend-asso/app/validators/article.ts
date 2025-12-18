@@ -6,6 +6,7 @@ export const ArticleValidator = vine.compile(
     about: vine.string(),
     price: vine.number(),
     measure: vine.number(),
+    available: vine.boolean().optional(),
     category: vine.string(),
     images: vine
       .array(

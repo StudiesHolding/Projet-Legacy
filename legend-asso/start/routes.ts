@@ -44,9 +44,15 @@ router
   .get('dashboard-client', [NavigationsController, 'showClientDashboard'])
   .use(middleware.auth())
   .as('dashboard-client')
-router.post('register', [AuthController, 'register_client']).as('register_client')
-router.post('login', [AuthController, 'login_client']).as('login_client')
-router.get('logout', [AuthController, 'logout_client']).as('logout_client')
+
+router.get('payement', [NavigationsController, 'payement']).use(middleware.auth()).as('payement')
+
+router
+  .post('register', [AuthController, 'register_client'])
+  .as('register_client')
+  .use(middleware.guest())
+router.post('login', [AuthController, 'login_client']).as('login_client').use(middleware.guest())
+router.get('logout', [AuthController, 'logout_client']).as('logout_client').use(middleware.auth())
 router.post('handleStepOne', [SellerRegistrationsController, 'handleStepOne']).as('handleStepOne')
 router.post('handleStepTwo', [SellerRegistrationsController, 'finalize']).as('finalize')
 

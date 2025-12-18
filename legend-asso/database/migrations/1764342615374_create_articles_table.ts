@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.integer('seller_id')
       table.string('status')
       table.string('slug')
+      table.boolean('available')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

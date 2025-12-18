@@ -32,6 +32,9 @@ export default class Article extends BaseModel {
   @column()
   declare slug: string
 
+  @column()
+  declare available: boolean
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

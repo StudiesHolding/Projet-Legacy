@@ -3,20 +3,22 @@
     login
   @end
   @slot('main')
+  @let(forward = old('forward') ?? request.header('referrer'))
     <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
 
-      <div class="mb-5">
+      <div class="mb-1">
         <a href="{{ route('home') }}">
           <img src="/images/legaci-logo.png" alt="" class="h-12 w-auto" />
         </a>
       </div>
       <div class="w-full max-w-md">
-        <p class="my-2">
+        <p class="mx-5">
           Connectez-vous pour découvrir et commander les meilleurs produits “Made in Cameroon”, directement auprès de nos artisans et producteurs locaux.
         </p>
 
         <form action="{{route('login_client')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
           {{csrfField()}}
+          <input type="hidden" name="forward" value="{{ forward || '' }}">   
           <a href="https://accounts.google.com/o/oauth2/auth" class="btn w-full py-2 bg-white">
             <img src="/images/google.png" alt="google-icon" class="size-16" />
           </a>
@@ -68,6 +70,7 @@
               Connexion
             </button>
           </div>
+        <p class="my-5"><a href="{{ route('register-client') }}" class="text-blue-500 hover:underline">Créer un compte</a></p>
         </form>
       </div>
     </div>

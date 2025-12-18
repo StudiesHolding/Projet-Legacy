@@ -5,13 +5,13 @@
   @slot('main')
     <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
 
-      <div class="mb-6">
+      <div class="mb-4">
         <a href="{{ route('home') }}">
           <img src="/images/legaci-logo.png" alt="" class="h-12 w-auto" />
         </a>
       </div>
       <div class="w-full max-w-md">
-        <p>
+        <p class="mx-4">
           Ouvrez votre compte pour accéder à notre marché sécurisé, suivre vos commandes et profiter d’avantages exclusifs.
         </p>
 
@@ -104,6 +104,7 @@
               Ajouter mon compte
             </button>
           </div>
+            <p class="my-5"><a href="{{ route('login') }}" class="text-blue-500 hover:underline">J'ai déja un compte</a></p>
 
         </form>
       </div>
