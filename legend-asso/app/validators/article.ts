@@ -7,7 +7,7 @@ export const ArticleValidator = vine.compile(
     price: vine.number(),
     measure: vine.number(),
     available: vine.boolean().optional(),
-    category: vine.string(),
+    category_id: vine.number(),
     images: vine
       .array(
         vine.file({

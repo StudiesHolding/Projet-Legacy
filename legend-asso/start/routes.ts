@@ -20,7 +20,7 @@ const NavigationsController = () => import('#controllers/navigations_controller'
 const CartsController = () => import('#controllers/carts_controller')
 
 router.get('/', [NavigationsController, 'home']).as('home')
-router.get('catalogue', [NavigationsController, 'catalogue']).as('catalogue')
+// router.get('catalogue', [NavigationsController, 'catalogue']).as('catalogue')
 router.get('catalogue/:slug', [NavigationsController, 'showArticleBySlug']).as('show.product')
 router.get('checkout', [NavigationsController, 'checkout']).as('checkout')
 router.get('login', [NavigationsController, 'login']).as('login')

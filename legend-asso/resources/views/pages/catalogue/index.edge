@@ -1,10 +1,13 @@
-@component('component/layouts/app')
+@component('component/layouts/app',{'searchQuery':searchQuery})
   @slot('title')
     catalogue
   @end
-
   @slot('main')
-    @include('component/partials/category-section')
+{{-- @dd(categories) --}}
+@component('component/partials/category-section', { categories })
+  
+@end
+    {{-- @include('component/partials/category-section',{categories}) --}}
     <div class="w-full flex-wrap inline-flex">
       @each(article in articles)
         @component('component/partials/card',{'article':article})

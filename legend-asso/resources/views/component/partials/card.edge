@@ -1,5 +1,5 @@
 <div
-  class="flex flex-col bg-white p-1 rounded-2xl m-2 mt-2   hover:shadow-lg transition-shadow duration-300 w-80"
+  class="flex flex-col items-center bg-white p-1 rounded-2xl m-2 mt-2 hover:shadow-lg transition-shadow duration-300 w-80 border border-[#E0E0E0]"
 >
   <a href="{{ route(`show.product`,{
     'slug':article.slug
@@ -24,11 +24,13 @@
     </div>
   </a>
   <button
-    class="btn justify-center w-full border-[#171B99] border mt-1 p-4 text-center text-[#171B99] transition-all hover:bg-[#171B99] hover:text-white"
+    class="btn justify-center items-center w-11/12 border-[#171B99] border mt-1 p-4 text-center text-[#171B99] transition-all hover:bg-[#171B99] hover:text-white"
     type="button"
     id="add-to-cart-{{ article.id }}"
     data-article-id="{{ article.id }}"
   >
+  <p>
     Ajouter au panier
+  </p>
   </button>
 </div>

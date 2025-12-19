@@ -3,6 +3,12 @@
     <h3>
       Catégories
     </h3>
-
-    @include('component/partials/category')
+      <div class="my-2 inline-flex w-11/12 flex-wrap">
+        @each(category in categories)
+        <a href="/?category={{ category.name }}">
+          @component('component/partials/category', { name: category.name }) 
+          @end
+        </a>
+        @end
+      </div>
   </section>

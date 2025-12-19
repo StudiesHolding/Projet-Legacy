@@ -5,6 +5,23 @@
         <form action="{{route('article.store')}}" method="POST" enctype="multipart/form-data">
 
     {{csrfField()}}
+    <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="category">catégorie</label>
+        <select
+            id="category"
+            name="category_id"
+            class="input select w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
+            required
+        >
+            <option value="" disabled selected>Sélectionnez une catégorie</option>
+            @each(category in categories)
+                <option value="{{category.id}}" {{ old('category') === category.id ? 'selected' : '' }}>{{category.name}}</option>
+            @end
+        </select>
+        @if(flashMessages.has('errors.category'))
+            <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.category').join(', ') }}</p>
+        @end
+    </div>
     <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="images">Image de l'article</label>
         <input
@@ -63,23 +80,6 @@
         @endif
     </div>
             
-    <div class="mb-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="category">catégorie</label>
-        <select
-            id="category"
-            name="category"
-            class="input select w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
-            required
-        >
-            <option value="" disabled selected>Sélectionnez une catégorie</option>
-            <option value="cat1" {{ old('cat1') === 'cat1' ? 'selected' : '' }}>cat1</option>
-            <option value="cat2" {{ old('cat2') === 'cat2' ? 'selected' : '' }}>cat2</option>
-            <option value="cat3" {{ old('cat3') === 'cat3' ? 'selected' : '' }}>cat3</option>
-        </select>
-        @if(flashMessages.has('errors.category'))
-            <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.category').join(', ') }}</p>
-        @end
-    </div>
     <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="measure">Volume/Poids</label>
         <input

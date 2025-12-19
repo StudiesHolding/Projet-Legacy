@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('name')
       table.string('about')
       table.integer('price')
-      table.string('category')
+      table.integer('category_id')
       table.integer('measure')
       table.integer('seller_id')
       table.string('status')

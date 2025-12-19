@@ -3,6 +3,7 @@ import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import Image from '#models/image'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Seller from './seller.js'
+import Category from './category.js'
 
 export default class Article extends BaseModel {
   @column({ isPrimary: true })
@@ -18,7 +19,7 @@ export default class Article extends BaseModel {
   declare price: number
 
   @column()
-  declare category: string
+  declare category_id: number
 
   @column()
   declare measure: number
@@ -49,4 +50,10 @@ export default class Article extends BaseModel {
     foreignKey: 'seller_id',
   })
   declare seller: BelongsTo<typeof Seller>
+
+  @belongsTo(() => Category, {
+    localKey: 'id',
+    foreignKey: 'category_id',
+  })
+  declare category: BelongsTo<typeof Category>
 }

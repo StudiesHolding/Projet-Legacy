@@ -4,6 +4,7 @@ import { cuid } from '@adonisjs/core/helpers'
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import string from '@adonisjs/core/helpers/string'
+import Category from '#models/category'
 
 export default class ArticlesController {
   /**
@@ -36,7 +37,8 @@ export default class ArticlesController {
    * Display form to create a new record
    */
   async create({ view }: HttpContext) {
-    return view.render('pages/dashboard/seller/add_article')
+    const categories = await Category.all()
+    return view.render('pages/dashboard/seller/add_article', { categories })
   }
 
   /**
@@ -57,7 +59,7 @@ export default class ArticlesController {
       slug,
       name: payload.name,
       about: payload.about,
-      category: payload.category,
+      category_id: payload.category_id,
       price: payload.price,
       measure: payload.measure,
       available: available,
@@ -111,12 +113,11 @@ export default class ArticlesController {
       return response.unauthorized('Action non autorisée.')
     }
     const payload = await request.validateUsing(ArticleValidator)
-    console.log(payload)
     article.merge({
       slug: string.slug(payload.name),
       name: payload.name,
       about: payload.about,
-      category: payload.category,
+      category_id: payload.category_id,
       price: payload.price,
       measure: payload.measure,
       available: payload.available,
