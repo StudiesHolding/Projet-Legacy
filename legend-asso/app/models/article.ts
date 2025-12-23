@@ -22,7 +22,7 @@ export default class Article extends BaseModel {
   declare price: number
 
   @column({ columnName: 'category_id' })
-  declare categoryId: string
+  declare categoryId: number
 
   @column()
   declare measure: number

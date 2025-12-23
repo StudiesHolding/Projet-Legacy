@@ -54,12 +54,12 @@ export default class ArticlesController {
     const sellerId = user.id
 
     const article = await Article.create({
-      seller_id: sellerId,
+      sellerId: sellerId,
       status: 'pending',
       slug,
       name: payload.name,
       about: payload.about,
-      category_id: payload.category_id,
+      categoryId: payload.category_id,
       price: payload.price,
       measure: payload.measure,
       available: available,
@@ -109,7 +109,7 @@ export default class ArticlesController {
   async update({ params, request, response, auth, session }: HttpContext) {
     const article = await Article.query().where('id', params.id).firstOrFail()
     const user = await auth.authenticate()
-    if (article.seller_id !== user.id) {
+    if (article.sellerId !== user.id) {
       return response.unauthorized('Action non autorisée.')
     }
     const payload = await request.validateUsing(ArticleValidator)
@@ -117,7 +117,7 @@ export default class ArticlesController {
       slug: string.slug(payload.name),
       name: payload.name,
       about: payload.about,
-      category_id: payload.category_id,
+      categoryId: payload.category_id,
       price: payload.price,
       measure: payload.measure,
       available: payload.available,
@@ -162,7 +162,7 @@ export default class ArticlesController {
     const article = await Article.query().where('id', params.id).firstOrFail()
     const user = await auth.authenticate()
 
-    if (article.seller_id !== user.id) {
+    if (article.sellerId !== user.id) {
       return response.unauthorized('Action non autorisée.')
     }
 
