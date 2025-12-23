@@ -1,6 +1,5 @@
 import Article from '#models/article'
 import Category from '#models/category'
-import Seller from '#models/seller'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
@@ -64,7 +63,6 @@ export default class NavigationsController {
         sellerQuery.select('*').preload('user')
       })
       .firstOrFail()
-      console.log(article)
 
     const otherArticles = await Article.query()
       .where('sellerId', article?.sellerId)
