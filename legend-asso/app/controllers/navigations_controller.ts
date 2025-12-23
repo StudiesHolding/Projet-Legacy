@@ -1,32 +1,38 @@
 import Article from '#models/article'
 import Category from '#models/category'
+import Seller from '#models/seller'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
   public async home({ view, request }: HttpContext) {
     const searchQuery = request.input('search')
+    const categoryName = request.input('category')
     const page = request.input('page', 1)
     const categories = await Category.query().orderBy('name', 'asc')
-    let articles: any
+
+    const query = Article.query()
+      .where('available', true)
+      .preload('images')
+      .orderBy('created_at', 'desc')
+
+    if (categoryName) {
+      const searchCategory = await Category.findBy('name', categoryName)
+      if (searchCategory) {
+        query.where('category_id', searchCategory.id)
+      }
+    }
 
     if (searchQuery) {
-      articles = await Article.query()
-        .whereILike('name', `%${searchQuery}%`)
-        .preload('images')
-        .orderBy('created_at', 'desc')
-        .paginate(page, 12)
-    } else {
-      articles = await Article.query()
-        .where('available', true)
-        .preload('images')
-        .orderBy('created_at', 'desc')
-        .paginate(page, 12)
+      query.whereILike('name', `%${searchQuery}%`)
     }
+
+    const articles = await query.paginate(page, 12)
 
     articles.baseUrl('/')
-    if (searchQuery) {
-      articles.queryString({ search: searchQuery })
-    }
+    const params: any = {}
+    if (searchQuery) params.search = searchQuery
+    if (categoryName) params.category = categoryName
+    articles.queryString(params)
 
     const rangeMin = Math.max(1, articles.currentPage - 1)
     const rangeMax = Math.min(articles.lastPage, articles.currentPage + 1)
@@ -43,6 +49,7 @@ export default class NavigationsController {
       articles,
       pagination,
       searchQuery,
+      categoryName,
       categories,
     })
   }
@@ -51,13 +58,25 @@ export default class NavigationsController {
     const slug = params.slug
     const article = await Article.query()
       .where('slug', slug)
+      .preload('images')
       .preload('category')
       .preload('seller', (sellerQuery) => {
         sellerQuery.select('*').preload('user')
       })
+      .firstOrFail()
+      console.log(article)
+
+    const otherArticles = await Article.query()
+      .where('sellerId', article?.sellerId)
+      .whereNot('id', article.id)
+      .where('available', true)
       .preload('images')
-      .first()
-    return view.render('pages/catalogue/show_article', { article: article })
+      .limit(10)
+
+    return view.render('pages/catalogue/show_article', {
+      article,
+      otherArticles,
+    })
   }
 
   public async checkout({ view, session }: HttpContext) {

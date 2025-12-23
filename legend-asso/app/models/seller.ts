@@ -1,3 +1,41 @@
+// import { DateTime } from 'luxon'
+// import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
+// import User from '#models/user'
+// import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+// import Article from './article.js'
+
+// export default class Seller extends BaseModel {
+//   @column({ isPrimary: true })
+//   declare id: number
+
+//   @column({ columnName: 'user_id' })
+//   // declare user_id: number
+
+//   @hasOne(() => User)
+//   declare user: HasOne<typeof User>
+
+//   @column()
+//   declare sector: string
+
+//   @column()
+//   declare location: string
+
+//   @column()
+//   declare is_member: boolean
+
+//   @column({ columnName: 'member_code' })
+//   declare memberCode: string | null
+
+//   @column.dateTime({ autoCreate: true })
+//   declare createdAt: DateTime
+
+//   @column.dateTime({ autoCreate: true, autoUpdate: true })
+//   declare updatedAt: DateTime
+
+//   @hasMany(() => Article)
+//   declare articles: HasMany<typeof Article>
+// }
+
 import { DateTime } from 'luxon'
 import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import User from '#models/user'

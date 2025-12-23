@@ -1,9 +1,8 @@
-    {{-- <div class="my-2 inline-flex w-11/12 flex-wrap"> --}}
-        <div
-          class="w-auto border-[#CE0000] border hover:border-[#171B99] rounded-3xl px-2 py-1 m-1 text-xs cursor-pointer"
-        >
-          {{ name}}
-        </div>
-     {{-- </div> --}}
-    
-    
+
+
+<div
+  class="w-auto border rounded-3xl px-3 py-1 m-1 text-xs cursor-pointer transition-all 
+  {{ isActive ? 'border-[#171B99] text-[#171B99] bg-blue-50' : 'border-[#CE0000] hover:border-[#171B99]' }}"
+>
+  {{ name }}
+</div>

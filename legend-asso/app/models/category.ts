@@ -13,7 +13,9 @@ export default class Category extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
-  @hasMany(() => Article)
+  @hasMany(() => Article, {
+    foreignKey: 'category_id',
+  })
   declare articles: HasMany<typeof Article>
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })

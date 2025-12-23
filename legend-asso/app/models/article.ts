@@ -13,28 +13,28 @@ export default class Article extends BaseModel {
   declare name: string
 
   @column()
+  declare available: boolean
+
+  @column()
   declare about: string
 
   @column()
   declare price: number
 
-  @column()
-  declare category_id: number
+  @column({ columnName: 'category_id' })
+  declare categoryId: string
 
   @column()
   declare measure: number
 
-  @column()
-  declare seller_id: number
+  @column({ columnName: 'seller_id' })
+  declare sellerId: number
 
   @column()
   declare status: string
 
   @column()
   declare slug: string
-
-  @column()
-  declare available: boolean
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -45,15 +45,14 @@ export default class Article extends BaseModel {
   @hasMany(() => Image)
   declare images: HasMany<typeof Image>
 
-  @belongsTo(() => Seller, {
-    localKey: 'id',
-    foreignKey: 'seller_id',
-  })
-  declare seller: BelongsTo<typeof Seller>
-
   @belongsTo(() => Category, {
-    localKey: 'id',
-    foreignKey: 'category_id',
+    foreignKey: 'categoryId',
   })
   declare category: BelongsTo<typeof Category>
+
+  @belongsTo(() => Seller, {
+    localKey: 'id',
+    foreignKey: 'sellerId',
+  })
+  declare seller: BelongsTo<typeof Seller>
 }

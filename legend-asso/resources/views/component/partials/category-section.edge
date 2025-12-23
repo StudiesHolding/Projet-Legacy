@@ -1,14 +1,24 @@
 <section>
   <div>
-    <h3>
-      Catégories
-    </h3>
-      <div class="my-2 inline-flex w-11/12 flex-wrap">
-        @each(category in categories)
+    <h3>Catégories</h3>
+    <div class="my-2 inline-flex w-11/12 flex-wrap">
+      <a href="/">
+        @component('component/partials/category', { 
+          name: 'Tous', 
+          isActive: !categoryName 
+        }) 
+        @endcomponent
+      </a>
+
+      @each(category in categories)
         <a href="/?category={{ category.name }}">
-          @component('component/partials/category', { name: category.name }) 
-          @end
+          @component('component/partials/category', { 
+            name: category.name, 
+            isActive: categoryName === category.name 
+          }) 
+          @endcomponent
         </a>
-        @end
-      </div>
-  </section>
+      @end
+    </div>
+  </div>
+</section>

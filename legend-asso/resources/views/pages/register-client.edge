@@ -62,7 +62,8 @@
               id="phone"
               name="phone"
               value="{{ old('phone') || '' }}"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="numero de telephone"
+              class="input w-full border rounded py-2 w-full px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
             @if(flashMessages.has('errors.phone'))
               <p class="text-[#CE0000] text-xs italic mt-1 ">{{ flashMessages.get('errors.phone').join(', ') }}</p>

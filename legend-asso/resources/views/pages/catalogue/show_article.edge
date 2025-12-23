@@ -2,12 +2,13 @@
   @slot("title")
     {{ article.name }}
   @end
+@dd(article)
   @slot('main')
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 ">
       <div class="m-1">
         <div class="carousel carousel-center 
                     flex flex-row overflow-x-auto h-96 
-                     rounded-box space-x-4 p-4 shadow-lg">
+                     rounded-box space-x-4 p-4">
           
           @each(image in article.images)
             <div class="carousel-item w-96"> 
@@ -16,7 +17,6 @@
                 class="rounded-box w-full h-full object-cover" />
             </div>
           @end
-          
           @if(article.images.length === 0)
             <div class="carousel-item w-full">
               <img src="https://placehold.co/600x400?text=Article+sans+Image" class="rounded-box w-full h-full object-cover" />
@@ -77,16 +77,15 @@
           {{ article.seller?.user?.name ? article.seller.user.name.toUpperCase() : 'Vendeur Inconnu' }}
         </p>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
         <div>
           <h3 class="text-lg font-semibold text-gray-800">Catégorie</h3>
-                    @component('component/partials/category', { name: article.category.name })
-          @end
+            @component('component/partials/category', { name: article.category.name })
+            @end
         </div>
         <div>
           <h3 class="text-lg font-semibold text-gray-800">Localisation</h3>
-          <p class="text-gray-600">{{ article.seller.location }}</p>
+          {{-- <p class="text-gray-600">{{ article.seller.location }}</p> --}}
         </div>
       </div>
     </div>
@@ -96,13 +95,15 @@
       <h3 class="text-large font-semibold text-gray-800 mt-2">
         Autres produits du même vendeur
       </h3>
-      <div class="inline-flex overflow-x-auto py-4">
-        {{-- Assurez-vous que article.seller.articles est préchargé pour utiliser @each ici --}}
-        {{-- @each(article in article.seller.articles)
-          @include('component/partials/article-card', { article: article })
-        @end --}}
-      </div>
-    </div>
+
+<div class="carousel carousel-center rounded-box w-full max-w-md space-x-4">
+  <div class="flex-col">
+  @each(article in otherArticles)
+    @component('component/partials/card2', { article: article })
+    @end
+  @end
+  </div>
+</div>
     
     {{-- Le script reste inchangé et fonctionne correctement --}}
     <script>
@@ -166,5 +167,6 @@
         }
       });
     </script>
+  @end
   @endslot
 @end

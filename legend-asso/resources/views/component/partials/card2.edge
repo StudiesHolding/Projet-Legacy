@@ -1,0 +1,14 @@
+<div
+  class="flex bg-white rounded m-2 hover:shadow-lg transition-shadow duration-300 w-full border border-[#E0E0E0]"
+>
+  <a href="{{ route(`show.product`,{'slug':article.slug})}}">
+    <div class="w-full">
+        <p class="text-xs font-semibold">
+          {{ article.name }}
+        </p>
+        <p class="text-cyan-600 text-xs font-semibold">
+          {{ formatNumber(article.price)}} FCFA
+        </p>
+    </div>
+  </a>
+</div>

@@ -3,11 +3,9 @@
     catalogue
   @end
   @slot('main')
-{{-- @dd(categories) --}}
-@component('component/partials/category-section', { categories })
+@component('component/partials/category-section', { categories , categoryName })
   
 @end
-    {{-- @include('component/partials/category-section',{categories}) --}}
     <div class="w-full flex-wrap inline-flex">
       @each(article in articles)
         @component('component/partials/card',{'article':article})

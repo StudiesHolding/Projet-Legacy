@@ -35,7 +35,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
-  @hasOne(() => Seller)
+  @hasOne(() => Seller, {
+    foreignKey: 'seller_id',
+  })
   declare seller: HasOne<typeof Seller>
 
   @column.dateTime({ autoCreate: true })
