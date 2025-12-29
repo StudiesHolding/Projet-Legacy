@@ -20,7 +20,6 @@ const NavigationsController = () => import('#controllers/navigations_controller'
 const CartsController = () => import('#controllers/carts_controller')
 
 router.get('/', [NavigationsController, 'home']).as('home')
-// router.get('catalogue', [NavigationsController, 'catalogue']).as('catalogue')
 router.get('catalogue/:slug', [NavigationsController, 'showArticleBySlug']).as('show.product')
 router.get('checkout', [NavigationsController, 'checkout']).as('checkout')
 router.get('login', [NavigationsController, 'login']).as('login')
@@ -56,8 +55,18 @@ router.get('logout', [AuthController, 'logout_client']).as('logout_client').use(
 router.post('handleStepOne', [SellerRegistrationsController, 'handleStepOne']).as('handleStepOne')
 router.post('handleStepTwo', [SellerRegistrationsController, 'finalize']).as('finalize')
 
-router.resource('article', ArticlesController).use('*', middleware.auth())
-router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destroy')
+router
+  .group(() => {
+    router
+      .post('article/handleStepOne', [ArticlesController, 'handleStepOne'])
+      .as('handleStepOneForArticle')
+    router
+      .post('article/handleStepTwo', [ArticlesController, 'handleStepTwo'])
+      .as('handleStepTwoForArticle')
+    router.resource('article', ArticlesController)
+    router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destroy')
+  })
+  .use(middleware.auth())
 
 router
   .group(() => {

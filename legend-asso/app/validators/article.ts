@@ -6,8 +6,13 @@ export const ArticleValidator = vine.compile(
     about: vine.string(),
     price: vine.number(),
     measure: vine.number(),
+    delivery_time: vine.number(),
     available: vine.boolean().optional(),
     category_id: vine.number(),
+    certification: vine.array(vine.string()).optional(),
+    ingredient: vine.array(vine.string()).optional(),
+    expiration_date: vine.date({ formats: ['YYYY-MM-DD'] }).optional(),
+    conservation_advice: vine.string().trim().optional(),
     images: vine
       .array(
         vine.file({

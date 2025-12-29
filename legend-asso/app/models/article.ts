@@ -27,6 +27,9 @@ export default class Article extends BaseModel {
   @column()
   declare measure: number
 
+  @column()
+  declare delivery_time: number
+
   @column({ columnName: 'seller_id' })
   declare sellerId: number
 
@@ -42,7 +45,9 @@ export default class Article extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @hasMany(() => Image)
+  @hasMany(() => Image, {
+    foreignKey: 'articleId',
+  })
   declare images: HasMany<typeof Image>
 
   @belongsTo(() => Category, {

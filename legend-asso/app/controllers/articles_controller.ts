@@ -1,10 +1,12 @@
 import Article from '#models/article'
 import { ArticleValidator } from '#validators/article'
 import { cuid } from '@adonisjs/core/helpers'
-import type { HttpContext } from '@adonisjs/core/http'
+import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import string from '@adonisjs/core/helpers/string'
 import Category from '#models/category'
+import { AgrofoodSecondaryInfoValidator } from '#validators/agrofood_secondary_info'
+import AgrofoodSecondaryInfo from '#models/agrofood_secondary_info'
 
 export default class ArticlesController {
   /**
@@ -38,63 +40,42 @@ export default class ArticlesController {
    */
   async create({ view }: HttpContext) {
     const categories = await Category.all()
-    return view.render('pages/dashboard/seller/add_article', { categories })
+    return view.render('pages/dashboard/seller/add_article_1', { categories })
   }
 
   /**
    * Handle form submission for the create action
    */
 
-  async store({ request, auth, response, session }: HttpContext) {
-    const payload = await request.validateUsing(ArticleValidator)
-
-    const slug = string.slug(payload.name)
-    const available = true
-    const user = await auth.authenticate()
-    const sellerId = user.id
-
-    const article = await Article.create({
-      sellerId: sellerId,
-      status: 'pending',
-      slug,
-      name: payload.name,
-      about: payload.about,
-      categoryId: payload.category_id,
-      price: payload.price,
-      measure: payload.measure,
-      available: available,
-    })
-
-    const imagesToStore: { imageUrl: string }[] = []
-    if (Array.isArray(payload.images)) {
-      for (const imageFile of payload.images) {
-        if (!imageFile.isValid) {
-          continue
-        }
-
-        const imageName = `${cuid()}.${imageFile.extname}`
-        const folder = app.publicPath('uploads/articles')
-
-        await imageFile.move(folder, {
-          name: imageName,
-          overwrite: true,
-        })
-
-        imagesToStore.push({
-          imageUrl: `/uploads/articles/${imageName}`,
-        })
-      }
+  async store({ session, response }: HttpContext) {
+    console.log('amerique')
+    const stepOneData = session.get('stepOneData')
+    const imagesPaths = session.get('stepOneImages')
+    const stepTwoData = session.get('stepTwoData')
+    const completeData = {
+      ...stepOneData,
+      certification: stepTwoData?.certification,
+      ingredient_list: stepTwoData?.ingredient,
+      expiry_date: stepTwoData?.expiry_date,
+      conservation_advice: stepTwoData?.conservation_advice,
     }
 
-    if (imagesToStore.length > 0) {
+    const article = await AgrofoodSecondaryInfo.create(completeData)
+
+    if (imagesPaths && imagesPaths.length > 0) {
+      const imagesToStore = imagesPaths.map((path: string) => ({ imageUrl: path }))
       await article.related('images').createMany(imagesToStore)
     }
 
-    session.flash('notification', {
-      type: 'success',
-      message: 'Votre article a bien été soumis a la validation',
-    })
-    await article.load('images')
+    if (!stepOneData) {
+      return response.redirect().toRoute('article.create')
+    }
+
+    session.forget('stepOneData')
+    session.forget('stepTwoData')
+    session.forget('stepOneImages')
+
+    session.flash('success', 'Votre article a été créé avec succès !')
     return response.redirect().toRoute('article.index')
   }
 
@@ -103,7 +84,8 @@ export default class ArticlesController {
     if (!article) {
       return response.notFound('Article introuvable')
     }
-    return view.render('pages/dashboard/seller/show_article', { article })
+    const categories = await Category.all()
+    return view.render('pages/dashboard/seller/show_article', { article, categories })
   }
 
   async update({ params, request, response, auth, session }: HttpContext) {
@@ -112,6 +94,7 @@ export default class ArticlesController {
     if (article.sellerId !== user.id) {
       return response.unauthorized('Action non autorisée.')
     }
+
     const payload = await request.validateUsing(ArticleValidator)
     article.merge({
       slug: string.slug(payload.name),
@@ -170,5 +153,42 @@ export default class ArticlesController {
 
     session.flash('success', 'Article supprimé avec succès.')
     return response.redirect().toRoute('article.index')
+  }
+
+  async handleStepOne({ request, session, auth, view }: HttpContext) {
+    const payload = await request.validateUsing(ArticleValidator)
+    const slug = string.slug(payload.name)
+    const user = await auth.authenticate()
+
+    const imagesPaths: string[] = []
+    if (payload.images) {
+      for (const imageFile of payload.images) {
+        const imageName = `${cuid()}.${imageFile.extname}`
+        await imageFile.move(app.publicPath('uploads/articles'), { name: imageName })
+        imagesPaths.push(`/uploads/articles/${imageName}`)
+      }
+    }
+
+    // On stocke TOUT en session (données + chemins des images)
+    session.put('stepOneData', {
+      sellerId: user.id,
+      name: payload.name,
+      slug,
+      about: payload.about,
+      categoryId: payload.category_id,
+      price: payload.price,
+      measure: payload.measure,
+      status: 'pending',
+      available: true,
+    })
+
+    session.put('stepOneImages', imagesPaths)
+    return view.render('pages/dashboard/seller/add_article_2')
+  }
+
+  async handleStepTwo({ request, response, session }: HttpContext) {
+    const payload = await request.validateUsing(AgrofoodSecondaryInfoValidator)
+    session.put('stepTwoData', payload)
+    return await this.store({ session, response } as HttpContext)
   }
 }

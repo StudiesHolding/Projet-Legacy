@@ -14,7 +14,6 @@
             </div>
             @end
         </div>
-
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="images">Remplacer les images (optionnel)</label>
             <input
@@ -89,8 +88,9 @@
                 />
             </div>
         </div>
+{{-- @dd(categories) --}}
 
-        <div class="mb-6">
+        {{-- <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Catégorie</label>
             <select
                 id="category"
@@ -99,11 +99,34 @@
                 required
             >
                 <option value="" disabled>Sélectionnez une catégorie</option>
-                {{-- Note: Remplacez 'category_id' par le nom de votre colonne en DB --}}
-                <option value="cat1" {{ old('category', article.category) === 'cat1' ? 'selected' : '' }}>cat1</option>
-                <option value="cat2" {{ old('category', article.category) === 'cat2' ? 'selected' : '' }}>cat2</option>
+                @each(category in categories)
+                    <option value="{{category.id}}" {{ old('category', article.category) === 'cat2' ? 'selected' : '' }}>cat2</option>
+                    <option value="cat1" {{ old('category', article.category) === 'cat1' ? 'selected' : '' }}>cat1</option>
+                @end
             </select>
-        </div>
+        </div> --}}
+        <div class="mb-6">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Catégorie</label>
+    <select
+        id="category"
+        name="category"
+        class="input w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700"
+        required
+    >
+        <option value="" disabled {{ !old('category', article.categoryId) ? 'selected' : '' }}>
+            Sélectionnez une catégorie
+        </option>
+        
+        @each(category in categories)
+            <option 
+                value="{{ category.id }}" 
+                {{ old('category', article.categoryId) == category.id ? 'selected' : '' }}
+            >
+                {{ category.name }}
+            </option>
+        @end
+    </select>
+</div>
 
         <button type="submit" class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition duration-200">
             Enregistrer les modifications

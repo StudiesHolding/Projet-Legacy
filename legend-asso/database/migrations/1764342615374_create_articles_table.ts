@@ -15,6 +15,12 @@ export default class extends BaseSchema {
       table.string('status')
       table.string('slug')
       table.boolean('available')
+      table.integer('delivery_time')
+
+      table.jsonb('certification').nullable()
+      table.jsonb('ingredient_list').nullable()
+      table.date('expiry_date').nullable()
+      table.text('conservation_advice').nullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
