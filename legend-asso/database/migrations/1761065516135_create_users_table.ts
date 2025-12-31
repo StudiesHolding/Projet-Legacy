@@ -11,6 +11,10 @@ export default class extends BaseSchema {
       table.string('phone', 254).notNullable().unique()
       table.string('password').notNullable()
       table.enum('role', ['admin', 'seller', 'client']).defaultTo('client')
+      table.string('location').nullable()
+      table.string('sector').nullable()
+      table.string('member_code').nullable()
+      table.boolean('is_member').nullable()
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()

@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { column } from '@adonisjs/lucid/orm'
-import Article from './article.js'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 
-export default class AgrofoodSecondaryInfo extends Article {
-  public static table = 'articles'
+export default class Agrofood extends BaseModel {
+  @column({ isPrimary: true })
+  declare id: number
+
   @column({
     prepare: (value: string[]) => JSON.stringify(value),
     consume: (value: any) => (typeof value === 'string' ? JSON.parse(value) : value),
@@ -21,4 +22,7 @@ export default class AgrofoodSecondaryInfo extends Article {
     consume: (value: any) => (typeof value === 'string' ? JSON.parse(value) : value),
   })
   declare ingredient_list: string[]
+
+  @column()
+  declare articleId: number
 }

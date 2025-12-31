@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import Image from '#models/image'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import Seller from './seller.js'
 import Category from './category.js'
+import Agrofood from './agrofood.js'
 
 export default class Article extends BaseModel {
   @column({ isPrimary: true })
@@ -45,6 +46,15 @@ export default class Article extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
+  @hasOne(() => Agrofood, {
+    foreignKey: 'articleId',
+  })
+  declare agrofood: HasOne<typeof Agrofood>
+
+  public get details() {
+    return this.agrofood // Vous ajouterez || this.electronic plus tard
+  }
+
   @hasMany(() => Image, {
     foreignKey: 'articleId',
   })
@@ -56,7 +66,6 @@ export default class Article extends BaseModel {
   declare category: BelongsTo<typeof Category>
 
   @belongsTo(() => Seller, {
-    localKey: 'id',
     foreignKey: 'sellerId',
   })
   declare seller: BelongsTo<typeof Seller>

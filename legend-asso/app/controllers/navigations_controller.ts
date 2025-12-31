@@ -12,13 +12,13 @@ export default class NavigationsController {
     const query = Article.query()
       .where('available', true)
       .preload('images')
-      .orderBy('created_at', 'desc')
+      .orderBy('createdAt', 'desc') // Attention : en Lucid c'est souvent camelCase
 
     if (categoryName) {
-      const searchCategory = await Category.findBy('name', categoryName)
-      if (searchCategory) {
-        query.where('category_id', searchCategory.id)
-      }
+      // On utilise une jointure ou une sous-requête pour être plus efficace
+      query.whereHas('category', (catQuery) => {
+        catQuery.where('name', categoryName)
+      })
     }
 
     if (searchQuery) {
@@ -26,17 +26,19 @@ export default class NavigationsController {
     }
 
     const articles = await query.paginate(page, 12)
-
     articles.baseUrl('/')
-    const params: any = {}
-    if (searchQuery) params.search = searchQuery
-    if (categoryName) params.category = categoryName
+
+    // Gestion de la pagination pour la vue
+    const params = {
+      ...(searchQuery ? { search: searchQuery } : {}),
+      ...(categoryName ? { category: categoryName } : {}),
+    }
     articles.queryString(params)
 
     const rangeMin = Math.max(1, articles.currentPage - 1)
     const rangeMax = Math.min(articles.lastPage, articles.currentPage + 1)
 
-    const pagination = articles.getUrlsForRange(1, articles.lastPage).filter((item: any) => {
+    const pagination = articles.getUrlsForRange(1, articles.lastPage).filter((item) => {
       return (
         item.page === 1 ||
         item.page === articles.lastPage ||
@@ -55,20 +57,30 @@ export default class NavigationsController {
 
   public async showArticleBySlug({ view, params }: HttpContext) {
     const slug = params.slug
+
+    // 1. Récupération de l'article de base
     const article = await Article.query()
       .where('slug', slug)
       .preload('images')
+      .preload('agrofood')
       .preload('category')
-      .preload('seller', (sellerQuery) => {
-        sellerQuery.select('*').preload('user')
-      })
+      .preload('seller')
       .firstOrFail()
 
+    // // 2. Chargement "Lazy" du polymorphisme (Delegated Types)
+    // // On vérifie le nom ou le slug de la catégorie
+    // if (article.category.name === 'agroalimentaire') {
+    // } else if (article.category.name === 'electronique') {
+    //   // await article.load('electronic')
+    // }
+
+    // 3. Articles suggérés
     const otherArticles = await Article.query()
-      .where('sellerId', article?.sellerId)
+      .where('sellerId', article.sellerId)
       .whereNot('id', article.id)
       .where('available', true)
       .preload('images')
+      .preload('category')
       .limit(10)
 
     return view.render('pages/catalogue/show_article', {
@@ -77,6 +89,7 @@ export default class NavigationsController {
     })
   }
 
+  // --- Autres méthodes ---
   public async checkout({ view, session }: HttpContext) {
     const cart = session.get('cart') || { items: [] }
     return view.render('pages/checkout', { cart })
@@ -97,6 +110,7 @@ export default class NavigationsController {
   public async registerSeller({ view }: HttpContext) {
     return view.render('pages/register-supplier')
   }
+
   public async registerSeller2({ view }: HttpContext) {
     return view.render('pages/register-supplier-2')
   }

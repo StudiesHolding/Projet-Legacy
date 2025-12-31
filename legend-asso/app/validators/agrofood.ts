@@ -1,6 +1,6 @@
 import vine from '@vinejs/vine'
 
-export const AgrofoodSecondaryInfoValidator = vine.compile(
+export const AgrofoodValidator = vine.compile(
   vine.object({
     certification: vine.array(vine.string()).optional(),
     ingredient: vine.array(vine.string()).optional(),

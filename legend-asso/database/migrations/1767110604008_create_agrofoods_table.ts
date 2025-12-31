@@ -1,17 +1,17 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'sellers'
+  protected tableName = 'agrofoods'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.jsonb('certification')
+      table.string('conservation_advice')
+      table.date('expiry_date')
+      table.jsonb('ingredient_list')
+      table.integer('article_id')
 
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
-      table.string('location')
-      table.string('sector')
-      table.string('member_code')
-      table.boolean('is_member')
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

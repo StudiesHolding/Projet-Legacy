@@ -1,5 +1,5 @@
-import User from '#models/user'
 import Seller from '#models/seller'
+import User from '#models/user'
 import { createUserValidator } from '#validators/register'
 import { stepTwoValidator } from '#validators/step_two'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -36,20 +36,15 @@ export default class SellerRegistrationsController {
     }
 
     const stepTwoData = await request.validateUsing(stepTwoValidator)
-    const finalUserData = {
-      ...stepOneData,
-      role: DEFAULT_ROLE,
-    }
 
     try {
-      const newUser = await User.create(finalUserData)
-      const sellerProfileData = {
-        user_id: newUser.id,
+      const user = await Seller.create({
+        ...stepOneData,
         ...stepTwoData,
-      }
-      await Seller.create(sellerProfileData)
-      session.forget(SESSION_KEY)
-      await auth.use('web').login(newUser)
+        role: DEFAULT_ROLE,
+      })
+      await auth.use('web').login(user)
+
       return response.redirect().toRoute(DASHBOARD_SELLER_ROUTE)
     } catch (error) {
       if (error.code === '23505' || error.message.includes('unique constraint')) {

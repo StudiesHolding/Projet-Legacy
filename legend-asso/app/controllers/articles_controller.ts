@@ -5,8 +5,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import string from '@adonisjs/core/helpers/string'
 import Category from '#models/category'
-import { AgrofoodSecondaryInfoValidator } from '#validators/agrofood_secondary_info'
-import AgrofoodSecondaryInfo from '#models/agrofood_secondary_info'
+import { AgrofoodValidator } from '#validators/agrofood'
 
 export default class ArticlesController {
   /**
@@ -46,31 +45,34 @@ export default class ArticlesController {
   /**
    * Handle form submission for the create action
    */
-
   async store({ session, response }: HttpContext) {
-    console.log('amerique')
     const stepOneData = session.get('stepOneData')
     const imagesPaths = session.get('stepOneImages')
     const stepTwoData = session.get('stepTwoData')
-    const completeData = {
-      ...stepOneData,
-      certification: stepTwoData?.certification,
-      ingredient_list: stepTwoData?.ingredient,
-      expiry_date: stepTwoData?.expiry_date,
-      conservation_advice: stepTwoData?.conservation_advice,
-    }
-
-    const article = await AgrofoodSecondaryInfo.create(completeData)
-
-    if (imagesPaths && imagesPaths.length > 0) {
-      const imagesToStore = imagesPaths.map((path: string) => ({ imageUrl: path }))
-      await article.related('images').createMany(imagesToStore)
-    }
 
     if (!stepOneData) {
       return response.redirect().toRoute('article.create')
     }
 
+    // 1. Créer l'Article de base d'abord
+    const article = await Article.create(stepOneData)
+
+    // 2. Créer l'extension Agrofood liée à l'article
+    // On ne mélange plus les données, on sépare ce qui est spécifique
+    await article.related('agrofood').create({
+      certification: stepTwoData?.certification,
+      ingredient_list: stepTwoData?.ingredient,
+      expiry_date: stepTwoData?.expiry_date,
+      conservation_advice: stepTwoData?.conservation_advice,
+    })
+
+    // 3. Gérer les images via la relation sur l'article
+    if (imagesPaths && imagesPaths.length > 0) {
+      const imagesToStore = imagesPaths.map((path: string) => ({ imageUrl: path }))
+      await article.related('images').createMany(imagesToStore)
+    }
+
+    // Nettoyage de la session
     session.forget('stepOneData')
     session.forget('stepTwoData')
     session.forget('stepOneImages')
@@ -104,6 +106,7 @@ export default class ArticlesController {
       price: payload.price,
       measure: payload.measure,
       available: payload.available,
+      delivery_time: payload.delivery_time,
     })
     await article.save()
 
@@ -187,7 +190,7 @@ export default class ArticlesController {
   }
 
   async handleStepTwo({ request, response, session }: HttpContext) {
-    const payload = await request.validateUsing(AgrofoodSecondaryInfoValidator)
+    const payload = await request.validateUsing(AgrofoodValidator)
     session.put('stepTwoData', payload)
     return await this.store({ session, response } as HttpContext)
   }
