@@ -1,122 +1,105 @@
 @component('component/layouts/dashboard')
 @slot('content')
     <div class="bg-white p-6 rounded-xl shadow-md">
-        <h2 class="text-xl font-semibold text-gray-800">Ajouter un article</h2>
-        <form action="{{route('handleStepOneForArticle')}}" method="POST" enctype="multipart/form-data">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">Ajouter un article</h2>
+        
+        <form action="{{ route('handleStepOneForArticle') }}" method="POST" enctype="multipart/form-data">
+            {{ csrfField() }}
 
-    {{csrfField()}}
-    <div class="mb-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="category">catégorie</label>
-        <select
-            id="category"
+            {{-- Catégorie --}}
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Catégorie</label>
+                <select id="category" name="category_id" required
+                    class="select w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]">
+                    <option value="" disabled selected>Sélectionnez une catégorie</option>
+                    @each(category in categories)
+                        <option value="{{ category.id }}" {{ old('category_id') == category.id ? 'selected' : '' }}>
+                            {{ category.name }}
+                        </option>
+                    @end
+                </select>
+                @if(flashMessages.has('errors.category_id'))
+                    <p class="text-red-600 text-xs italic mt-2">{{ flashMessages.get('errors.category_id').join(', ') }}</p>
+                @end
+            </div>
 
-            name="category_id"
-            class="input select w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#171B99] focus:border-transparent"
-            required
-        >
-            <option value="" disabled selected>Sélectionnez une catégorie</option>
-            @each(category in categories)
-                <option value="{{category.id}}" {{ old('category') === category.id ? 'selected' : '' }}>{{category.name}}</option>
-            @end
-        </select>
-        @if(flashMessages.has('errors.category'))
-            <p class="text-red-600 text-xs italic mt-2" role="alert">{{ flashMessages.get('errors.category').join(', ') }}</p>
-        @end
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="images">Image de l'article</label>
-        <input
-        required
-        type="file"
-        id="images"
-        name="images[]"
-        multiple
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.images'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.images').join(', ') }}</p>
-        @endif
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Nom de l'article</label>
-        <input
-        required
-        type="text"
-        id="name"
-        name="name"
-        value="{{ old('name') || '' }}" 
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.name'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(',') }}</p>
-        @endif
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="about">Description</label>
-        <textarea
-        required
-        id="about"
-        name="about"
-        placeholder="Décrivez ici votre produit, vos motivations, ou tout autre détail pertinent (5 lignes minimum pour une bonne lisibilité)."
-        class="w-full p-4 border border-gray-300 rounded-xl text-gray-800 text-base leading-relaxed focus:ring-2 focus:ring-[#171B99] focus:border-[#171B99] resize-none h-32 transition duration-200 ease-in-out">
-         {{ old('description') ?? '' }}
-        </textarea>
+            {{-- Images --}}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="images">Images de l'article (plusieurs possibles)</label>
+                <input type="file" id="images" name="images[]" multiple required
+                    class="file-input file-input-bordered w-full" />
+                @if(flashMessages.has('errors.images'))
+                    <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.images').join(', ') }}</p>
+                @end
+            </div>
 
-        @if(flashMessages.has('errors.description'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.description').join(', ') }}</p>
-        @endif
-    </div>
-        <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="measure">Temps de livraison en jours</label>
-        <input
-        required
-        type="number"
-        id="delivery_time"
-        name="delivery_time"
-        value="{{ old('delivery_time') || '' }}" 
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.delivery_time'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.delivery_time').join(', ') }}</p>
-        @endif
-    </div>
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="price">Prix</label>
-        <input
-        required
-        type="number"
-        id="price"
-        name="price"
-        value="{{ old('price') || '' }}" 
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.price'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.price').join(', ') }}</p>
-        @endif
-    </div>
-            
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="measure">Volume/Poids</label>
-        <input
-        required
-        type="number"
-        id="measure"
-        name="measure"
-        value="{{ old('measure') || '' }}" 
-        class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        @if(flashMessages.has('errors.measure'))
-        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.measure').join(', ') }}</p>
-        @endif
-    </div>
+            {{-- Nom --}}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Nom de l'article</label>
+                <input type="text" id="name" name="name" value="{{ old('name') || '' }}" required
+                    class="input input-bordered w-full" />
+                @if(flashMessages.has('errors.name'))
+                    <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(',') }}</p>
+                @end
+            </div>
 
-    <div class="flex items-center justify-between">
-            <button
-              class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Seconde étape
+            {{-- Description --}}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="about">Description</label>
+                <textarea id="about" name="about" required
+                    placeholder="Description de votre produit en plusieurs lignes"
+                    class="textarea textarea-bordered w-full h-32 resize-none">{{ old('about') ?? '' }}</textarea>
+                @if(flashMessages.has('errors.about'))
+                    <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.about').join(', ') }}</p>
+                @end
+            </div>
+
+            {{-- Prix et Unités --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                {{-- Prix --}}
+                <div class="form-control">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="price">Prix (FCFA)</label>
+                    <input type="number" id="price" name="price" value="{{ old('price') }}" required
+                        class="input input-bordered w-full" placeholder="Ex: 5000">
+                    @if(flashMessages.has('errors.price'))
+                        <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.price').join(', ') }}</p>
+                    @end
+                </div>
+
+                {{-- Valeur de mesure (ex: 1, 0.5, 25) --}}
+                <div class="form-control">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Quantité de réf.</label>
+                    <input type="number" name="unit_value" value="{{ old('unit_value') || 1 }}" required
+                        class="input input-bordered w-full" placeholder="Ex: 1">
+                </div>
+
+                {{-- Type d'unité --}}
+                <div class="form-control">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="unit_type">Unité de vente</label>
+                    <select name="unit_type" class="select select-bordered w-full">
+                        <option value="UNIT" {{ old('unit_type') == 'UNIT' ? 'selected' : '' }}>L'unité (Pièce)</option>
+                        <option value="KG" {{ old('unit_type') == 'KG' ? 'selected' : '' }}>Le Kilogramme (Kg)</option>
+                        <option value="L" {{ old('unit_type') == 'L' ? 'selected' : '' }}>Le Litre (L)</option>
+                        <option value="PACK" {{ old('unit_type') == 'PACK' ? 'selected' : '' }}>Le Paquet / Sac</option>
+                        <option value="CARTON" {{ old('unit_type') == 'CARTON' ? 'selected' : '' }}>Le Carton</option>
+                    </select>
+                </div>
+            </div>
+
+            {{-- Livraison --}}
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="delivery_time">Temps de livraison (jours)</label>
+                <input type="number" id="delivery_time" name="delivery_time" value="{{ old('delivery_time') || '' }}" required
+                    class="input input-bordered w-full" placeholder="Ex: 2" />
+                @if(flashMessages.has('errors.delivery_time'))
+                    <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.delivery_time').join(', ') }}</p>
+                @end
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full bg-[#171B99] border-none text-white hover:bg-blue-800">
+                Seconde étape (Détails spécifiques)
             </button>
-    </div>  
-    </form>
+        </form>
+    </div>
 @endslot
 @end

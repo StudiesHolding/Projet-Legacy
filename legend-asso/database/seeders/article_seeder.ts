@@ -19,7 +19,6 @@ export default class extends BaseSeeder {
         price: faker.number.int({ min: 1000, max: 100000 }),
         slug: stringHelpers.slug(productName),
         category_id: faker.number.int({ min: 1, max: 7 }),
-        measure: faker.number.int({ min: 1, max: 100 }),
         seller_id: faker.number.int({ min: 1, max: 5 }),
         status: faker.helpers.arrayElement(possibleStatuses),
         available: faker.datatype.boolean(),

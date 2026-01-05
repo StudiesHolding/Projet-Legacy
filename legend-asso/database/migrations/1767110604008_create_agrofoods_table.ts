@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.date('expiry_date')
       table.jsonb('ingredient_list')
       table.integer('article_id')
+      table.enum('unit_type', ['KG', 'UNIT', 'L', 'PACK']).defaultTo('UNIT')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

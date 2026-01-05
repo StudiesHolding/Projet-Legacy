@@ -1,5 +1,4 @@
 import Seller from '#models/seller'
-import User from '#models/user'
 import { createUserValidator } from '#validators/register'
 import { stepTwoValidator } from '#validators/step_two'
 import type { HttpContext } from '@adonisjs/core/http'

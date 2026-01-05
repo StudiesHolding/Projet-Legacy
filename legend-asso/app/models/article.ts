@@ -31,6 +31,12 @@ export default class Article extends BaseModel {
   @column()
   declare delivery_time: number
 
+  @column()
+  declare unit_value: string
+
+  @column()
+  declare unit_type: string
+
   @column({ columnName: 'seller_id' })
   declare sellerId: number
 

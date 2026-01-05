@@ -104,7 +104,7 @@ export default class ArticlesController {
       about: payload.about,
       categoryId: payload.category_id,
       price: payload.price,
-      measure: payload.measure,
+      // measure: payload.measure,
       available: payload.available,
       delivery_time: payload.delivery_time,
     })
@@ -177,10 +177,12 @@ export default class ArticlesController {
       sellerId: user.id,
       name: payload.name,
       slug,
+      delivery_time: payload.delivery_time,
+      unit_value: payload.unit_value,
+      unit_type: payload.unit_type,
       about: payload.about,
       categoryId: payload.category_id,
       price: payload.price,
-      measure: payload.measure,
       status: 'pending',
       available: true,
     })
@@ -190,7 +192,11 @@ export default class ArticlesController {
   }
 
   async handleStepTwo({ request, response, session }: HttpContext) {
+    const all = request.all()
+    console.log(all)
     const payload = await request.validateUsing(AgrofoodValidator)
+    console.log(payload)
+
     session.put('stepTwoData', payload)
     return await this.store({ session, response } as HttpContext)
   }

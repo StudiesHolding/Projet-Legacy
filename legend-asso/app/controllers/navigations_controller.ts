@@ -12,10 +12,9 @@ export default class NavigationsController {
     const query = Article.query()
       .where('available', true)
       .preload('images')
-      .orderBy('createdAt', 'desc') // Attention : en Lucid c'est souvent camelCase
+      .orderBy('createdAt', 'desc')
 
     if (categoryName) {
-      // On utilise une jointure ou une sous-requête pour être plus efficace
       query.whereHas('category', (catQuery) => {
         catQuery.where('name', categoryName)
       })
@@ -28,7 +27,6 @@ export default class NavigationsController {
     const articles = await query.paginate(page, 12)
     articles.baseUrl('/')
 
-    // Gestion de la pagination pour la vue
     const params = {
       ...(searchQuery ? { search: searchQuery } : {}),
       ...(categoryName ? { category: categoryName } : {}),
@@ -66,13 +64,6 @@ export default class NavigationsController {
       .preload('category')
       .preload('seller')
       .firstOrFail()
-
-    // // 2. Chargement "Lazy" du polymorphisme (Delegated Types)
-    // // On vérifie le nom ou le slug de la catégorie
-    // if (article.category.name === 'agroalimentaire') {
-    // } else if (article.category.name === 'electronique') {
-    //   // await article.load('electronic')
-    // }
 
     // 3. Articles suggérés
     const otherArticles = await Article.query()

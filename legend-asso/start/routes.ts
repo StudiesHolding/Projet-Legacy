@@ -50,6 +50,7 @@ router
   .post('register', [AuthController, 'register_client'])
   .as('register_client')
   .use(middleware.guest())
+
 router.post('login', [AuthController, 'login_client']).as('login_client').use(middleware.guest())
 router.get('logout', [AuthController, 'logout_client']).as('logout_client').use(middleware.auth())
 router.post('handleStepOne', [SellerRegistrationsController, 'handleStepOne']).as('handleStepOne')
@@ -60,10 +61,16 @@ router
     router
       .post('article/handleStepOne', [ArticlesController, 'handleStepOne'])
       .as('handleStepOneForArticle')
+
     router
       .post('article/handleStepTwo', [ArticlesController, 'handleStepTwo'])
       .as('handleStepTwoForArticle')
-    router.resource('article', ArticlesController)
+
+    router
+      .resource('article', ArticlesController)
+      .params({ article: 'id' })
+      .where('id', /^[0-9]+$/)
+
     router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destroy')
   })
   .use(middleware.auth())

@@ -7,22 +7,31 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 ">
       {{-- Section Images --}}
       <div class="m-1">
-        <div class="carousel carousel-center flex flex-row overflow-x-auto h-96 rounded-box space-x-4 p-4">
-          @each(image in article.images)
-            <div class="carousel-item w-96"> 
-              <img
-                src="{{ image.imageUrl || 'https://placehold.co/600x400?text=No+Image' }}"
-                class="rounded-box w-full h-full object-cover" />
-            </div>
-          @endeach
-          
-          @if(article.images.length === 0)
-            <div class="carousel-item w-full">
-              <img src="https://placehold.co/600x400?text=Article+sans+Image" class="rounded-box w-full h-full object-cover" />
-            </div>
-          @endif
-        </div>
+        <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiper2">
+      <div class="swiper-wrapper">
+        @each(image in article.images)
+          <div class="swiper-slide">
+            <img src="{{ image.imageUrl || 'https://placehold.co/600x400?text=No+Image' }}"
+            >
+          </div>
+        @end
       </div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+    
+      @if(article.images.length > 1) 
+        <div thumbsSlider="" class="swiper mySwiper">
+          <div class="swiper-wrapper">
+            @each(image in article.images)
+              <div class="swiper-slide">
+                <img src="{{ image.imageUrl || 'https://placehold.co/600x400?text=No+Image' }}">
+              </div>
+            @end
+          </div>
+        </div>
+      @end 
+    </div>
 
       {{-- Section Infos Principales --}}
       <div class="px-2 flex flex-col py-2 justify-start">
@@ -45,13 +54,13 @@
           <button data-increment-id="{{ article.id }}" class="btn btn-sm bg-gray-200">+</button>
         </div>
 
-        <button data-article-id="{{ article.id }}" id="add-to-cart-{{ article.id }}" class="btn bg-[#171B99] text-white w-full py-2 hover:bg-[#171B99]/90">
+
+        <p class="mt text-gray-700 leading-relaxed">
+          <span class="text-lg font-semibold text-gray-800 mb-4">À Propos :</span><br> {{ article.about }}
+        </p>
+        <button data-article-id="{{ article.id }}" id="add-to-cart-{{ article.id }}" class="btn bg-[#171B99] mt-5 text-white w-full py-2 hover:bg-[#171B99]/90">
           Ajouter au panier
         </button>
-
-        <p class="mt-5 text-gray-700 leading-relaxed">
-          <span class="font-semibold">À Propos :</span><br> {{ article.about }}
-        </p>
 
         {{-- Spécifique Agroalimentaire --}}
     @if(article.agrofood)
@@ -61,7 +70,7 @@
           
           {{-- Affichage des certifications (Tableau) --}}
           <li>
-            <strong>Disponibilité :</strong>
+            <strong>Disponibilité :</strong><br>
             {{ article.available ? 'En stock' : 'Indisponible pour le moment' }}
           </li>
           <li>
@@ -80,8 +89,8 @@
             <strong>Conservation :</strong> <br>
             {{ article.agrofood.conservation_advice || 'N/A' }}
           </li>
-          
         </ul>
+        
       </div>
     @endif
         @include('component/partials/delivery-details')
@@ -95,7 +104,6 @@
       <div class="inline-flex mt-2 items-center">
         <img src="https://placehold.co/100" alt="Avatar" class="w-12 h-12 rounded-full object-cover" />
         <p class="mx-3 text-[#CE0000] text-lg font-medium">
-          {{-- CORRECTION ICI : article.seller est déjà un User grâce à l'héritage --}}
           {{ article.seller?.name ? article.seller.name.toUpperCase() : 'Vendeur Inconnu' }}
         </p>
       </div>
@@ -113,7 +121,7 @@
     </div>
 
     {{-- Autres produits --}}
-    <div class="p-4 border-t mt-6">
+    <div class="p-4 mt-6">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Autres produits de ce vendeur</h3>
       <div class="flex overflow-x-auto space-x-4 pb-4">
         @each(other in otherArticles)
@@ -124,5 +132,83 @@
         @endeach
       </div>
     </div>
+
+    
+   <style>
+    .swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #444;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swiper {
+      width: 100%;
+      height: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .swiper-slide {
+      background-size: 'cover';
+      background-position: center;
+    }
+
+    .mySwiper2 {
+      height: 80%;
+      width: 100%;
+    }
+
+    .mySwiper {
+      height: 20%;
+      box-sizing: border-box;
+      padding: 10px 0;
+    }
+
+    .mySwiper .swiper-slide {
+      width: 25%;
+      height: 100%;
+      opacity: 0.4;
+    }
+
+    .mySwiper .swiper-slide-thumb-active {
+      opacity: 1;
+    }
+
+    .swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+   <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+
+  <!-- Initialize Swiper -->
+  <script>
+    var swiper = new Swiper(".mySwiper", {
+      spaceBetween: 10,
+      slidesPerView: 4,
+      freeMode: true,
+      watchSlidesProgress: true,
+    });
+    var swiper2 = new Swiper(".mySwiper2", {
+      spaceBetween: 10,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      thumbs: {
+        swiper: swiper,
+      },
+    });
+  </script>
   @end
 @end
