@@ -63,7 +63,10 @@ export default class NavigationsController {
       .preload('agrofood')
       .preload('category')
       .preload('seller')
+      .preload('lifestyle')
       .firstOrFail()
+
+    console.log(article)
 
     // 3. Articles suggérés
     const otherArticles = await Article.query()

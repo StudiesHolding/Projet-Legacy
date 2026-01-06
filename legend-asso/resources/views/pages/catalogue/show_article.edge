@@ -1,3 +1,4 @@
+  {{-- @dd(article)
 @component('component/layouts/app')
   @slot("title") 
     {{ article.name }}
@@ -62,11 +63,76 @@
             </button>
           </div>
           <div>
+            
+<ul class="mt-4 space-y-2">
+  <li>
+    <strong>Disponibilité :</strong><br>
+    {{ article.available ? 'En stock' : 'Indisponible pour le moment' }}
+  </li>
+
+  {{-- Cas 1 : Article Agroalimentaire --}}
+  @if(article.agrofood) 
+    <li>
+      <strong>Certification :</strong> <br>
+      {{ article.agrofood.certification ? article.agrofood.certification.join(', ') : 'N/A' }}
+    </li>
+    <li>
+      <strong>Ingrédients :</strong> <br>
+      {{ article.agrofood.ingredient_list ? article.agrofood.ingredient_list.join(', ') : 'Non spécifiés' }}
+    </li>
+
+  {{-- Cas 2 : Article Lifestyle (Mode, Art, Déco) --}}
+  @elseif(article.lifestyle)
+    @if(article.lifestyle.materials?.length)
+      <li>
+        <strong>Matières :</strong> <br>
+        {{ article.lifestyle.materials.join(', ') }}
+      </li>
+    @end
+
+    @if(article.lifestyle.sizes?.length)
+      <li>
+        <strong>Tailles / Pointures :</strong> <br>
+        <div class="flex gap-2 mt-1">
+          @each(size in article.lifestyle.sizes)
+            <span class="px-2 py-1 bg-gray-100 border text-xs rounded">{{ size }}</span>
+          @end
+        </div>
+      </li>
+    @end
+
+    @if(article.lifestyle.craftsmanship?.length)
+      <li>
+        <strong>Savoir-faire :</strong> <br>
+        {{ article.lifestyle.craftsmanship.join(', ') }}
+      </li>
+    @end
+
+    @if(article.lifestyle.length || article.lifestyle.width)
+      <li>
+        <strong>Dimensions :</strong> <br>
+        {{ article.lifestyle.length || 0 }} x {{ article.lifestyle.width || 0 }} x {{ article.lifestyle.height || 0 }} cm
+      </li>
+    @end
+    
+    @if(article.lifestyle.style)
+      <li>
+        <strong>Style :</strong> <br>
+        {{ article.lifestyle.style }}
+      </li>
+    @end
+  @end
+</ul>
+
+
+
+
           
-          <li>
+          {{-- <li>
             <strong>Disponibilité :</strong><br>
             {{ article.available ? 'En stock' : 'Indisponible pour le moment' }}
           </li>
+          @if(article.agrofood) 
           <li>
             <strong>Certification :</strong> <br>
             {{ article.agrofood.certification ? article.agrofood.certification.join(', ') : 'N/A' }}
@@ -75,6 +141,17 @@
             <strong>Ingrédients :</strong> <br>
             {{ article.agrofood.ingredient_list ? article.agrofood.ingredient_list.join(', ') : 'Non spécifiés' }}
           </li>
+          @elseif(article.lifestyle)
+          <li>
+            <strong>Certification :</strong> <br>
+            {{ article.agrofood.certification ? article.agrofood.certification.join(', ') : 'N/A' }}
+          </li>
+          <li>
+            <strong>Ingrédients :</strong> <br>
+            {{ article.agrofood.ingredient_list ? article.agrofood.ingredient_list.join(', ') : 'Non spécifiés' }}
+          </li> --}}
+            
+          @end
         </ul>
           </div>
 
@@ -139,16 +216,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-      // Initialisation Swiper Miniatures (Vertical)
       var swiper = new Swiper(".mySwiper", {
-        direction: "vertical", // Définit l'orientation verticale
+        direction: "vertical",
         spaceBetween: 10,
         slidesPerView: "auto",
         freeMode: true,
         watchSlidesProgress: true,
       });
 
-      // Initialisation Swiper Principal
       var swiper2 = new Swiper(".mySwiper2", {
         spaceBetween: 10,
         navigation: {
@@ -158,6 +233,212 @@
         thumbs: {
           swiper: swiper,
         },
+      });
+    </script>
+  @end
+@end --}}
+
+
+
+@component('component/layouts/app')
+  @slot("title") 
+    {{ article.name }}
+  @end
+  
+  @slot('main')
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        
+        {{-- SECTION IMAGES (Swiper) --}}
+        <div class="flex flex-row-reverse gap-4 h-[500px]">
+          <div class="swiper mySwiper2 flex-grow rounded-lg overflow-hidden bg-gray-100 shadow-sm">
+            <div class="swiper-wrapper">
+              @each(image in article.images)
+                <div class="swiper-slide">
+                  <img src="{{ image.imageUrl }}" class="w-full h-full object-cover">
+                </div>
+              @end
+            </div>
+            <div class="swiper-button-next !text-[#171B99]"></div>
+            <div class="swiper-button-prev !text-[#171B99]"></div>
+          </div>
+
+          @if(article.images.length > 1)
+            <div thumbsSlider="" class="swiper mySwiper w-24 flex-shrink-0">
+              <div class="swiper-wrapper flex flex-col">
+                @each(image in article.images)
+                  <div class="swiper-slide !h-24 rounded-md overflow-hidden border-2 border-transparent swiper-slide-thumb">
+                    <img src="{{ image.imageUrl }}" class="w-full h-full object-cover cursor-pointer">
+                  </div>
+                @end
+              </div>
+            </div>
+          @end
+        </div>
+
+        {{-- SECTION INFOS --}}
+        <div class="flex flex-col">
+          <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ article.name }}</h1>
+          <div class="text-2xl font-bold text-[#171B99] mb-4">
+            {{ article.price.toLocaleString() }} FCFA
+          </div>
+          
+          <div class="mb-6">
+            @component('component/partials/category', { name: article.category.name })
+            @end
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-bold text-lg mb-2">Description</h3>
+            <p>{{ article.about }}</p>
+          </div>
+
+          <div class="mt-auto py-3 flex gap-4 items-center">
+            <div class="flex items-center border-2 border-gray-100 rounded-lg overflow-hidden shadow-sm">
+              <button data-decrement-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200 transition">-</button>
+              <span data-qty-id="{{ article.id }}" class="px-4 py-2 font-bold w-12 text-center">1</span>
+              <button data-increment-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200 transition">+</button>
+            </div>
+            <button class="flex-grow bg-[#171B99] text-white font-bold py-4 rounded-lg hover:opacity-90 shadow-lg active:scale-95 transition">
+              AJOUTER AU PANIER
+            </button>
+          </div>
+          {{-- CARACTERISTIQUES DYNAMIQUES --}}
+          <div class="bg-gray-50 border-gray-100 mb-6">
+            <ul class="space-y-3">
+              <li>
+                <span class="font-bold underline decoration-[#171B99]/30">Disponibilité :</span>
+                <span class="ml-2 {{ article.available ? 'text-green-600' : 'text-red-600' }} font-medium">
+                  {{ article.available ? 'En stock' : 'Indisponible' }}
+                </span>
+              </li>
+
+              {{-- Cas 1 : Article Agroalimentaire --}}
+              @if(article.agrofood) 
+                @if(article.agrofood.certification?.length)
+                  <li>
+                    <span class="font-bold">Certification :</span><br>
+                    <span class="text-sm">{{ article.agrofood.certification.join(', ') }}</span>
+                  </li>
+                @end
+                @if(article.agrofood.ingredient_list?.length)
+                  <li>
+                    <span class="font-bold">Ingrédients :</span><br>
+                    <span class="text-sm">{{ article.agrofood.ingredient_list.join(', ') }}</span>
+                  </li>
+                @end
+
+              {{-- Cas 2 : Article Lifestyle (Mode, Art, Déco) --}}
+              @elseif(article.lifestyle)
+                @if(article.lifestyle.materials?.length)
+                  <li>
+                    <span class="font-bold">Matières :</span><br>
+                    <span class="text-sm">{{ article.lifestyle.materials.join(', ') }}</span>
+                  </li>
+                @end
+
+                @if(article.lifestyle.sizes?.length)
+                  <li>
+                    <span class="font-bold">Tailles disponibles :</span>
+                    <div class="flex gap-2 mt-1">
+                      @each(size in article.lifestyle.sizes)
+                        <span class="px-2 py-1 bg-white border border-[#171B99]/20 text-[#171B99] text-xs font-bold rounded shadow-sm">{{ size }}</span>
+                      @end
+                    </div>
+                  </li>
+                @end
+
+                @if(article.lifestyle.craftsmanship?.length)
+                  <li>
+                    <span class="font-bold">Savoir-faire :</span><br>
+                    <span class="text-sm">{{ article.lifestyle.craftsmanship.join(', ') }}</span>
+                  </li>
+                @end
+
+                @if(article.lifestyle.length || article.lifestyle.width)
+                  <li>
+                    <span class="font-bold">Dimensions :</span><br>
+                    <span class="text-sm">
+                      {{ article.lifestyle.length || '0' }} x {{ article.lifestyle.width || '0' }} x {{ article.lifestyle.height || '0' }} cm
+                    </span>
+                  </li>
+                @end
+              @end
+            </ul>
+          </div>
+
+          @if(article.agrofood?.conservation_advice)
+            <div class="mb-8 p-3 bg-yellow-50 border-l-4 border-yellow-400 text-sm italic text-gray-700">
+              <span class="font-bold not-italic">💡 Conseil :</span> {{ article.agrofood.conservation_advice }}
+            </div>
+          @end
+
+          {{-- BOUTONS D'ACTION --}}
+        </div>
+      </div>
+
+      {{-- SECTION VENDEUR --}}
+      <div class="p-8 mt-12 bg-white border border-gray-100 rounded-2xl shadow-sm">
+        <h3 class="text-xl font-bold text-gray-800 mb-6">Informations sur l'artisan</h3>
+        <div class="flex items-center">
+          <img src="https://ui-avatars.com/api/?name={{ article.seller?.name || 'V' }}&background=171B99&color=fff" class="w-16 h-16 rounded-full border-2 border-gray-100 shadow-sm" />
+          <div class="ml-4">
+            <p class="text-lg font-black">
+              {{ article.seller?.name ? article.seller.name.toUpperCase() : 'VENDEUR INCONNU' }}
+            </p>
+            <p class="text-gray-500 text-sm"> {{ article.seller?.location || 'Non renseignée' }}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Secteur</h4>
+            <p class="text-gray-800 font-semibold">{{ article.seller?.sector || 'Artisanat & Commerce' }}</p>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Expédition</h4>
+            <p class="text-gray-800 font-semibold">Sous {{ article.delivery_time || '3' }} jours ouvrables</p>
+          </div>
+        </div>
+      </div>
+
+      {{-- AUTRES PRODUITS --}}
+      @if(otherArticles?.length)
+        <div class="mt-16">
+          <h3 class="text-2xl font-bold text-gray-900 mb-6 px-2">Dans la même boutique</h3>
+          <div class="flex overflow-x-auto space-x-6 pb-6 scrollbar-hide">
+            @each(other in otherArticles)
+              <div class="min-w-[280px]">
+                @component('component/partials/card2', { article: other })
+                @end
+              </div>
+            @endeach
+          </div>
+        </div>
+      @end
+    </div>
+
+    <style>
+      .mySwiper .swiper-slide { opacity: 0.5; transition: 0.3s; height: 90px !important; }
+      .mySwiper .swiper-slide-thumb-active { opacity: 1; border-color: #171B99; border-width: 2px; }
+      .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px !important; font-weight: bold; }
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      const swiperThumbs = new Swiper(".mySwiper", {
+        direction: "vertical",
+        spaceBetween: 10,
+        slidesPerView: "auto",
+        freeMode: true,
+        watchSlidesProgress: true,
+      });
+
+      new Swiper(".mySwiper2", {
+        spaceBetween: 10,
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        thumbs: { swiper: swiperThumbs },
       });
     </script>
   @end

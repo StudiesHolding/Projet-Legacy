@@ -1,0 +1,85 @@
+<form action="{{ route('handleStepTwoForArticle') }}" method="POST">
+        {{ csrfField() }}
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+                Certifications / Labels <span class="text-gray-400 font-normal">(Optionnel)</span>
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+                @let(labels = ['Bio', 'Made in cameroon'])
+                @each(label in labels)
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="certification[]" value="{{ label }}" class="form-checkbox text-[#171B99]">
+                        <span class="ml-2 text-sm text-gray-700">{{ label }}</span>
+                    </label>
+                @end
+            </div>
+            @if(flashMessages.has('errors.certification'))
+                <p class="text-red-600 text-xs italic mt-2">{{ flashMessages.get('errors.certification').join(', ') }}</p>
+            @end
+        </div>
+
+        {{-- Ingrédients --}}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+                Liste d'ingrédients <span class="text-gray-400 font-normal">(Optionnel)</span>
+            </label>
+            
+            <div id="ingredients-container" class="space-y-2 mb-2">
+                <div class="flex gap-2 ingredient-group">
+                    <input
+                        type="text"
+                        name="ingredient[]"
+                        placeholder="Ex: Sucre"
+                        class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]"
+                    />
+                </div>
+            </div>
+            
+            @if(flashMessages.has('errors.ingredient'))
+                <p class="text-red-600 text-xs italic mb-2">{{ flashMessages.get('errors.ingredient').join(', ') }}</p>
+            @end
+
+            <button type="button" id="add-ingredient" class="text-sm flex items-center text-[#171B99] hover:text-blue-800 font-semibold transition">
+                <span class="mr-1 text-lg">+</span> Ajouter un ingrédient
+            </button>
+        </div>
+
+        {{-- Date de péremption --}}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="expiry_date">
+                À consommer de préférence avant le <span class="text-gray-400 font-normal">(Optionnel)</span>
+            </label>
+            <input
+                type="date"
+                id="expiration_date"
+                name="expiration_date"
+                value="{{ old('expiry_date') || '' }}" 
+                class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]"
+            />
+            @if(flashMessages.has('errors.expiry_date'))
+                <p class="text-red-600 text-xs italic mt-1">{{ flashMessages.get('errors.expiry_date').join(', ') }}</p>
+            @end
+        </div>
+
+        {{-- Conseil de conservation --}}
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="conservation_advice">
+                Conseils de conservation <span class="text-gray-400 font-normal">(Optionnel)</span>
+            </label>
+            <textarea
+                id="conservation_advice"
+                name="conservation_advice"
+                placeholder="Comment conserver ce produit ?"
+                class="w-full p-4 border border-gray-300 rounded-xl text-gray-800 text-base h-32 focus:ring-2 focus:ring-[#171B99] resize-none transition"
+            >{{ old('conservation_advice') ?? '' }}</textarea>
+            @if(flashMessages.has('errors.conservation_advice'))
+                <p class="text-red-600 text-xs italic mt-1">{{ flashMessages.get('errors.conservation_advice').join(', ') }}</p>
+            @end
+        </div>
+
+        <div class="flex items-center justify-between gap-4">
+            <button type="submit" class="btn flex-1 bg-[#171B99] hover:bg-blue-800 text-white font-bold py-2 px-4 rounded transition">
+                Finaliser mon article
+            </button>
+        </div>  
+    </form>

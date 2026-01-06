@@ -5,6 +5,7 @@ import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations
 import Seller from './seller.js'
 import Category from './category.js'
 import Agrofood from './agrofood.js'
+import Lifestyle from './lifestyle.js'
 
 export default class Article extends BaseModel {
   @column({ isPrimary: true })
@@ -57,8 +58,13 @@ export default class Article extends BaseModel {
   })
   declare agrofood: HasOne<typeof Agrofood>
 
+  @hasOne(() => Lifestyle, {
+    foreignKey: 'articleId',
+  })
+  declare lifestyle: HasOne<typeof Lifestyle>
+
   public get details() {
-    return this.agrofood // Vous ajouterez || this.electronic plus tard
+    return this.agrofood || this.lifestyle
   }
 
   @hasMany(() => Image, {

@@ -1,0 +1,346 @@
+{{-- {{-- <form action="{{ route('handleStepTwoForArticle') }}" method="POST">
+        {{ csrfField() }}
+        {{-- Certifications --}}
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+                Technique de fabrication <span class="text-gray-400 font-normal"></span>
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+                @let(labels = ['Tissage', 'Tricot', 'Teinture', 'Broderie', 'Soudure', 'Vanerie', 'Scuplture'])
+                @each(label in labels)
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="craftmanship[]" value="{{ label }}" class="form-checkbox text-[#171B99]">
+                        <span class="ml-2 text-sm text-gray-700">{{ label }}</span>
+                    </label>
+                @end
+            </div>
+            @if(flashMessages.has('errors.craftmanship'))
+                <p class="text-red-600 text-xs italic mt-2">{{ flashMessages.get('errors.certification').join(', ') }}</p>
+            @end
+        </div>
+
+        {{-- Ingrédients --}}
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+                Materiaux utilisés <span class="text-gray-400 font-normal">(Optionnel)</span>
+            </label>
+            
+            <div id="ingredients-container" class="space-y-2 mb-2">
+                <div class="flex gap-2 ingredient-group">
+                    <input
+                        type="text"
+                        name="materials[]"
+                        class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]"
+                    />
+                </div>
+            </div>
+            
+            @if(flashMessages.has('errors.ingredient'))
+                <p class="text-red-600 text-xs italic mb-2">{{ flashMessages.get('errors.ingredient').join(', ') }}</p>
+            @end
+
+            <button type="button" id="add-ingredient" class="text-sm flex items-center text-[#171B99] hover:text-blue-800 font-semibold transition">
+                <span class="mr-1 text-lg">+</span> Ajouter
+            </button>
+        </div>
+
+        {{-- Conseil de conservation --}}
+                <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+                Votre article est aussi disponible en: <span class="text-gray-400 font-normal">(Optionnel)</span>
+            </label>
+            
+            <div id="ingredients-container" class="space-y-2 mb-2">
+                <div class="flex gap-2 ingredient-group">
+                    <input
+                        type="text"
+                        name="materials[]"
+                        class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]"
+                    />
+                </div>
+            </div>
+            
+            @if(flashMessages.has('errors.ingredient'))
+                <p class="text-red-600 text-xs italic mb-2">{{ flashMessages.get('errors.ingredient').join(', ') }}</p>
+            @end
+
+            <button type="button" id="add-ingredient" class="text-sm flex items-center text-[#171B99] hover:text-blue-800 font-semibold transition">
+                <span class="mr-1 text-lg">+</span> Ajouter
+            </button>
+        </div>
+
+        <div class="flex items-center justify-between gap-4">
+            <button type="submit" class="btn flex-1 bg-[#171B99] hover:bg-blue-800 text-white font-bold py-2 px-4 rounded transition">
+                Finaliser mon article
+            </button>
+        </div>  
+    </form> --}}
+
+    <form action="{{ route('handleStepTwoForArticle') }}" method="POST">
+    {{ csrfField() }}
+
+    {{-- Technique de fabrication (Craftsmanship) --}}
+    <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+            Technique de fabrication
+        </label>
+        <div class="grid grid-cols-2 gap-2">
+            {{-- Correction de l'orthographe : Craftsmanship / Vannerie / Sculpture --}}
+            @let(labels = ['Tissage', 'Tricot', 'Teinture', 'Broderie', 'Soudure', 'Vannerie', 'Sculpture'])
+            @each(label in labels)
+                <label class="inline-flex items-center">
+                    {{-- On garde le nom craftsmanship[] pour correspondre à ton futur validateur --}}
+                    <input type="checkbox" name="craftsmanship[]" value="{{ label }}" class="form-checkbox text-[#171B99]">
+                    <span class="ml-2 text-sm text-gray-700">{{ label }}</span>
+                </label>
+            @end
+        </div>
+        {{-- Correction : L'erreur doit pointer sur 'craftsmanship' --}}
+        @if(flashMessages.has('errors.craftsmanship'))
+            <p class="text-red-600 text-xs italic mt-2">{{ flashMessages.get('errors.craftsmanship').join(', ') }}</p>
+        @end
+    </div>
+
+    {{-- Section Tailles / Dimensions --}}
+<div class="mb-6 border-t pt-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+        Guide des tailles / Dimensions
+    </label>
+
+    <div class="space-y-4">
+        {{-- Pour les vêtements (Sélection multiple) --}}
+        <div>
+            <span class="text-xs text-gray-500 block mb-2 underline">Tailles disponibles (Vêtements/Chaussures) :</span>
+            <div class="flex flex-wrap gap-2">
+                @let(sizes = ['Unique', 'S', 'M', 'L', 'XL', 'XXL', '38', '40', '42', '44'])
+                @each(size in sizes)
+                    <label class="cursor-pointer">
+                        <input type="checkbox" name="sizes[]" value="{{ size }}" class="hidden peer">
+                        <span class="px-3 py-1 border rounded-md text-sm peer-checked:bg-[#171B99] peer-checked:text-white hover:bg-gray-100 transition">
+                            {{ size }}
+                        </span>
+                    </label>
+                @end
+            </div>
+        </div>
+
+        {{-- Pour les accessoires/art (Mesures précises) --}}
+        <div>
+            <span class="text-xs text-gray-500 block mb-2 underline">Mesures précises (ex: Longueur d'une robe, Dimensions sac) :</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <input type="number" name="length" placeholder="Long. (cm)" class="border rounded py-2 px-3 text-sm focus:ring-1 focus:ring-[#171B99] outline-none">
+                <input type="number" name="width" placeholder="Larg. (cm)" class="border rounded py-2 px-3 text-sm focus:ring-1 focus:ring-[#171B99] outline-none">
+                <input type="number" name="height" placeholder="Haut. (cm)" class="border rounded py-2 px-3 text-sm focus:ring-1 focus:ring-[#171B99] outline-none">
+                <input type="number" name="weight" placeholder="Poids (g)" class="border rounded py-2 px-3 text-sm focus:ring-1 focus:ring-[#171B99] outline-none">
+            </div>
+        </div>
+    </div>
+</div>
+
+    {{-- Matériaux utilisés --}}
+    <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+            Matériaux utilisés <span class="text-gray-400 font-normal">(Optionnel)</span>
+        </label>
+        
+        <div id="materials-container" class="space-y-2 mb-2">
+            <div class="flex gap-2">
+                <input
+                    type="text"
+                    name="materials[]"
+                    placeholder="Ex: Cuir, Coton, Bronze..."
+                    class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]"
+                />
+            </div>
+        </div>
+        
+        @if(flashMessages.has('errors.materials'))
+            <p class="text-red-600 text-xs italic mb-2">{{ flashMessages.get('errors.materials').join(', ') }}</p>
+        @end
+
+        <button type="button" id="add-material" class="text-sm flex items-center text-[#171B99] hover:text-blue-800 font-semibold transition">
+            <span class="mr-1 text-lg">+</span> Ajouter un matériau
+        </button>
+    </div>
+
+    {{-- Déclinaisons (Variants) --}}
+    <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+            Votre article est aussi disponible en : <span class="text-gray-400 font-normal">(Couleurs, Tailles...)</span>
+        </label>
+        
+        <div id="variants-container" class="space-y-2 mb-2">
+            <div class="flex gap-2">
+                <input
+                    type="text"
+                    name="variants[]"
+                    placeholder="Ex: Bleu, XL, Motif floral..."
+                    class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]"
+                />
+            </div>
+        </div>
+        
+        @if(flashMessages.has('errors.variants'))
+            <p class="text-red-600 text-xs italic mb-2">{{ flashMessages.get('errors.variants').join(', ') }}</p>
+        @end
+
+        <button type="button" id="add-variant" class="text-sm flex items-center text-[#171B99] hover:text-blue-800 font-semibold transition">
+            <span class="mr-1 text-lg">+</span> Ajouter une déclinaison
+        </button>
+    </div>
+
+    <div class="flex items-center justify-between gap-4 mt-8">
+        <button type="submit" class="btn flex-1 bg-[#171B99] hover:bg-blue-800 text-white font-bold py-3 rounded-lg transition shadow-lg">
+            Finaliser mon article
+        </button>
+    </div>  
+</form>
+
+{{-- Script pour rendre les boutons "Ajouter" fonctionnels --}}
+<script>
+    function setupDynamicInputs(buttonId, containerId, inputName) {
+        document.getElementById(buttonId).addEventListener('click', () => {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'flex gap-2';
+            div.innerHTML = `
+                <input type="text" name="${inputName}" class="input w-full border rounded py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]" />
+                <button type="button" class="text-red-500 font-bold px-2 remove-input">×</button>
+            `;
+            container.appendChild(div);
+
+            div.querySelector('.remove-input').addEventListener('click', () => div.remove());
+        });
+    }
+
+    setupDynamicInputs('add-material', 'materials-container', 'materials[]');
+    setupDynamicInputs('add-variant', 'variants-container', 'variants[]');
+</script> --}}
+
+<form action="{{ route('handleStepTwoForArticle') }}" method="POST">
+    {{ csrfField() }}
+
+    {{-- 1. Technique de fabrication --}}
+    <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+            Technique de fabrication <span class="text-gray-400 font-normal">(Optionnel)</span>
+        </label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            @let(labels = ['Tissage', 'Tricot', 'Teinture', 'Broderie', 'Soudure', 'Vannerie', 'Sculpture', 'Forge', 'Poterie'])
+            @each(label in labels)
+                <label class="inline-flex items-center p-2 border rounded hover:bg-gray-50 cursor-pointer transition">
+                    <input type="checkbox" name="craftsmanship[]" value="{{ label }}" class="form-checkbox text-[#171B99]">
+                    <span class="ml-2 text-xs text-gray-700">{{ label }}</span>
+                </label>
+            @end
+        </div>
+        @if(flashMessages.has('errors.craftsmanship'))
+            <p class="text-red-600 text-xs italic mt-2">{{ flashMessages.get('errors.craftsmanship').join(', ') }}</p>
+        @end
+    </div>
+
+    {{-- 2. Spécificités Décoration & Style --}}
+    <div class="mb-6 border-t pt-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+            Style & Usage <span class="text-gray-400 font-normal">(Pour la décoration)</span>
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <span class="text-xs text-gray-500 block mb-1">Style de l'article :</span>
+                <select name="style" class="w-full border rounded py-2 px-3 text-sm bg-white focus:ring-1 focus:ring-[#171B99] outline-none">
+                    <option value="">-- Non spécifié --</option>
+                    <option value="modern">Moderne / Minimaliste</option>
+                    <option value="traditional">Traditionnel / Ethnique</option>
+                    <option value="vintage">Vintage / Rétro</option>
+                    <option value="industrial">Industriel</option>
+                </select>
+            </div>
+            <div>
+                <span class="text-xs text-gray-500 block mb-1">Type d'usage :</span>
+                <select name="usage" class="w-full border rounded py-2 px-3 text-sm bg-white focus:ring-1 focus:ring-[#171B99] outline-none">
+                    <option value="">-- Non spécifié --</option>
+                    <option value="indoor">Intérieur uniquement</option>
+                    <option value="outdoor">Extérieur (Résistant)</option>
+                    <option value="both">Les deux</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    {{-- 3. Tailles & Dimensions --}}
+    <div class="mb-6 border-t pt-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+            Guide des tailles / Dimensions <span class="text-gray-400 font-normal">(Optionnel)</span>
+        </label>
+
+        <div class="space-y-4">
+            {{-- Mode --}}
+            <div>
+                <span class="text-xs text-gray-500 block mb-2 underline">Tailles disponibles (Vêtements/Chaussures) :</span>
+                <div class="flex flex-wrap gap-2">
+                    @let(sizes = ['Unique', 'S', 'M', 'L', 'XL', 'XXL', '38', '40', '42', '44'])
+                    @each(size in sizes)
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="sizes[]" value="{{ size }}" class="hidden peer">
+                            <span class="px-3 py-1 border rounded-md text-sm peer-checked:bg-[#171B99] peer-checked:text-white hover:bg-gray-100 transition">
+                                {{ size }}
+                            </span>
+                        </label>
+                    @end
+                </div>
+            </div>
+
+            {{-- Dimensions physiques --}}
+            <div>
+                <span class="text-xs text-gray-500 block mb-2 underline">Mesures de l'objet (cm/g) :</span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <input type="number" name="length" placeholder="Long." class="border rounded py-2 px-3 text-sm outline-none">
+                    <input type="number" name="width" placeholder="Larg." class="border rounded py-2 px-3 text-sm outline-none">
+                    <input type="number" name="height" placeholder="Haut." class="border rounded py-2 px-3 text-sm outline-none">
+                    <input type="number" name="weight" placeholder="Poids(g)" class="border rounded py-2 px-3 text-sm outline-none">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 4. Matériaux & Déclinaisons --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Matériaux <span class="text-xs font-normal text-gray-400">(Bois, Cuir...)</span></label>
+            <div id="materials-container" class="space-y-2">
+                <input type="text" name="materials[]" class="input w-full border rounded py-2 px-3 text-sm">
+            </div>
+            <button type="button" id="add-material" class="mt-2 text-xs text-[#171B99] font-bold">+ Ajouter</button>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Variantes <span class="text-xs font-normal text-gray-400">(Couleurs, Motifs...)</span></label>
+            <div id="variants-container" class="space-y-2">
+                <input type="text" name="variants[]" class="input w-full border rounded py-2 px-3 text-sm">
+            </div>
+            <button type="button" id="add-variant" class="mt-2 text-xs text-[#171B99] font-bold">+ Ajouter</button>
+        </div>
+    </div>
+
+    <button type="submit" class="w-full bg-[#171B99] text-white font-bold py-3 rounded-lg hover:bg-blue-800 transition">
+        Finaliser mon article
+    </button> 
+</form>
+
+<script>
+    function setupDynamicInputs(buttonId, containerId, inputName) {
+        document.getElementById(buttonId).addEventListener('click', () => {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'flex gap-2';
+            div.innerHTML = `
+                <input type="text" name="${inputName}" class="input w-full border rounded py-2 px-3 text-sm" />
+                <button type="button" class="text-red-500 remove-input">×</button>
+            `;
+            container.appendChild(div);
+            div.querySelector('.remove-input').addEventListener('click', () => div.remove());
+        });
+    }
+    setupDynamicInputs('add-material', 'materials-container', 'materials[]');
+    setupDynamicInputs('add-variant', 'variants-container', 'variants[]');
+</script>
