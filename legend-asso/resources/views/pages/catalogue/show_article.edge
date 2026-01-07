@@ -1,255 +1,13 @@
-  {{-- @dd(article)
 @component('component/layouts/app')
   @slot("title") 
     {{ article.name }}
   @end
-  
+
   @slot('main')
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         
-        <div class="flex flex-row-reverse gap-4 h-[500px]">
-          
-          <div class="swiper mySwiper2 flex-grow rounded-lg overflow-hidden bg-gray-100">
-            <div class="swiper-wrapper">
-              @each(image in article.images)
-                <div class="swiper-slide">
-                  <img src="{{ image.imageUrl }}" class="w-full h-full object-cover">
-                </div>
-              @end
-            </div>
-
-            <div class="swiper-button-next !text-[#171B99]"></div>
-            <div class="swiper-button-prev !text-[#171B99]"></div>
-          </div>
-
-          @if(article.images.length > 1)
-            <div thumbsSlider="" class="swiper mySwiper w-24 flex-shrink-0">
-              <div class="swiper-wrapper flex flex-col">
-                @each(image in article.images)
-                  <div class="swiper-slide !h-24 rounded-md overflow-hidden border-2 border-transparent swiper-slide-thumb">
-                    <img src="{{ image.imageUrl }}" class="w-full h-full object-cover cursor-pointer">
-                  </div>
-                @end
-              </div>
-            </div>
-          @end
-        </div>
-
-        <div class="flex flex-col">
-          <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ article.name }}</h1>
-          <div class="text-2xl font-bold text-gray-900 mb-2">
-            {{ article.price.toLocaleString() }} FCFA
-          </div>
-          
-          <div class="w-1/3">
-
-            @component('component/partials/category', { name: article.category.name })
-          @end
-          </div>
-
-          <div class="mb-1">
-            <h3 class="font-bold text-lg">Description</h3>
-            <p class="text-gray-600 leading-relaxed">{{ article.about }}</p>
-          </div>
-          <div class="mt-auto py-3 flex gap-4 items-center">
-            <div class="flex items-center border rounded-lg overflow-hidden">
-              <button data-decrement-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-100">-</button>
-              <span data-qty-id="{{ article.id }}" class="px-4 py-2 font-bold w-12 text-center">1</span>
-              <button data-increment-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-100">+</button>
-            </div>
-            <button class="flex-grow bg-[#171B99] text-white font-bold py-4 rounded-lg hover:opacity-90 transition">
-              AJOUTER AU PANIER — {{ article.price.toLocaleString() }} FCFA
-            </button>
-          </div>
-          <div>
-            
-<ul class="mt-4 space-y-2">
-  <li>
-    <strong>Disponibilité :</strong><br>
-    {{ article.available ? 'En stock' : 'Indisponible pour le moment' }}
-  </li>
-
-  {{-- Cas 1 : Article Agroalimentaire --}}
-  @if(article.agrofood) 
-    <li>
-      <strong>Certification :</strong> <br>
-      {{ article.agrofood.certification ? article.agrofood.certification.join(', ') : 'N/A' }}
-    </li>
-    <li>
-      <strong>Ingrédients :</strong> <br>
-      {{ article.agrofood.ingredient_list ? article.agrofood.ingredient_list.join(', ') : 'Non spécifiés' }}
-    </li>
-
-  {{-- Cas 2 : Article Lifestyle (Mode, Art, Déco) --}}
-  @elseif(article.lifestyle)
-    @if(article.lifestyle.materials?.length)
-      <li>
-        <strong>Matières :</strong> <br>
-        {{ article.lifestyle.materials.join(', ') }}
-      </li>
-    @end
-
-    @if(article.lifestyle.sizes?.length)
-      <li>
-        <strong>Tailles / Pointures :</strong> <br>
-        <div class="flex gap-2 mt-1">
-          @each(size in article.lifestyle.sizes)
-            <span class="px-2 py-1 bg-gray-100 border text-xs rounded">{{ size }}</span>
-          @end
-        </div>
-      </li>
-    @end
-
-    @if(article.lifestyle.craftsmanship?.length)
-      <li>
-        <strong>Savoir-faire :</strong> <br>
-        {{ article.lifestyle.craftsmanship.join(', ') }}
-      </li>
-    @end
-
-    @if(article.lifestyle.length || article.lifestyle.width)
-      <li>
-        <strong>Dimensions :</strong> <br>
-        {{ article.lifestyle.length || 0 }} x {{ article.lifestyle.width || 0 }} x {{ article.lifestyle.height || 0 }} cm
-      </li>
-    @end
-    
-    @if(article.lifestyle.style)
-      <li>
-        <strong>Style :</strong> <br>
-        {{ article.lifestyle.style }}
-      </li>
-    @end
-  @end
-</ul>
-
-
-
-
-          
-          {{-- <li>
-            <strong>Disponibilité :</strong><br>
-            {{ article.available ? 'En stock' : 'Indisponible pour le moment' }}
-          </li>
-          @if(article.agrofood) 
-          <li>
-            <strong>Certification :</strong> <br>
-            {{ article.agrofood.certification ? article.agrofood.certification.join(', ') : 'N/A' }}
-          </li>
-          <li>
-            <strong>Ingrédients :</strong> <br>
-            {{ article.agrofood.ingredient_list ? article.agrofood.ingredient_list.join(', ') : 'Non spécifiés' }}
-          </li>
-          @elseif(article.lifestyle)
-          <li>
-            <strong>Certification :</strong> <br>
-            {{ article.agrofood.certification ? article.agrofood.certification.join(', ') : 'N/A' }}
-          </li>
-          <li>
-            <strong>Ingrédients :</strong> <br>
-            {{ article.agrofood.ingredient_list ? article.agrofood.ingredient_list.join(', ') : 'Non spécifiés' }}
-          </li> --}}
-            
-          @end
-        </ul>
-          </div>
-
-          @if(article.agrofood?.conservation_advice)
-            <div class="mb-8">
-              <h3 class="font-bold text-lg mb-2">Conseil de conservation</h3>
-              <p class="text-gray-600 leading-relaxed">{{ article.agrofood.conservation_advice }}</p>
-            </div>
-          @end
-
-        </div>
-        <div class="p-4 mt-1 border-t border-gray-200">
-      <h3 class="text-xl font-semibold text-gray-800 mb-4">À propos du vendeur</h3>
-      
-      <div class="inline-flex mt-2 items-center">
-        <img src="https://placehold.co/100" alt="Avatar" class="w-12 h-12 rounded-full object-cover" />
-        <p class="mx-3 text-[#CE0000] text-lg font-medium">
-          {{ article.seller?.name ? article.seller.name.toUpperCase() : 'Vendeur Inconnu' }}
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
-        <div>
-          <h3 class="text-lg font-semibold text-gray-800">Secteur d'activité</h3>
-          <p class="text-gray-600">{{ article.seller?.sector || 'Général' }}</p>
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold text-gray-800">Localisation</h3>
-          <p class="text-gray-600">{{ article.seller?.location || 'Non renseignée' }}</p>
-        </div>
-      </div>
-    </div>
-      </div>
-      <div class="p-4">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Autres produits de ce vendeur</h3>
-      <div class="flex overflow-x-auto space-x-4 pb-4">
-        @each(other in otherArticles)
-          <div class="min-w-[250px]">
-            @component('component/partials/card2', { article: other })
-            @end
-          </div>
-        @endeach
-      </div>
-    </div>
-    </div>
-
-    <style>
-      .mySwiper .swiper-slide {
-        opacity: 0.5;
-        transition: 0.3s;
-        height: 90px !important;
-      }
-      .mySwiper .swiper-slide-thumb-active {
-        opacity: 1;
-        border-color: #171B99;
-      }
-      .swiper-button-next:after, .swiper-button-prev:after {
-        font-size: 18px !important;
-        font-weight: bold;
-      }
-    </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-      var swiper = new Swiper(".mySwiper", {
-        direction: "vertical",
-        spaceBetween: 10,
-        slidesPerView: "auto",
-        freeMode: true,
-        watchSlidesProgress: true,
-      });
-
-      var swiper2 = new Swiper(".mySwiper2", {
-        spaceBetween: 10,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        thumbs: {
-          swiper: swiper,
-        },
-      });
-    </script>
-  @end
-@end --}}
-
-
-
-@component('component/layouts/app')
-  @slot("title") 
-    {{ article.name }}
-  @end
-  
-  @slot('main')
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-        
-        {{-- SECTION IMAGES (Swiper) --}}
+        {{-- SECTION IMAGES (GAUCHE) --}}
         <div class="flex flex-row-reverse gap-4 h-[500px]">
           <div class="swiper mySwiper2 flex-grow rounded-lg overflow-hidden bg-gray-100 shadow-sm">
             <div class="swiper-wrapper">
@@ -276,10 +34,10 @@
           @end
         </div>
 
-        {{-- SECTION INFOS --}}
+        {{-- SECTION INFOS (DROITE) --}}
         <div class="flex flex-col">
-          <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ article.name }}</h1>
-          <div class="text-2xl font-bold text-[#171B99] mb-4">
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ article.name }}</h1>
+          <div class="text-xl font-bold text-[#171B99] mb-4">
             {{ article.price.toLocaleString() }} FCFA
           </div>
           
@@ -290,30 +48,31 @@
 
           <div class="mb-6">
             <h3 class="font-bold text-lg mb-2">Description</h3>
-            <p>{{ article.about }}</p>
+            <p class="text-gray-600 leading-relaxed">{{ article.about }}</p>
           </div>
 
+          {{-- BOUTON PANIER --}}
           <div class="mt-auto py-3 flex gap-4 items-center">
             <div class="flex items-center border-2 border-gray-100 rounded-lg overflow-hidden shadow-sm">
-              <button data-decrement-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200 transition">-</button>
+              <button data-decrement-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">-</button>
               <span data-qty-id="{{ article.id }}" class="px-4 py-2 font-bold w-12 text-center">1</span>
-              <button data-increment-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200 transition">+</button>
+              <button data-increment-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">+</button>
             </div>
             <button class="flex-grow bg-[#171B99] text-white font-bold py-4 rounded-lg hover:opacity-90 shadow-lg active:scale-95 transition">
               AJOUTER AU PANIER
             </button>
-          </div>
+
           {{-- CARACTERISTIQUES DYNAMIQUES --}}
-          <div class="bg-gray-50 border-gray-100 mb-6">
-            <ul class="space-y-3">
+          </div>
+          <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
+            <ul class="space-y-4">
               <li>
-                <span class="font-bold underline decoration-[#171B99]/30">Disponibilité :</span>
+                <span class="font-bold">Disponibilité :</span>
                 <span class="ml-2 {{ article.available ? 'text-green-600' : 'text-red-600' }} font-medium">
                   {{ article.available ? 'En stock' : 'Indisponible' }}
                 </span>
               </li>
 
-              {{-- Cas 1 : Article Agroalimentaire --}}
               @if(article.agrofood) 
                 @if(article.agrofood.certification?.length)
                   <li>
@@ -328,7 +87,6 @@
                   </li>
                 @end
 
-              {{-- Cas 2 : Article Lifestyle (Mode, Art, Déco) --}}
               @elseif(article.lifestyle)
                 @if(article.lifestyle.materials?.length)
                   <li>
@@ -336,44 +94,42 @@
                     <span class="text-sm">{{ article.lifestyle.materials.join(', ') }}</span>
                   </li>
                 @end
-
                 @if(article.lifestyle.sizes?.length)
                   <li>
-                    <span class="font-bold">Tailles disponibles :</span>
+                    <span class="font-bold">Tailles :</span>
                     <div class="flex gap-2 mt-1">
                       @each(size in article.lifestyle.sizes)
-                        <span class="px-2 py-1 bg-white border border-[#171B99]/20 text-[#171B99] text-xs font-bold rounded shadow-sm">{{ size }}</span>
+                        <span class="px-2 py-1 bg-white border border-gray-200 text-xs font-bold rounded">{{ size }}</span>
                       @end
                     </div>
                   </li>
                 @end
 
-                @if(article.lifestyle.craftsmanship?.length)
+              @elseif(article.cosmetic)
+                <li>
+                  <span class="font-bold">Texture :</span>
+                  <span class="ml-2 text-gray-700">{{ article.cosmetic.texture }}</span>
+                </li>
+                <li>
+                  <span class="font-bold">Contenance :</span>
+                  <span class="ml-2 text-gray-700">{{ article.cosmetic.capacity_value }} {{ article.cosmetic.capacity_unit }}</span>
+                </li>
+                @if(article.cosmetic.ingredients?.length)
                   <li>
-                    <span class="font-bold">Savoir-faire :</span><br>
-                    <span class="text-sm">{{ article.lifestyle.craftsmanship.join(', ') }}</span>
+                    <span class="font-bold">Composition :</span><br>
+                    <p class="text-sm text-gray-600 italic">{{ article.cosmetic.ingredients.join(', ') }}</p>
                   </li>
                 @end
-
-                @if(article.lifestyle.length || article.lifestyle.width)
-                  <li>
-                    <span class="font-bold">Dimensions :</span><br>
-                    <span class="text-sm">
-                      {{ article.lifestyle.length || '0' }} x {{ article.lifestyle.width || '0' }} x {{ article.lifestyle.height || '0' }} cm
-                    </span>
+                @if(article.cosmetic.precautions)
+                  <li class="text-sm">
+                    <span class="font-bold">Conseil d'utilisation :</span><br>
+                     {{ article.cosmetic.precautions }}
                   </li>
                 @end
               @end
             </ul>
           </div>
 
-          @if(article.agrofood?.conservation_advice)
-            <div class="mb-8 p-3 bg-yellow-50 border-l-4 border-yellow-400 text-sm italic text-gray-700">
-              <span class="font-bold not-italic">💡 Conseil :</span> {{ article.agrofood.conservation_advice }}
-            </div>
-          @end
-
-          {{-- BOUTONS D'ACTION --}}
         </div>
       </div>
 
@@ -383,10 +139,8 @@
         <div class="flex items-center">
           <img src="https://ui-avatars.com/api/?name={{ article.seller?.name || 'V' }}&background=171B99&color=fff" class="w-16 h-16 rounded-full border-2 border-gray-100 shadow-sm" />
           <div class="ml-4">
-            <p class="text-lg font-black">
-              {{ article.seller?.name ? article.seller.name.toUpperCase() : 'VENDEUR INCONNU' }}
-            </p>
-            <p class="text-gray-500 text-sm"> {{ article.seller?.location || 'Non renseignée' }}</p>
+            <p class="text-lg font-black">{{ article.seller?.name?.toUpperCase() || 'VENDEUR INCONNU' }}</p>
+            <p class="text-gray-500 text-sm">{{ article.seller?.location || 'Non renseignée' }}</p>
           </div>
         </div>
 
@@ -405,14 +159,14 @@
       {{-- AUTRES PRODUITS --}}
       @if(otherArticles?.length)
         <div class="mt-16">
-          <h3 class="text-2xl font-bold text-gray-900 mb-6 px-2">Dans la même boutique</h3>
+          <h3 class="text-2xl font-bold text-gray-900 mb-6 px-2">Autres articles du même vendeur</h3>
           <div class="flex overflow-x-auto space-x-6 pb-6 scrollbar-hide">
             @each(other in otherArticles)
               <div class="min-w-[280px]">
                 @component('component/partials/card2', { article: other })
                 @end
               </div>
-            @endeach
+            @end
           </div>
         </div>
       @end

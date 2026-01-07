@@ -6,6 +6,7 @@ import Seller from './seller.js'
 import Category from './category.js'
 import Agrofood from './agrofood.js'
 import Lifestyle from './lifestyle.js'
+import Cosmetic from './cosmetic.js'
 
 export default class Article extends BaseModel {
   @column({ isPrimary: true })
@@ -63,9 +64,10 @@ export default class Article extends BaseModel {
   })
   declare lifestyle: HasOne<typeof Lifestyle>
 
-  public get details() {
-    return this.agrofood || this.lifestyle
-  }
+  @hasOne(() => Cosmetic, {
+    foreignKey: 'articleId',
+  })
+  declare cosmetic: HasOne<typeof Cosmetic>
 
   @hasMany(() => Image, {
     foreignKey: 'articleId',

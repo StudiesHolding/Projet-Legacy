@@ -1,7 +1,6 @@
 @component('component/layouts/dashboard')
 @slot('content')
 <script>
-{{-- @dd(category) --}}
     document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('ingredients-container');
         const addButton = document.getElementById('add-ingredient');
@@ -40,8 +39,10 @@
         @include('component/partials/add-agrofood-form')
     @elseif(category === 'Mode/Artisanat')
         @include('component/partials/add-lifestyle-form')
-    @elseif(category === 'cosmetique')
+    @elseif(category === 'Cosmetique')
         @include('component/partials/add-cosmetic-form')
+    @elseif(category === 'lifestyle')
+        @include('component/partials/add-lifestyle-form')
     @end
 </div>
 @endslot

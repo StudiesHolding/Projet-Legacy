@@ -64,9 +64,8 @@ export default class NavigationsController {
       .preload('category')
       .preload('seller')
       .preload('lifestyle')
+      .preload('cosmetic')
       .firstOrFail()
-
-    console.log(article)
 
     // 3. Articles suggérés
     const otherArticles = await Article.query()
@@ -75,6 +74,7 @@ export default class NavigationsController {
       .where('available', true)
       .preload('images')
       .preload('category')
+      .preload('cosmetic')
       .limit(10)
 
     return view.render('pages/catalogue/show_article', {

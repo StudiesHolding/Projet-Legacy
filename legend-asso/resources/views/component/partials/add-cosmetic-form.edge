@@ -1,0 +1,103 @@
+<form action="{{ route('handleStepTwoForArticle') }}" method="POST">
+  {{ csrfField() }}
+
+  {{-- 1. Précautions d'utilisation --}}
+  <div class="mb-6">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Précautions d'utilisation <span class="text-gray-400 font-normal">(Optionnel)</span>
+    </label>
+    <textarea 
+      name="precautions" 
+      rows="3"
+      class="w-full border rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-[#171B99] outline-none"
+      placeholder="Ex: Éviter le contact avec les yeux...">{{ old('precautions') || '' }}</textarea>
+    
+    @if(flashMessages.has('errors.precautions'))
+      <p class="text-red-600 text-xs italic mt-2">{{ flashMessages.get('errors.precautions').join(', ') }}</p>
+    @end
+  </div>
+
+  {{-- 2. Cible (Type de peau/cheveux) --}}
+  <div class="mb-6 border-t pt-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Type de peau / cheveux conseillé
+    </label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <span class="text-xs text-gray-500 block mb-1">Cible :</span>
+        <select name="skinType" class="w-full border rounded py-2 px-3 text-sm bg-white focus:ring-1 focus:ring-[#171B99] outline-none">
+          <option value="">-- Tous types --</option>
+          <option value="oily" {{ old('skinType') == 'oily' ? 'selected' : '' }}>Peaux grasses / Cheveux crépus</option>
+          <option value="dry" {{ old('skinType') == 'dry' ? 'selected' : '' }}>Peaux sèches / Cheveux secs</option>
+          <option value="sensitive" {{ old('skinType') == 'sensitive' ? 'selected' : '' }}>Peaux sensibles</option>
+          <option value="mixed-race" {{ old('skinType') == 'mixed-race' ? 'selected' : '' }}>Peaux métissées (Mixed-race)</option>
+          <option value="dark-skin" {{ old('skinType') == 'dark-skin' ? 'selected' : '' }}>Peaux noires (Dark skin)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  {{-- 3. Aspect / Texture --}}
+  <div class="mb-6 border-t pt-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+       Aspect du produit <span class="text-gray-400 font-normal">(Optionnel)</span>
+    </label>
+    <div class="flex flex-wrap gap-2">
+      @let(textures = ['Huile', 'Crème', 'Lait', 'Gel', 'Spray', 'Baume', 'Pommade', 'Mousse', 'Sérum', 'Savon', 'Gommage', 'Masque'])
+      @each(texture in textures)
+        <label class="cursor-pointer">
+          <input type="radio" name="texture" value="{{ texture }}" class="hidden peer" {{ old('texture') == texture ? 'checked' : '' }}>
+          <span class="px-3 py-1 border rounded-md text-sm peer-checked:bg-[#171B99] peer-checked:text-white hover:bg-gray-100 transition inline-block">
+            {{ texture }}
+          </span>
+        </label>
+      @end
+    </div>
+  </div>
+
+  <div class="mb-6 border-t pt-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Contenance / Format <span class="text-gray-400 font-normal">(Obligatoire)</span>
+    </label>
+    <div class="flex gap-2">
+      <div class="w-2/3">
+        <input 
+          type="number" 
+          name="capacity_value" 
+          step="0.01"
+          value="{{ old('capacity_value') || '' }}"
+          placeholder="Ex: 50" 
+          class="w-full border rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-[#171B99] outline-none"
+          required
+        >
+      </div>
+      <div class="w-1/3">
+        <select name="capacity_unit" class="w-full border rounded-lg py-2 px-3 text-sm bg-white focus:ring-1 focus:ring-[#171B99] outline-none">
+          <option value="ml"{{ old('capacity_unit') == 'ml' ? 'selected' : '' }}>ml</option>
+          <option value="l" {{ old('capacity_unit') == 'l' ? 'selected' : '' }}>Litre(s)</option>
+          <option value="g" {{ old('capacity_unit') == 'g' ? 'selected' : '' }}>grammes</option>
+          <option value="kg" {{ old('capacity_unit') == 'kg' ? 'selected' : '' }}>kg</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  {{-- 5. Ingrédients Dynamiques --}}
+  <div class="mb-6 border-t pt-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Liste des ingrédients <span class="text-xs font-normal text-gray-400">(INCI)</span>
+    </label>
+    <div id="ingredients-container" class="space-y-2">
+      <div class="flex gap-2">
+        <input type="text" name="ingredients[]" placeholder="Ex: Beurre de Karité" class="w-full border rounded py-2 px-3 text-sm focus:ring-1 focus:ring-[#171B99] outline-none">
+      </div>
+    </div>
+    <button type="button" id="add-ingredient" class="mt-2 text-xs text-[#171B99] font-bold flex items-center gap-1">
+      <span class="text-lg">+</span> Ajouter un ingrédient
+    </button>
+  </div>
+
+  <button type="submit" class="w-full bg-[#171B99] text-white font-bold py-4 rounded-lg hover:bg-blue-800 transition shadow-lg mt-4">
+    Finaliser mon article
+  </button> 
+</form>
