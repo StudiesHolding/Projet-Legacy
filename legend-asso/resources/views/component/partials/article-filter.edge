@@ -1,0 +1,29 @@
+{{-- @props(['searchQuery', 'categoryName', 'priceMin', 'priceMax', 'availability']) --}}
+
+<div class="w-full bg-gray-100 p-4 mb-4 rounded-lg">
+  <form method="GET" action="/" class="flex flex-wrap gap-4 items-end">
+    @if(searchQuery)
+      <input type="hidden" name="search" value="{{ searchQuery }}">
+    @endif
+    @if(categoryName)
+      <input type="hidden" name="category" value="{{ categoryName }}">
+    @endif
+    <div>
+      <label for="price_min" class="block text-sm font-medium text-gray-700">Prix minimum</label>
+      <input type="number" name="price_min" id="price_min" value="{{ priceMin }}" placeholder="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+    <div>
+      <label for="price_max" class="block text-sm font-medium text-gray-700">Prix maximum</label>
+      <input type="number" name="price_max" id="price_max" value="{{ priceMax }}" placeholder="1000" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+    <div>
+      <label for="availability" class="block text-sm font-medium text-gray-700">Disponibilité</label>
+      <select name="availability" id="availability" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        <option value="available" @if(availability === 'available') selected @endif>Disponible</option>
+        <option value="unavailable" @if(availability === 'unavailable') selected @endif>Indisponible</option>
+        <option value="all" @if(availability === 'all') selected @endif>Tous</option>
+      </select>
+    </div>
+    <button type="submit" class="btn bg-[#171B99] text-white">Filtrer</button>
+  </form>
+</div>

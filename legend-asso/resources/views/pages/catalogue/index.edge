@@ -3,9 +3,20 @@
     catalogue
   @end
   @slot('main')
-@component('component/partials/category-section', { categories , categoryName })
-  
-@end
+    @component('component/partials/category-section', { categories , categoryName, queryString })
+    @end
+
+    <!-- Toggle Filter Button -->
+    <div class="w-full mb-4">
+      <button id="toggle-filters" class="bg-[#171B99] text-white px-4 py-2 rounded-md hover:bg-blue-700">filtrer</button>
+    </div>
+
+    <!-- Filter Form -->
+    <div id="filters" class="hidden w-full bg-gray-100 p-4 mb-4 rounded-lg">
+      @component('component/partials/article-filter', { searchQuery, categoryName, priceMin, priceMax, availability })
+      @end
+    </div>
+
     <div class="w-full flex-wrap inline-flex">
       @each(article in articles)
         @component('component/partials/card',{'article':article})
@@ -13,8 +24,22 @@
       @end
     </div>
     <div>
-        @component('component/partials/pagination',{'pagination':pagination})
-        @end
+      @component('component/partials/pagination',{'pagination':pagination})
+      @end
     </div>
+
+    <script>
+      document.getElementById('toggle-filters').addEventListener('click', function() {
+        const filters = document.getElementById('filters');
+        const button = document.getElementById('toggle-filters');
+        if (filters.classList.contains('hidden')) {
+          filters.classList.remove('hidden');
+          button.textContent = 'Masquer';
+        } else {
+          filters.classList.add('hidden');
+          button.textContent = 'filtrer';
+        }
+      });
+    </script>
 @end
 @endcomponent

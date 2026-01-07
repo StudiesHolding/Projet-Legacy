@@ -6,13 +6,21 @@ export default class NavigationsController {
   public async home({ view, request }: HttpContext) {
     const searchQuery = request.input('search')
     const categoryName = request.input('category')
+    const priceMin = request.input('price_min')
+    const priceMax = request.input('price_max')
+    const availability = request.input('availability', 'available') // default to available
     const page = request.input('page', 1)
     const categories = await Category.query().orderBy('name', 'asc')
 
-    const query = Article.query()
-      .where('available', true)
-      .preload('images')
-      .orderBy('createdAt', 'desc')
+    const query = Article.query().preload('images').orderBy('createdAt', 'desc')
+
+    // Filter by availability
+    if (availability === 'available') {
+      query.where('available', true)
+    } else if (availability === 'unavailable') {
+      query.where('available', false)
+    }
+    // If 'all', no filter
 
     if (categoryName) {
       query.whereHas('category', (catQuery) => {
@@ -24,14 +32,27 @@ export default class NavigationsController {
       query.whereILike('name', `%${searchQuery}%`)
     }
 
+    if (priceMin) {
+      query.where('price', '>=', Number.parseFloat(priceMin))
+    }
+
+    if (priceMax) {
+      query.where('price', '<=', Number.parseFloat(priceMax))
+    }
+
     const articles = await query.paginate(page, 12)
     articles.baseUrl('/')
 
     const params = {
       ...(searchQuery ? { search: searchQuery } : {}),
       ...(categoryName ? { category: categoryName } : {}),
+      ...(priceMin ? { price_min: priceMin } : {}),
+      ...(priceMax ? { price_max: priceMax } : {}),
+      ...(availability !== 'available' ? { availability } : {}),
     }
     articles.queryString(params)
+
+    const queryString = new URLSearchParams(params).toString()
 
     const rangeMin = Math.max(1, articles.currentPage - 1)
     const rangeMax = Math.min(articles.lastPage, articles.currentPage + 1)
@@ -50,6 +71,10 @@ export default class NavigationsController {
       searchQuery,
       categoryName,
       categories,
+      priceMin,
+      priceMax,
+      availability,
+      queryString,
     })
   }
 
