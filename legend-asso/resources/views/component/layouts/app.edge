@@ -269,7 +269,6 @@
         }
 
         try {
-
           await axios.get(`${API_URL}/addToCart`, { 
             params: {
               articleId: Number(articleId),
@@ -281,8 +280,8 @@
           updateCartUI(cartData);
 
           if (btn) {
-            btn.textContent = 'Ajouté ✓';
-            btn.classList.add('bg-green-500', 'text-white');
+            btn.textContent = 'Ajouté';
+            btn.classList.add('text-white');
           }
 
           return { success: true, data: cartData };
@@ -300,7 +299,7 @@
             setTimeout(() => {
               btn.disabled = false;
               btn.textContent = btn.dataset.originalText || 'Ajouter au panier';
-              btn.classList.remove('bg-green-500', 'text-white', 'bg-red-500');
+              btn.classList.remove('bg-green-500', 'bg-red-500');
             }, 1200);
           }
         }

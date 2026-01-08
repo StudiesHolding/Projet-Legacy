@@ -12,19 +12,20 @@
         class="h-full w-full rounded-xl object-cover"
       />
     </div>
-    <div class="p-2">
-      <div class="mb-2">
-        <p class="text-slate-800 p-2 text-xl font-semibold">
-          {{ article.name }}
+    <div>
+      <div class="p-2">
+        <p class="text-slate-800 font-medium px-2">
+          {{ truncate(article.name, 35) }}
         </p>
-        <p class="text-cyan-600 text-xl font-semibold p-2">
+         {{-- <p class="text-sm font-medium text-gray-700">{{ truncate(article.name , 15) }}</p> --}}
+        <p class="text-cyan-600 font-semibold px-2">
           {{ formatNumber(article.price)}} FCFA
         </p>
       </div>
     </div>
   </a>
   <button
-    class="btn justify-center items-center w-11/12 border-[#171B99] border mt-1 p-4 text-center text-[#171B99] transition-all hover:bg-[#171B99] hover:text-white"
+    class="btn justify-center items-center mb-2 w-11/12 border-[#171B99] border text-center text-[#171B99] transition-all hover:bg-[#171B99] hover:text-white"
     type="button"
     id="add-to-cart-{{ article.id }}"
     data-article-id="{{ article.id }}"

@@ -56,12 +56,30 @@ router.get('logout', [AuthController, 'logout_client']).as('logout_client').use(
 router.post('handleStepOne', [SellerRegistrationsController, 'handleStepOne']).as('handleStepOne')
 router.post('handleStepTwo', [SellerRegistrationsController, 'finalize']).as('finalize')
 
+// router
+//   .group(() => {
+//     router
+//       .post('article/handleStepOne', [ArticlesController, 'handleStepOne'])
+//       .as('handleStepOneForArticle')
+
+//     router
+//       .post('article/handleStepTwo', [ArticlesController, 'handleStepTwo'])
+//       .as('handleStepTwoForArticle')
+
+//   })
+//   .use(middleware.auth())
+
 router
   .group(() => {
+    // Étape 1
     router
       .post('article/handleStepOne', [ArticlesController, 'handleStepOne'])
       .as('handleStepOneForArticle')
 
+    // Étape 2 (L'ajout indispensable)
+    router
+      .get('article/create/step-two', [ArticlesController, 'renderStepTwo'])
+      .as('articles.create.stepTwo')
     router
       .post('article/handleStepTwo', [ArticlesController, 'handleStepTwo'])
       .as('handleStepTwoForArticle')
@@ -70,7 +88,6 @@ router
       .resource('article', ArticlesController)
       .params({ article: 'id' })
       .where('id', /^[0-9]+$/)
-
     router.delete('images/:imageId', [ImagesController, 'destroy']).as('image.destroy')
   })
   .use(middleware.auth())

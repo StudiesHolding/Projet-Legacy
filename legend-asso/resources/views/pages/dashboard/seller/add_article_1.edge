@@ -9,7 +9,8 @@
             {{-- Catégorie --}}
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Catégorie</label>
-                <select id="category" name="category_id" required
+                <select id="category" name="category_id"
+                 required
                     class="select w-full border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#171B99]">
                     <option value="" disabled selected>Sélectionnez une catégorie</option>
                     @each(category in categories)
@@ -26,7 +27,8 @@
             {{-- Images --}}
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="images">Images de l'article (plusieurs possibles)</label>
-                <input type="file" id="images" name="images[]" multiple required
+                <input type="file" id="images" name="images[]" multiple
+                 required
                     class="file-input file-input-bordered w-full" />
                 @if(flashMessages.has('errors.images'))
                     <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.images').join(', ') }}</p>
@@ -36,7 +38,8 @@
             {{-- Nom --}}
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Nom de l'article</label>
-                <input type="text" id="name" name="name" value="{{ old('name') || '' }}" required
+                <input type="text" id="name" name="name" value="{{ old('name') || '' }}"
+                 required
                     class="input input-bordered w-full" />
                 @if(flashMessages.has('errors.name'))
                     <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(',') }}</p>
@@ -46,7 +49,8 @@
             {{-- Description --}}
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="about">Description</label>
-                <textarea id="about" name="about" required
+                <textarea id="about" name="about" 
+                required
                     placeholder="Description de votre produit en plusieurs lignes"
                     class="textarea textarea-bordered w-full h-32 resize-none">{{ old('about') ?? '' }}</textarea>
                 @if(flashMessages.has('errors.about'))
@@ -59,7 +63,8 @@
                 {{-- Prix --}}
                 <div class="form-control">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="price">Prix (FCFA)</label>
-                    <input type="number" id="price" name="price" value="{{ old('price') }}" required
+                    <input type="number" id="price" name="price" value="{{ old('price') }}"
+                     required
                         class="input input-bordered w-full" placeholder="Ex: 5000">
                     @if(flashMessages.has('errors.price'))
                         <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.price').join(', ') }}</p>
@@ -69,7 +74,8 @@
                 {{-- Valeur de mesure (ex: 1, 0.5, 25) --}}
                 <div class="form-control">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Quantité de réf.</label>
-                    <input type="number" name="unit_value" value="{{ old('unit_value') || 1 }}" required
+                    <input type="number" name="unit_value" value="{{ old('unit_value') || 1 }}" 
+                    required
                         class="input input-bordered w-full" placeholder="Ex: 1">
                 </div>
 
@@ -89,7 +95,8 @@
             {{-- Livraison --}}
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="delivery_time">Temps de livraison (jours)</label>
-                <input type="number" id="delivery_time" name="delivery_time" value="{{ old('delivery_time') || '' }}" required
+                <input type="number" id="delivery_time" name="delivery_time" value="{{ old('delivery_time') || '' }}" 
+                required
                     class="input input-bordered w-full" placeholder="Ex: 2" />
                 @if(flashMessages.has('errors.delivery_time'))
                     <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.delivery_time').join(', ') }}</p>

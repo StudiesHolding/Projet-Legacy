@@ -38,7 +38,9 @@ export default class ArticlesController {
     const categories = await Category.all()
     return view.render('pages/dashboard/seller/add_article_1', { categories })
   }
+
   async store({ session, response }: HttpContext) {
+    console.log('zoropoto...........................')
     const stepOneData = session.get('stepOneData')
     const imagesPaths = session.get('stepOneImages')
     const stepTwoData = session.get('stepTwoData')
@@ -47,13 +49,7 @@ export default class ArticlesController {
     if (!stepOneData) {
       return response.redirect().toRoute('article.create')
     }
-
-    console.log(stepTwoData)
-    console.log(
-      '.....................................................................................................................',
-      stepTwoData
-    )
-
+    // 2. Créer l'article
     const article = await Article.create(stepOneData)
     if (categoryName === 'Agroalimentaire') {
       await article.related('agrofood').create({
@@ -102,7 +98,7 @@ export default class ArticlesController {
     return response.redirect().toRoute('article.index')
   }
 
-  async handleStepOne({ request, session, auth, view }: HttpContext) {
+  async handleStepOne({ request, session, auth, response }: HttpContext) {
     const payload = await request.validateUsing(ArticleValidator)
     const slug = string.slug(payload.name)
     const user = await auth.authenticate()
@@ -115,9 +111,7 @@ export default class ArticlesController {
         imagesPaths.push(`/uploads/articles/${imageName}`)
       }
     }
-
     const category = await Category.findOrFail(payload.category_id)
-
     session.put('selectedCategoryName', category.name)
     session.put('stepOneData', {
       sellerId: user.id,
@@ -134,16 +128,26 @@ export default class ArticlesController {
     })
 
     session.put('stepOneImages', imagesPaths)
+    return response.redirect().toRoute('articles.create.stepTwo')
+  }
 
-    return view.render('pages/dashboard/seller/add_article_2', { category: category.name })
+  async renderStepTwo({ view, session, response }: HttpContext) {
+    const categoryName = session.get('selectedCategoryName')
+
+    if (!categoryName) {
+      return response.redirect().toRoute('article.create')
+    }
+
+    return view.render('pages/dashboard/seller/add_article_2', { category: categoryName })
   }
 
   async handleStepTwo({ request, response, session }: HttpContext) {
     let payload
     const categoryName = session.get('selectedCategoryName')
+    console.log('zoropoto............................', categoryName)
     if (categoryName === 'Agroalimentaire') {
       payload = await request.validateUsing(AgrofoodValidator)
-    } else if (categoryName === 'Lifestyle') {
+    } else if (categoryName === 'Mode/Artisanat') {
       payload = await request.validateUsing(LifestyleValidator)
     } else if (categoryName === 'Cosmetique') {
       payload = await request.validateUsing(CosmeticValidator)

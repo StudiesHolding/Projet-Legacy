@@ -41,7 +41,7 @@
             {{ article.price.toLocaleString() }} FCFA
           </div>
           
-          <div class="mb-6">
+          <div class="w-1/4">
             @component('component/partials/category', { name: article.category.name })
             @end
           </div>
@@ -138,11 +138,11 @@
 
       {{-- SECTION VENDEUR --}}
       <div class="p-8 mt-12 bg-white border border-gray-100 rounded-2xl shadow-sm">
-        <h3 class="text-xl font-bold text-gray-800 mb-6">Informations sur l'artisan</h3>
+        <h3 class="text-xl font-bold text-gray-800 mb-6">Informations sur le vendeur</h3>
         <div class="flex items-center">
           <img src="https://ui-avatars.com/api/?name={{ article.seller?.name || 'V' }}&background=171B99&color=fff" class="w-16 h-16 rounded-full border-2 border-gray-100 shadow-sm" />
           <div class="ml-4">
-            <p class="text-lg font-black">{{ article.seller?.name?.toUpperCase() || 'VENDEUR INCONNU' }}</p>
+            <p class="text-lg">{{ article.seller?.name?.toUpperCase() || 'VENDEUR INCONNU' }}</p>
             <p class="text-gray-500 text-sm">{{ article.seller?.location || 'Non renseignée' }}</p>
           </div>
         </div>
@@ -150,11 +150,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
           <div class="p-4 bg-gray-50 rounded-lg">
             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Secteur</h4>
-            <p class="text-gray-800 font-semibold">{{ article.seller?.sector || 'Artisanat & Commerce' }}</p>
+            <p class="text-gray-800">{{ article.seller?.sector || 'Artisanat & Commerce' }}</p>
           </div>
           <div class="p-4 bg-gray-50 rounded-lg">
             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Expédition</h4>
-            <p class="text-gray-800 font-semibold">Sous {{ article.delivery_time || '3' }} jours ouvrables</p>
+            <p class="text-gray-800">Sous {{ article.delivery_time || '3' }} jours ouvrables</p>
           </div>
         </div>
       </div>
