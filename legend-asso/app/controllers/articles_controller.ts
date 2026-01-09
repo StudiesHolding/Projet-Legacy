@@ -8,6 +8,7 @@ import Category from '#models/category'
 import { AgrofoodValidator } from '#validators/agrofood'
 import { LifestyleValidator } from '#validators/lifestyle'
 import { CosmeticValidator } from '#validators/cosmetic'
+import { updateArticleValidator } from '#validators/update_article'
 
 export default class ArticlesController {
   async index({ view, request, auth }: HttpContext) {
@@ -34,11 +35,122 @@ export default class ArticlesController {
     })
   }
 
+  async edit({ params, view, auth }: HttpContext) {
+    const user = await auth.authenticate()
+
+    // On récupère l'article avec toutes ses relations possibles
+    const article = await Article.query()
+      .where('id', params.id)
+      .where('seller_id', user.id)
+      .preload('images')
+      .preload('agrofood')
+      .preload('lifestyle')
+      .preload('cosmetic')
+      .preload('category')
+      .firstOrFail()
+
+    const categories = await Category.all()
+
+    // return view.render('pages/dashboard/seller/edit_article', {
+    //   article,
+    //   categories,
+    // })
+    return view.render('pages/dashboard/seller/edit-article', { categories, article })
+  }
+
+  async update({ request, params, response, session, auth }: HttpContext) {
+    const user = await auth.authenticate()
+    const article = await Article.query()
+      .where('id', params.id)
+      .where('seller_id', user.id)
+      .firstOrFail()
+
+    // 1. Valider les données de base (ArticleValidator)
+    const payload = await request.validateUsing(updateArticleValidator)
+    const available = !!request.all().available
+
+    // 2. Mettre à jour l'article de base
+    article.merge({
+      name: payload.name,
+      slug: string.slug(payload.name),
+      delivery_time: Number(payload.delivery_time),
+      unit_value: payload.unit_value,
+      unit_type: payload.unit_type,
+      available: available,
+      about: payload.about,
+      categoryId: Number(payload.category_id),
+      price: payload.price,
+    })
+    await article.save()
+
+    console.log('recepissé')
+
+    // 3. Mettre à jour les données spécifiques selon la catégorie
+    const category = await Category.findOrFail(payload.category_id)
+
+    if (category.name === 'Agroalimentaire') {
+      const specificData = await request.validateUsing(AgrofoodValidator)
+      await article.related('agrofood').updateOrCreate(
+        {},
+        {
+          certification: specificData.certification,
+          ingredient_list: specificData.ingredient,
+          expiry_date: specificData.expiry_date,
+          conservation_advice: specificData.conservation_advice,
+        }
+      )
+    } else if (category.name === 'lifestyle') {
+      const specificData = await request.validateUsing(LifestyleValidator)
+      await article.related('lifestyle').updateOrCreate({}, specificData)
+    } else if (category.name === 'Cosmetique') {
+      const specificData = await request.validateUsing(CosmeticValidator)
+      await article.related('cosmetic').updateOrCreate(
+        {},
+        {
+          precautions: specificData.precautions,
+          skinType: specificData.skinType,
+          texture: specificData.texture,
+          capacity_value: specificData.capacity_value,
+          capacity_unit: specificData.capacity_unit,
+          ingredients: specificData.ingredients,
+        }
+      )
+    }
+
+    // 4. Gérer les nouvelles images (si présentes)
+    if (payload.images && payload.images.length > 0) {
+      const imagesPaths: string[] = []
+      for (const imageFile of payload.images) {
+        const imageName = `${cuid()}.${imageFile.extname}`
+        await imageFile.move(app.publicPath('uploads/articles'), { name: imageName })
+        imagesPaths.push(`/uploads/articles/${imageName}`)
+      }
+      const imagesToStore = imagesPaths.map((path) => ({ imageUrl: path }))
+      await article.related('images').createMany(imagesToStore)
+    }
+
+    session.flash('success', 'Article mis à jour avec succès')
+    return response.redirect().toRoute('article.index')
+  }
+
   async create({ view }: HttpContext) {
     const categories = await Category.all()
     return view.render('pages/dashboard/seller/add_article_1', { categories })
   }
 
+  async show({ params, view }: HttpContext) {
+    // On récupère l'article avec toutes ses données liées
+    const article = await Article.query()
+      .where('id', params.id)
+      .preload('images')
+      .preload('category')
+      .preload('agrofood')
+      .preload('lifestyle')
+      .preload('cosmetic')
+      .firstOrFail()
+
+    return view.render('pages/dashboard/seller/show-article', { article })
+  }
   async store({ session, response }: HttpContext) {
     console.log('zoropoto...........................')
     const stepOneData = session.get('stepOneData')

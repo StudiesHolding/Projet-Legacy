@@ -1,0 +1,134 @@
+@component('component/layouts/dashboard')
+@slot('content')
+    <div class="bg-white p-6 rounded-xl shadow-md">
+        {{-- En-tête --}}
+        <div class="flex items-center justify-between mb-8 border-b pb-4">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">Modifier l'article</h2>
+                <p class="text-sm text-gray-500">{{ article.name }}</p>
+            </div>
+            <a href="{{ route('article.index') }}" class="btn btn-ghost btn-sm text-gray-500 hover:text-[#171B99]">
+                Annuler
+            </a>
+        </div>
+        
+        <form action="{{ route('article.update', { id: article.id }) }}?_method=PUT" method="POST" enctype="multipart/form-data" class="space-y-6">
+            {{ csrfField() }}
+
+            {{-- Grid principale --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {{-- Catégorie --}}
+                <div class="form-control">
+                    <label class="label font-bold text-gray-700" for="category">Catégorie</label>
+                    <select id="category" name="category_id" required class="select select-bordered w-full focus:ring-2 focus:ring-[#171B99]">
+                        @each(category in categories)
+                            <option value="{{ category.id }}" {{ (old('category_id') || article.categoryId) == category.id ? 'selected' : '' }}>
+                                {{ category.name }}
+                            </option>
+                        @end
+                    </select>
+                    @if(flashMessages.has('errors.category_id'))
+                        <span class="text-error text-xs mt-1">{{ flashMessages.get('errors.category_id') }}</span>
+                    @end
+                </div>
+
+                {{-- État de disponibilité --}}
+                <div class="form-control">
+                    <label class="label font-bold text-gray-700">Disponibilité</label>
+                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border">
+                        <span class="text-sm {{ (old('available') ?? article.available) ? 'text-green-600' : 'text-gray-400' }}">
+                            {{ (old('available') ?? article.available) ? 'En stock' : 'Indisponible' }}
+                        </span>
+                        
+                        {{-- Logique Toggle corrigée --}}
+                        {{-- <input type="hidden" name="available" value="false"> --}}
+                        <input 
+                            type="checkbox" 
+                            name="available" 
+                            value="true" 
+                            class="toggle toggle-primary"
+                            {{ (old('available') ?? article.available) ? 'checked' : '' }} 
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {{-- Images --}}
+            <div class="form-control bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300">
+                <label class="label font-bold text-gray-700">Gestion des visuels</label>
+                
+                <div class="flex flex-wrap gap-3 mb-4">
+                    @each(image in article.images)
+                        <div class="relative group w-20 h-20 shadow-sm border rounded-lg overflow-hidden">
+                            <img src="{{ image.imageUrl }}" class="w-full h-full object-cover transition group-hover:scale-110" />
+                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                <span class="text-[10px] text-white font-bold">Actuel</span>
+                            </div>
+                        </div>
+                    @end
+                </div>
+                
+                <input type="file" name="images[]" multiple class="file-input file-input-bordered file-input-primary w-full" />
+                <label class="label">
+                    <span class="label-text-alt text-gray-400 italic">Laissez vide pour conserver vos images actuelles.</span>
+                </label>
+            </div>
+
+            {{-- Nom & Description --}}
+            <div class="space-y-4">
+                <div class="form-control">
+                    <label class="label font-bold text-gray-700" for="name">Nom de l'article</label>
+                    <input type="text" id="name" name="name" value="{{ old('name') || article.name }}" required class="input input-bordered w-full" />
+                    @if(flashMessages.has('errors.name'))
+                        <span class="text-error text-xs mt-1">{{ flashMessages.get('errors.name') }}</span>
+                    @end
+                </div>
+
+                <div class="form-control">
+                    <label class="label font-bold text-gray-700" for="about">Description détaillée</label>
+                    <textarea id="about" name="about" required class="textarea textarea-bordered w-full h-32 resize-none">{{ old('about') || article.about }}</textarea>
+                </div>
+            </div>
+
+            {{-- Bloc Prix et Unités --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                <div class="form-control">
+                    <label class="label font-bold text-gray-700">Prix (FCFA)</label>
+                    <input type="number" name="price" value="{{ old('price') || article.price }}" required class="input input-bordered w-full font-semibold text-[#171B99]">
+                </div>
+
+                <div class="form-control">
+                    <label class="label font-bold text-gray-700">Quantité de réf.</label>
+                    <input type="number" name="unit_value" value="{{ old('unit_value') || article.unit_value }}" required class="input input-bordered w-full">
+                </div>
+
+                <div class="form-control">
+                    <label class="label font-bold text-gray-700">Unité de vente</label>
+                    <select name="unit_type" class="select select-bordered w-full">
+                        @let(currentUnit = old('unit_type') || article.unit_type)
+                        <option value="UNIT" {{ currentUnit == 'UNIT' ? 'selected' : '' }}>Pièce (Unit)</option>
+                        <option value="KG" {{ currentUnit == 'KG' ? 'selected' : '' }}>Kilogramme (Kg)</option>
+                        <option value="L" {{ currentUnit == 'L' ? 'selected' : '' }}>Litre (L)</option>
+                        <option value="PACK" {{ currentUnit == 'PACK' ? 'selected' : '' }}>Paquet / Sac</option>
+                        <option value="CARTON" {{ currentUnit == 'CARTON' ? 'selected' : '' }}>Carton</option>
+                    </select>
+                </div>
+            </div>
+
+            {{-- Livraison --}}
+            <div class="form-control max-w-xs">
+                <label class="label font-bold text-gray-700">Délai de livraison (jours)</label>
+                <input type="number" name="delivery_time" value="{{ old('delivery_time') || article.delivery_time }}" required class="input input-bordered w-full" />
+            </div>
+
+            {{-- Action --}}
+            <div class="pt-4">
+                <button type="submit" class="btn btn-primary w-full bg-[#171B99] border-none text-white hover:bg-blue-800 shadow-lg">
+                    Mettre à jour l'article
+                </button>
+            </div>
+        </form>
+    </div>
+@endslot
+@end

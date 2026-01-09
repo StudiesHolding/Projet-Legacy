@@ -96,10 +96,7 @@ export default class NavigationsController {
     const otherArticles = await Article.query()
       .where('sellerId', article.sellerId)
       .whereNot('id', article.id)
-      .where('available', true)
       .preload('images')
-      .preload('category')
-      .preload('cosmetic')
       .limit(10)
 
     return view.render('pages/catalogue/show_article', {

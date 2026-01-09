@@ -55,28 +55,11 @@ router.post('login', [AuthController, 'login_client']).as('login_client').use(mi
 router.get('logout', [AuthController, 'logout_client']).as('logout_client').use(middleware.auth())
 router.post('handleStepOne', [SellerRegistrationsController, 'handleStepOne']).as('handleStepOne')
 router.post('handleStepTwo', [SellerRegistrationsController, 'finalize']).as('finalize')
-
-// router
-//   .group(() => {
-//     router
-//       .post('article/handleStepOne', [ArticlesController, 'handleStepOne'])
-//       .as('handleStepOneForArticle')
-
-//     router
-//       .post('article/handleStepTwo', [ArticlesController, 'handleStepTwo'])
-//       .as('handleStepTwoForArticle')
-
-//   })
-//   .use(middleware.auth())
-
 router
   .group(() => {
-    // Étape 1
     router
       .post('article/handleStepOne', [ArticlesController, 'handleStepOne'])
       .as('handleStepOneForArticle')
-
-    // Étape 2 (L'ajout indispensable)
     router
       .get('article/create/step-two', [ArticlesController, 'renderStepTwo'])
       .as('articles.create.stepTwo')
