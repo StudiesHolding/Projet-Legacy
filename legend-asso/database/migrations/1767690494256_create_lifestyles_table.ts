@@ -1,26 +1,3 @@
-// import { BaseSchema } from '@adonisjs/lucid/schema'
-
-// export default class extends BaseSchema {
-//   protected tableName = 'lifestyles'
-
-//   async up() {
-//     this.schema.createTable(this.tableName, (table) => {
-//       table.increments('id')
-//       table.integer('article_id')
-//       table.jsonb('materials')
-//       table.string('dimension')
-//       table.string('craftmanship')
-//       table.jsonb('variant')
-//       table.timestamp('created_at')
-//       table.timestamp('updated_at')
-//     })
-//   }
-
-//   async down() {
-//     this.schema.dropTable(this.tableName)
-//   }
-// }
-
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {

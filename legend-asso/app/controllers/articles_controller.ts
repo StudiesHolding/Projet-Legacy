@@ -170,7 +170,7 @@ export default class ArticlesController {
         expiry_date: stepTwoData?.expiry_date,
         conservation_advice: stepTwoData?.conservation_advice,
       })
-    } else if (categoryName === 'lifestyle') {
+    } else if (categoryName === 'Mode/Artisanat') {
       await article.related('lifestyle').create({
         materials: stepTwoData?.materials,
         variants: stepTwoData?.variants,

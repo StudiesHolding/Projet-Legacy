@@ -18,11 +18,6 @@ export default class extends BaseSchema {
       table.string('unit_value')
       table.string('unit_type')
 
-      table.jsonb('certification').nullable()
-      table.jsonb('ingredient_list').nullable()
-      table.date('expiry_date').nullable()
-      table.text('conservation_advice').nullable()
-
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

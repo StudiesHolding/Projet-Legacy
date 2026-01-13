@@ -4,6 +4,8 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Article from '#models/article'
 
 export default class Lifestyle extends BaseModel {
+  protected tableName = 'lifestyles'
+
   @column({ isPrimary: true })
   declare id: number
 
@@ -84,12 +86,11 @@ export default class Lifestyle extends BaseModel {
   @column()
   declare usage: string | null
 
+  @belongsTo(() => Article)
+  declare article: BelongsTo<typeof Article>
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-
-  @belongsTo(() => Article)
-  declare article: BelongsTo<typeof Article>
 }

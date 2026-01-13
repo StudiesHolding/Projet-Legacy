@@ -2,7 +2,6 @@
   @slot("title") 
     {{ article.name }}
   @end
-
   @slot('main')
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -20,6 +19,7 @@
             <div class="swiper-button-next !text-[#171B99]"></div>
             <div class="swiper-button-prev !text-[#171B99]"></div>
           </div>
+  {{-- @dd(article) --}}
 
           @if(article.images.length > 1)
             <div thumbsSlider="" class="swiper mySwiper w-24 flex-shrink-0">
@@ -46,31 +46,48 @@
             @end
           </div>
 
-          <div class="mb-6">
-            <h3 class="font-bold text-lg mb-2">Description</h3>
+          <div class="mt-2">
+            <h3 class="font-bold text-lg">Description</h3>
             <p class="text-gray-600 leading-relaxed">{{ article.about }}</p>
           </div>
 
-          {{-- BOUTON PANIER --}}
-          <div class="mt-auto py-3 flex gap-4 items-center">
-            <div class="flex items-center border-2 border-gray-100 rounded-lg overflow-hidden shadow-sm">
-              <button data-decrement-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">-</button>
-              <span data-qty-id="{{ article.id }}" class="px-4 py-2 font-bold w-12 text-center">1</span>
-              <button data-increment-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">+</button>
-            </div>
-            <button 
-              data-article-id="{{ article.id }}"
-              class="add-to-cart-btn flex-grow bg-[#171B99] text-white font-bold py-4 rounded-lg hover:opacity-90 shadow-lg active:scale-95 transition"
-            >
-              AJOUTER AU PANIER
-            </button>
+          @if(auth.isAuthenticated)
+            @if(auth.user.id !== article.seller?.id)
+              <div class="mt-auto py-3 flex gap-4 items-center">
+                <div class="flex items-center border-2 border-gray-100 rounded-lg overflow-hidden shadow-sm">
+                  <button data-decrement-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">-</button>
+                  <span data-qty-id="{{ article.id }}" class="px-4 py-2 font-bold w-12 text-center">1</span>
+                  <button data-increment-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">+</button>
+                </div>
+                <button 
+                  data-article-id="{{ article.id }}"
+                  class="add-to-cart-btn flex-grow bg-[#171B99] text-white font-bold py-4 rounded-lg hover:opacity-90 shadow-lg active:scale-95 transition"
+                >
+                  AJOUTER AU PANIER
+                </button>
+              </div>
+            @end
+            @else
+              <div class="mt-auto py-3 flex gap-4 items-center ">
+                <div class="flex items-center border-2 border-gray-100 rounded-lg overflow-hidden shadow-sm">
+                  <button data-decrement-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">-</button>
+                  <span data-qty-id="{{ article.id }}" class="px-4 py-2 font-bold w-12 text-center">1</span>
+                  <button data-increment-id="{{ article.id }}" class="px-4 py-2 bg-gray-50 hover:bg-gray-200">+</button>
+                </div>
+                <button 
+                  data-article-id="{{ article.id }}"
+                  class="add-to-cart-btn flex-grow bg-[#171B99] text-white font-bold py-4 rounded-lg hover:opacity-90 shadow-lg active:scale-95 transition"
+                >
+                  AJOUTER AU PANIER
+                </button>
+              </div>
+          @end
 
           {{-- CARACTERISTIQUES DYNAMIQUES --}}
-          </div>
-          <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
-            <ul class="space-y-4">
+          <div class="bg-gray-50 rounded-xl border border-gray-100 mb-6">
+            <ul>
               <li>
-                <span class="font-bold">Disponibilité :</span>
+                <span class="font-bold mt-2">Disponibilité :</span>
                 <span class="ml-2 {{ article.available ? 'text-green-600' : 'text-red-600' }} font-medium">
                   {{ article.available ? 'En stock' : 'Indisponible' }}
                 </span>
@@ -79,34 +96,54 @@
               @if(article.agrofood) 
                 @if(article.agrofood.certification?.length)
                   <li>
-                    <span class="font-bold">Certification :</span><br>
+                    <span class="font-bold mt-2">Certification :</span><br>
                     <span class="text-sm">{{ article.agrofood.certification.join(', ') }}</span>
                   </li>
                 @end
                 @if(article.agrofood.ingredient_list?.length)
                   <li>
-                    <span class="font-bold">Ingrédients :</span><br>
+                    <span class="font-bold mt-2">Ingrédients :</span><br>
                     <span class="text-sm">{{ article.agrofood.ingredient_list.join(', ') }}</span>
+                  </li>
+                @end
+                @if(article.agrofood.expiry_date?.length)
+                  <li>
+                    <span class="font-bold mt-2">Date d'expiration :</span><br>
+                    <span class="text-sm">{{ article.agrofood.expiry_date }}</span>
+                  </li>
+                @end
+                @if(article.agrofood.conservation_advice?.length)
+                  <li>
+                    <span class="font-bold mt-2">Conseils de conservation :</span><br>
+                    <span class="text-sm">{{ article.agrofood.conservation_advice }}</span>
                   </li>
                 @end
 
               @elseif(article.lifestyle)
                 @if(article.lifestyle.materials?.length)
                   <li>
-                    <span class="font-bold">Matières :</span><br>
+                    <span class="font-bold mt-2">Matières :</span>
                     <span class="text-sm">{{ article.lifestyle.materials.join(', ') }}</span>
                   </li>
                 @end
                 @if(article.lifestyle.sizes?.length)
-                  <li>
-                    <span class="font-bold">Tailles :</span>
+                    <p class="font-bold mt-2">Tailles :</p>
                     <div class="flex gap-2 mt-1">
                       @each(size in article.lifestyle.sizes)
-                        <span class="px-2 py-1 bg-white border border-gray-200 text-xs font-bold rounded">{{ size }}</span>
+                        <p>{{ size }}</p>
+                      @end
+                    </div>
+                @end
+                {{-- @if(article.lifestyle.materials?.length)
+                  <li>
+                    <p class="font-bold mt-2">Matières:</p>
+                    <div class="flex gap-2 mt-1">
+                      @each(material in article.lifestyle.materials)
+                        <span>{{ material }}</span>
                       @end
                     </div>
                   </li>
-                @end
+                @end --}}
 
               @elseif(article.cosmetic)
                 <li>
