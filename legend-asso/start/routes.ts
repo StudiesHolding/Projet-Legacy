@@ -12,6 +12,7 @@ import { middleware } from './kernel.js'
 import transmit from '@adonisjs/transmit/services/main'
 transmit.registerRoutes()
 
+const OrdersController = () => import('#controllers/orders_controller')
 const AuthController = () => import('#controllers/auth_controller')
 const SellerRegistrationsController = () => import('#controllers/seller_registrations_controller')
 const ArticlesController = () => import('#controllers/articles_controller')
@@ -82,4 +83,7 @@ router
     router.delete('/cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
     router.delete('/cart', [CartsController, 'clearCart']).as('api.cart.clear')
   })
+
   .prefix('/api')
+
+router.resource('order', OrdersController).use('*', middleware.auth())

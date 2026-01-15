@@ -5,57 +5,55 @@ import { AuthValidator } from '#validators/auth'
 import RequestService from '#services/request_service'
 
 export default class AuthController {
-
-    public async register_client ({request , response, auth}: HttpContext) {
-        const data = await request.validateUsing(createUserValidator)
-        if (!data.role) {
-            data.role = 'client'
-        }
-        const newUser = await User.create(data)
-        await auth.use('web').login(newUser)
-        return response.redirect().toRoute('dashboard-client')
+  public async register_client({ request, response, auth }: HttpContext) {
+    const data = await request.validateUsing(createUserValidator)
+    if (!data.role) {
+      data.role = 'client'
     }
+    const newUser = await User.create(data)
+    await auth.use('web').login(newUser)
+    return response.redirect().toRoute('dashboard-client')
+  }
 
-    public async register_seller ({request , response, auth}: HttpContext) {
-        const data = await request.validateUsing(createUserValidator)
-        if (!data.role) {
-            data.role = 'seller'
-        }
-        const newUser = await User.create(data)
-        await auth.use('web').login(newUser)
-        return response.redirect().toRoute('dashboard-client')
+  public async register_seller({ request, response, auth }: HttpContext) {
+    const data = await request.validateUsing(createUserValidator)
+    if (!data.role) {
+      data.role = 'seller'
     }
+    const newUser = await User.create(data)
+    await auth.use('web').login(newUser)
+    return response.redirect().toRoute('dashboard-client')
+  }
 
-    public async login_client ({request , auth , response, session}: HttpContext){ 
+  public async login_client({ request, auth, response, session }: HttpContext) {
     try {
-            const payload = await request.validateUsing(AuthValidator)
+      const payload = await request.validateUsing(AuthValidator)
       const user = await User.verifyCredentials(payload.email, payload.password)
-        await auth.use('web').login(user)
-        const forward = RequestService.getForwardUrl(payload.forward)
-        if(forward){
-            return response.redirect().toPath(forward)
-        }
+      await auth.use('web').login(user)
+      const forward = RequestService.getForwardUrl(payload.forward)
+      if (forward) {
+        return response.redirect().toPath(forward)
+      }
 
-        switch(user.role){
-            case 'seller':
-                return response.redirect().toRoute('dashboard-seller')
-            case 'client':
-                return response.redirect().toRoute('dashboard-client')
-            default:
-                return response.redirect().toRoute('home')
-        }
-
-        } catch (error) {
-            if (error.code === 'E_INVALID_CREDENTIALS') {
-                session.flash('errors.login', ['Identifiants invalides (Email ou mot de passe incorrect).'])
-                return response.redirect().back()
-            }
-            throw error 
-        } 
+      switch (user.role) {
+        case 'seller':
+          return response.redirect().toRoute('dashboard-seller')
+        case 'client':
+          return response.redirect().toRoute('dashboard-client')
+        default:
+          return response.redirect().toRoute('home')
+      }
+    } catch (error) {
+      if (error.code === 'E_INVALID_CREDENTIALS') {
+        session.flash('errors.login', ['Identifiants invalides (Email ou mot de passe incorrect).'])
+        return response.redirect().back()
+      }
+      throw error
     }
+  }
 
-    public async logout_client({auth , response}:HttpContext){
-        await auth.use('web').logout()
-        return response.redirect('login')
-    }
+  public async logout_client({ auth, response }: HttpContext) {
+    await auth.use('web').logout()
+    return response.redirect('login')
+  }
 }

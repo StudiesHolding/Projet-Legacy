@@ -28,7 +28,6 @@
                   </div>
                 </div>
                 <div>
-                {{-- </div> --}}
               @endeach
             </div>
           @endif
@@ -51,24 +50,18 @@
           </div>
         </div>
         <div class="my-4 justify-center">
-          <form action="">
-            <input
-              type="text"
-              name="reduction-code"
-              placeholder="code de reduction"
-              id="reduction-code"
-              class="border-[#171B99] border rounded-lg my-4 shadow-md h-10 px-2 w-full"
-            />
 
-            <a 
-              class="btn p-2 bg-[#171B99] w-full text-white"
-              @if(auth.isAuthenticated) 
-                href="{{route('/')}}"
-              @else
-                href="{{route('payement')}}"
-              @end
-            >Effectuer le paiement</a>
-          </form>
+          <form action="{{ route('order.store')}}" method="POST">
+              {{ csrfField() }}
+              <input type="hidden" name="total_amount" id="hidden-total-input" value="{{ cart.totalPrice + 2500 }}">
+
+              <button 
+                type="submit" 
+                class="btn p-2 bg-[#171B99] w-full text-white text-center cursor-pointer"
+              >
+                Effectuer le paiement
+              </button>
+        </form>
         </div>
       </div>
 
@@ -80,15 +73,20 @@
           try {
             const data = await fetchCart();
             const cart = (data && data.cart) ? data.cart : { items: [] };
-            const totalPrice = data.totalPrice || 0;
+            const totalPrice = Number(data.totalPrice) || 0;
             const productsTotalEl = document.getElementById('checkout-products-total');
             const totalEl = document.getElementById('checkout-total');
+            const hiddenInput = document.getElementById('hidden-total-input')
 
             if (productsTotalEl) productsTotalEl.textContent = `${totalPrice} FCFA`;
             if (totalEl) {
               const delivery = 2500;
               totalEl.textContent = `${totalPrice + delivery} FCFA`;
             }
+
+            if (hiddenInput) {
+      hiddenInput.value = finalTotal;
+    }
 
             cart.items.forEach(item => {
               const container = document.querySelector(`[data-cart-item-id='${item.id}']`);

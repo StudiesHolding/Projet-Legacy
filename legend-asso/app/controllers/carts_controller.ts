@@ -63,6 +63,7 @@ export default class CartsController {
       (sum: number, item: any) => sum + (item.quantity || 0) * (item.price || 0),
       0
     )
+    session.put('totalPrice', totalPrice)
 
     return response.ok({ cart, totalItems, totalPrice })
   }

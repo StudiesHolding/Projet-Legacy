@@ -115,8 +115,10 @@ export default class NavigationsController {
     return view.render('pages/login')
   }
 
-  public async payement({ view }: HttpContext) {
-    return view.render('pages/login')
+  public async payement({ response }: HttpContext) {
+    console.log('redirect vers order.store............')
+    return response.redirect().toRoute('order.store')
+    // return response.redirect().toRoute('article.index')
   }
 
   public async registerClient({ view }: HttpContext) {

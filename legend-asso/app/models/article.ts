@@ -7,6 +7,7 @@ import Category from './category.js'
 import Agrofood from './agrofood.js'
 import Lifestyle from './lifestyle.js'
 import Cosmetic from './cosmetic.js'
+import OrderItem from './order_item.js'
 
 export default class Article extends BaseModel {
   @column({ isPrimary: true })
@@ -83,4 +84,7 @@ export default class Article extends BaseModel {
     foreignKey: 'sellerId',
   })
   declare seller: BelongsTo<typeof Seller>
+
+  @hasMany(() => OrderItem)
+  declare orderItems: HasMany<typeof OrderItem>
 }
