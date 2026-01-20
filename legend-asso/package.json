@@ -74,7 +74,8 @@
     "pg": "^8.16.3",
     "postcss": "^8.5.6",
     "reflect-metadata": "^0.2.2",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "uuid": "^13.0.0"
   },
   "hotHook": {
     "boundaries": [

@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Order from '#models/order'
 import env from '#start/env'
-import axios from 'axios'
 
 export default class OrdersController {
   /**
@@ -29,47 +28,42 @@ export default class OrdersController {
       status: 'pending',
     })
     const savedOrder = await newOrder.save()
+
     const options = {
       method: 'POST',
-      headers: { 'api-key': env.get('LYGOS_API_KEY'), 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${env.get('PAWAPAY_API_KEY')}`,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        amount: totalPrice,
-        shop_name: 'Legend Asso Test',
-        message: `Paiement pour commande ${savedOrder.id}`,
-        success_url: 'http://localhost:3333',
-        failure_url: 'http://localhost:3333/login',
-        order_id: `CMD-2024-${savedOrder.id}`,
+        depositId: 'f4401bd2-1568-4140-bf2d-ec77deb2b637',
+        payer: {
+          type: 'MMO',
+          accountDetails: { phoneNumber: '260763456789', provider: 'MTN_MOMO_ZMB' },
+        },
+        amount: '15000',
+        currency: 'XAF',
+        preAuthorisationCode: 'juste',
+        clientReferenceId: 'INV-123456',
+        customerMessage: 'Note of 4 to 22 chars',
+        metadata: [{ orderId: 'ORD-123456789' }, { customerId: `${auth.user!.id}`, isPII: true }],
       }),
     }
-    console.log('spaghetti.............................')
 
-    // try {
-    //   fetch('https://api.lygosapp.com/v1/gateway', options)
-    //     .then((res) => res.json())
-    //     .then((res) => {
-    //       return response.redirect().toPath(res.link)
-    //     }
-    // } catch (error) {
-    //   console.error('Error making payment request:', error)
-    // }
+    fetch(env.get('PAWAPAY_API_SANDBOX_URL'), options)
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((err) => console.error(err))
 
     try {
       // 1. On attend la réponse de l'API (await est crucial ici)
-      const apiResponse = await fetch('https://api.lygosapp.com/v1/gateway', options)
+      const apiResponse = await fetch(env.get('PAWAPAY_API_SANDBOX_URL'), options)
       const res = await apiResponse.json()
 
-      console.log('Réponse Lygos:', res)
-
-      // 2. On vérifie que le lien existe bien avant de rediriger
-      if (res.link) {
-        return response.redirect().toPath(res.link)
-      } else {
-        console.error('Lien de paiement manquant dans la réponse')
-        return response.badRequest('Impossible de générer le lien de paiement')
-      }
+      console.log('Réponse pawapay:', res)
     } catch (error) {
       console.error('Erreur lors de la requête de paiement:', error)
-      return response.internalServerError('Erreur de communication avec le service de paiement')
+      // return response.internalServerError('Erreur de communication avec le service de paiement')
     }
   }
   /**

@@ -7,10 +7,6 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.string('status').notNullable()
-      table.integer('buyer_id').unsigned().references('id').inTable('users').notNullable()
-      table.integer('total_price').notNullable()
-
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
