@@ -84,7 +84,6 @@ router
     router.delete('/cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
     router.delete('/cart', [CartsController, 'clearCart']).as('api.cart.clear')
   })
-
   .prefix('/api')
 
 router.resource('order', OrdersController).use('*', middleware.auth())

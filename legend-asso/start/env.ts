@@ -19,9 +19,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   LOG_LEVEL: Env.schema.string(),
   LYGOS_API_KEY: Env.schema.string(),
   LYGOS_API_URL: Env.schema.string(),
-  PAWAPAY_API_KEY: Env.schema.string(),
-  PAWAPAY_API_SANDBOX_URL: Env.schema.string(),
-  // PAWAPAY_PRODUCTION_URL: Env.schema.string(),
+  PAWAPAY_SANDBOX_KEY: Env.schema.string(),
+  PAWAPAY_PRODUCTION_KEY: Env.schema.string(),
+  PAWAPAY_SANDBOX_URL: Env.schema.string(),
+  PAWAPAY_PRODUCTION_URL: Env.schema.string(),
   PAWAPAY_MODE: Env.schema.enum(['sandbox', 'production'] as const),
 
   /*

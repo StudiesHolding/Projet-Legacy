@@ -3,6 +3,18 @@ import Transaction from '#models/transaction'
 import env from '#start/env'
 
 export default class TransactionsController {
+  private get isSandbox() {
+    return env.get('PAWAPAY_MODE') === 'sandbox'
+  }
+
+  private get PAWAPAY_KEY() {
+    return this.isSandbox ? env.get('PAWAPAY_SANDBOX_KEY') : env.get('PAWAPAY_PRODUCTION_KEY')
+  }
+
+  private get PAWAPAY_URL() {
+    return this.isSandbox ? env.get('PAWAPAY_SANDBOX_URL') : env.get('PAWAPAY_PRODUCTION_URL')
+  }
+
   public async index() {
     console.log('Transactions index method called')
   }
@@ -20,7 +32,7 @@ export default class TransactionsController {
     const options = {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${env.get('PAWAPAY_API_KEY')}`,
+        'Authorization': `Bearer ${this.PAWAPAY_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -40,7 +52,7 @@ export default class TransactionsController {
 
     try {
       // 1. On attend la réponse de l'API (await est crucial ici)
-      const apiResponse = await fetch(env.get('PAWAPAY_API_SANDBOX_URL'), options)
+      const apiResponse = await fetch(this.PAWAPAY_URL, options)
       const res = await apiResponse.json()
 
       console.log('Réponse pawapay:', res)
@@ -57,9 +69,18 @@ export default class TransactionsController {
           await savedTransaction.save()
           console.log('transaction refusé par pawapay')
           break
-        default:
+        case 'DUPLICATE_IGNORED':
           savedTransaction.status = 'refused'
           savedTransaction.note = 'you cannot duplicate transactions'
+          await savedTransaction.save()
+          console.log(res)
+          console.log('transaction refusé par pawapay')
+          break
+        default:
+          console.log(res)
+          console.log(options)
+          savedTransaction.status = 'refused'
+          savedTransaction.note = 'probleme bizzare'
           await savedTransaction.save()
           console.log('transaction refusé par pawapay')
           break
@@ -67,22 +88,31 @@ export default class TransactionsController {
     } catch (error) {
       console.error('Erreur lors de la requête de paiement:', error)
     }
-    console.log('Initiating a new transaction')
   }
 
-  public async checkStatus({ params }: HttpContext) {
+  public async checkStatus({ params, response }: HttpContext) {
     console.log(`Checking status for transaction ID: ${params.id}`)
     const depositId = params.id
+
     try {
       const options = {
         method: 'GET',
-        headers: { Authorization: `Bearer ${env.get('PAWAPAY_API_KEY')}` },
+        headers: { Authorization: `Bearer ${this.PAWAPAY_KEY}` },
       }
 
-      fetch(`${env.get('PAWAPAY_API_SANDBOX_URL')}/${depositId}`, options)
-        .then((res) => res.json())
-        .then((res) => console.log(res))
-        .catch((err) => console.error(err))
-    } catch (error) {}
+      // On utilise await pour attendre la réponse de l'API
+      const apiResponse = await fetch(`${this.PAWAPAY_URL}/${depositId}`, options)
+      const res = await apiResponse.json()
+
+      console.log('Statut actuel chez PawaPay:', res)
+
+      // Ici vous pourrez ajouter la logique pour mettre à jour savedTransaction.status
+      // si le statut est passé à 'SUCCESSFUL' ou 'FAILED'
+
+      return response.ok(res)
+    } catch (error) {
+      console.error('Erreur lors de la vérification:', error)
+      return response.internalServerError('Erreur de vérification')
+    }
   }
 }
