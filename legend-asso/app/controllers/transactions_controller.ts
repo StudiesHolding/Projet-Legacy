@@ -1,6 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Transaction from '#models/transaction'
 import env from '#start/env'
+import Order from '#models/order'
+import OrderItem from '#models/order_item'
+import Article from '#models/article'
 
 export default class TransactionsController {
   private get isSandbox() {
@@ -19,7 +22,9 @@ export default class TransactionsController {
     console.log('Transactions index method called')
   }
 
-  public async initiateTransaction({ auth, response, session }: HttpContext) {
+  public async initiateTransaction({ auth, response, request, session }: HttpContext) {
+    const payload = await request.all()
+    const phoneNumber = payload.country_code + payload.phone_number
     const totalPrice = session.get('totalPrice')
     const newTransaction = await Transaction.create({
       buyerId: auth.user!.id,
@@ -28,7 +33,6 @@ export default class TransactionsController {
     })
     const savedTransaction = await newTransaction.save()
 
-    const phoneNumber = auth.user?.phone.split(' ').join('')
     const options = {
       method: 'POST',
       headers: {
@@ -39,7 +43,7 @@ export default class TransactionsController {
         depositId: `${savedTransaction.id}`,
         payer: {
           type: 'MMO',
-          accountDetails: { phoneNumber: `237${phoneNumber}`, provider: 'ORANGE_CMR' },
+          accountDetails: { phoneNumber: `${phoneNumber}`, provider: 'ORANGE_CMR' },
         },
         amount: `${totalPrice}`,
         currency: 'XAF',
@@ -90,29 +94,56 @@ export default class TransactionsController {
     }
   }
 
-  public async checkStatus({ params, response }: HttpContext) {
-    console.log(`Checking status for transaction ID: ${params.id}`)
+  public async checkStatus({ auth, params, response, session }: HttpContext) {
     const depositId = params.id
-
     try {
       const options = {
         method: 'GET',
         headers: { Authorization: `Bearer ${this.PAWAPAY_KEY}` },
       }
 
-      // On utilise await pour attendre la réponse de l'API
       const apiResponse = await fetch(`${this.PAWAPAY_URL}/${depositId}`, options)
+      if (!apiResponse.ok) {
+        throw new Error(`Erreur HTTP: ${apiResponse.status}`)
+      }
       const res = await apiResponse.json()
+      console.log(res.data)
+      const pawapayStatus = res.data.status
 
-      console.log('Statut actuel chez PawaPay:', res)
+      if (pawapayStatus === 'COMPLETED') {
+        const newOrder = await Order.create({
+          status: 'pending',
+          buyerId: auth.user?.id,
+          totalPrice: res.data.amount,
+          transactionId: res.data.depositId,
+        })
+        // creation du des orderItems
+        const { items } = session.get('cart')
+        console.log(items)
 
-      // Ici vous pourrez ajouter la logique pour mettre à jour savedTransaction.status
-      // si le statut est passé à 'SUCCESSFUL' ou 'FAILED'
+        for (const item of items) {
+          await OrderItem.create({
+            reference: item.id,
+            quantity: item.quantity,
+            status: 'pending',
+            name: item.name,
+            orderId: newOrder.id,
+            priceAtPurchase: item.price,
+            sellerId: item.sellerId,
+          })
+        }
 
-      return response.ok(res)
+        // Nettoie le panier
+        session.forget('cart')
+        session.forget('totalItems')
+        session.forget('totalPrice')
+        // redirection vers le dashboard
+        return response.redirect().toRoute('dashboard-client', { transaction: 'success' })
+      }
     } catch (error) {
       console.error('Erreur lors de la vérification:', error)
-      return response.internalServerError('Erreur de vérification')
+      session.flash('error', 'Impossible de vérifier le statut de la transaction.')
+      return response.redirect().toRoute('dashboard.client')
     }
   }
 }

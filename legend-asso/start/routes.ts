@@ -91,7 +91,7 @@ router.resource('order', OrdersController).use('*', middleware.auth())
 router
   .group(() => {
     router
-      .get('transaction', [TransactionsController, 'initiateTransaction'])
+      .post('transaction', [TransactionsController, 'initiateTransaction'])
       .as('transaction.initiate')
     router
       .get('transaction/status/:id', [TransactionsController, 'checkStatus'])

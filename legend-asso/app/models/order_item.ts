@@ -17,6 +17,12 @@ export default class OrderItem extends BaseModel {
   declare reference: number
 
   @column()
+  declare name: string
+
+  @column()
+  declare status: string
+
+  @column()
   declare quantity: number
 
   @column()

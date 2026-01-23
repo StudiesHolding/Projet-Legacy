@@ -16,8 +16,7 @@
       <div class="p-2">
         <p class="text-slate-800 font-medium px-2">
           {{ truncate(article.name, 35) }}
-        </p>
-         {{-- <p class="text-sm font-medium text-gray-700">{{ truncate(article.name , 15) }}</p> --}}
+        </p>{{ truncate(article.name , 15) }}</p>
         <p class="text-cyan-600 font-semibold px-2">
           {{ formatNumber(article.price)}} FCFA
         </p>

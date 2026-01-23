@@ -50,11 +50,6 @@ export default class ArticlesController {
       .firstOrFail()
 
     const categories = await Category.all()
-
-    // return view.render('pages/dashboard/seller/edit_article', {
-    //   article,
-    //   categories,
-    // })
     return view.render('pages/dashboard/seller/edit-article', { categories, article })
   }
 
@@ -256,7 +251,6 @@ export default class ArticlesController {
   async handleStepTwo({ request, response, session }: HttpContext) {
     let payload
     const categoryName = session.get('selectedCategoryName')
-    console.log('zoropoto............................', categoryName)
     if (categoryName === 'Agroalimentaire') {
       payload = await request.validateUsing(AgrofoodValidator)
     } else if (categoryName === 'Mode/Artisanat') {

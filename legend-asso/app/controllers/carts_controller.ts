@@ -32,6 +32,7 @@ export default class CartsController {
         name: article.name,
         price: article.price,
         quantity,
+        sellerId: article.sellerId,
         image: article.images[0]?.imageUrl || null,
       })
     }

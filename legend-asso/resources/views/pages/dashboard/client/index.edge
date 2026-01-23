@@ -12,11 +12,15 @@
             <div class="bg-white w-full p-6 rounded-xl shadow-md">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Vos 3 dernières commandes</h2>
                 
-            @include('component/partials/client-header-info')
-                <ul class="divide-y divide-gray-200">
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
+            @component('component/partials/client-header-info', { myOrders: myOrders })
+            @end
+                
+            @end('component/partials/client-header-info')
+        <ul class="divide-y divide-gray-200">
+                    @each(order in myOrders)
+                        @component('component/partials/order-item', { order })
+                        @end
+                    @end
                 </ul>
                 <div class="mt-4 text-right">
                     <a href="#commandes" class="text-[#171B99] hover:text-indigo-800 font-medium">Voir toutes les commandes →</a>

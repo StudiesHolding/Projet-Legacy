@@ -1,5 +1,6 @@
 import Article from '#models/article'
 import Category from '#models/category'
+import Order from '#models/order'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
@@ -118,7 +119,6 @@ export default class NavigationsController {
   public async payement({ response }: HttpContext) {
     console.log('redirect vers order.store............')
     return response.redirect().toRoute('order.store')
-    // return response.redirect().toRoute('article.index')
   }
 
   public async registerClient({ view }: HttpContext) {
@@ -137,7 +137,10 @@ export default class NavigationsController {
     return view.render('pages/dashboard/seller/index')
   }
 
-  public async showClientDashboard({ view }: HttpContext) {
-    return view.render('pages/dashboard/client/index')
+  public async showClientDashboard({ auth, view }: HttpContext) {
+    const user = await auth.authenticate()
+    const myOrders = await Order.query().where('buyer_id', user?.id)
+
+    return view.render('pages/dashboard/client/index', { myOrders: myOrders })
   }
 }

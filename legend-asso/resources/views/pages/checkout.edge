@@ -50,22 +50,46 @@
           </div>
         </div>
         <div class="my-4 justify-center">
-
-          <form action="{{ route('transaction.initiate')}}" method="GET">
-              {{ csrfField() }}
-              <input type="hidden" name="total_amount" id="hidden-total-input" value="{{ cart.totalPrice + 2500 }}">
-
-              <button 
-                type="submit" 
-                class="btn p-2 bg-[#171B99] w-full text-white text-center cursor-pointer"
-              >
-                Effectuer le paiement
-              </button>
+          <label for="my_modal_7" class="btn p-2 bg-[#171B99] w-full text-white text-center cursor-pointer">Effectuer le paiement</label>
+           
         </form>
         </div>
       </div>
 
-  
+<input type="checkbox" id="my_modal_7" class="modal-toggle" />
+
+<div class="modal" role="dialog">
+  <div class="modal-box max-w-md">
+    <h3 class="font-bold text-lg mb-4">Paiement Mobile</h3>
+    <form method="post" action="{{route('transaction.initiate')}}">
+      {{ csrfField() }}
+    <label for="phone_input_modal" class="text-sm text-gray-600 mb-4">Entrez le numéro de téléphone pour l'opération :</label>
+    <div class="flex gap-0 border rounded-lg overflow-hidden focus-within:ring-2 ring-[#171B99]">
+      <select id="country_code" class="bg-gray-100 px-3 py-2 border-r outline-none cursor-pointer" name ="country_code">
+        <option value="237">🇨🇲 +237</option>
+        <option value="234">🇳🇬 +234</option>
+        <option value="233">🇬🇭 +233</option>
+        <option value="225">🇨🇮 +225</option>
+      </select>
+      
+      <input 
+        type="tel" 
+        id="phone_input_modal"
+        placeholder="6XX XX XX XX" 
+        name="phone_number"
+        class="input w-full rounded-none border-none focus:outline-none" 
+      />
+    </div>
+    <div class="modal-action">
+      <button type="submit" class="btn bg-[#171B99] text-white hover:bg-blue-900">
+    Initier l'opération
+</button>
+    </div>
+    </form>
+  </div>
+  <label class="modal-backdrop" for="my_modal_7">Fermer</label>
+</div>
+ 
   <!-- Open the modal using ID.showModal() method -->
 
       <script>
