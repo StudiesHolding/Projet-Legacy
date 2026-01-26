@@ -6,11 +6,12 @@
     </div>
 
     @if(order.status === 'pending') 
-        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
+        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En préparation</span>
     @elseif(article.status === 'accepted')
         <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800 mr-4">Livrée</span>
     @else
         <span class="px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800 mr-4">Annulé</span>
     @end
-    <p class="text-sm lg:font-bold text-md">{{ formatNumber(order.totalPrice)}} XAF</p>
+    <p class="text-sm lg:font-bold text-md ">{{ formatNumber(order.totalPrice)}} XAF</p>
+    <button class="btn">voir les détails</button>
 </li>

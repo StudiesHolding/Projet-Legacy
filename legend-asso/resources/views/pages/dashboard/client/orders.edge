@@ -10,32 +10,13 @@
         <main class="flex-1 p-4 md:p-8">
             <h1 class="text-3xl font-semibold text-gray-900 mb-6">Liste des commandes</h1>
             <div class="bg-white p-6 rounded-xl shadow-md">
-            @include('component/partials/client-header-info')
                 <ul class="divide-y divide-gray-200">
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @include('component/partials/order-item')
-                    @partials('pagination')
+                    @each(order in myOrders)
+                        @component('component/partials/order-item', { order })
+                        @end
+                    @end
                 </ul>
-                <div class="mt-4 text-right">
-                    <a href="#commandes" class="text-[#171B99] hover:text-indigo-800 font-medium">Voir toutes les commandes →</a>
-                </div>
+                @partials('pagination')
             </div>
             
         </main>

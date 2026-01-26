@@ -1,6 +1,7 @@
 import Article from '#models/article'
 import Category from '#models/category'
 import Order from '#models/order'
+import OrderItem from '#models/order_item'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
@@ -132,15 +133,33 @@ export default class NavigationsController {
   public async registerSeller2({ view }: HttpContext) {
     return view.render('pages/register-supplier-2')
   }
+  public async showMyOrder({ auth, view }: HttpContext) {
+    const user = await auth.authenticate()
+    const myOrders = await Order.query().where('buyer_id', user.id).orderBy('id', 'desc')
+    return view.render('pages/dashboard/client/orders', { myOrders })
+  }
 
-  public async showSellerDashboard({ view }: HttpContext) {
-    return view.render('pages/dashboard/seller/index')
+  public async showSellerDashboard({ auth, view }: HttpContext) {
+    const user = await auth.authenticate()
+    const myOrders = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
+    let totalRevenue = 0
+    for (const order of myOrders) {
+      totalRevenue += Number(order.priceAtPurchase) * Number(order.quantity)
+    }
+    return view.render('pages/dashboard/seller/index', { myOrders, totalRevenue })
   }
 
   public async showClientDashboard({ auth, view }: HttpContext) {
     const user = await auth.authenticate()
-    const myOrders = await Order.query().where('buyer_id', user?.id)
+    const myOrders = await Order.query().where('buyer_id', user?.id).orderBy('id', 'desc')
+    let totalSpend = 0
+    for (const order of myOrders) {
+      totalSpend += Number(order.totalPrice)
+    }
 
-    return view.render('pages/dashboard/client/index', { myOrders: myOrders })
+    return view.render('pages/dashboard/client/index', {
+      myOrders: myOrders,
+      totalSpend: totalSpend,
+    })
   }
 }

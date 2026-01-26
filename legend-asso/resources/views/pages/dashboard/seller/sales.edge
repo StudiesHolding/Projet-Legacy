@@ -1,0 +1,42 @@
+@component('component/layouts/dashboard')
+
+    @slot('content')
+    <div class="min-h-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+
+
+        
+        <main class="flex-1 p-4 md:p-8">
+            <h1 class="text-3xl font-semibold text-gray-900 mb-6">Résumé</h1>
+            
+            <div class="gap-6 mb-8">
+                @component('component/partials/client-header-info', {myOrders, totalRevenue})
+            @end
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Commandes en attente (À expédier)</h2>
+                
+                <ul class="divide-y divide-gray-200">
+                    @each(order in myOrders.filter(o => o.status === 'pending'))
+                        <li class="flex justify-between items-center py-3">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium text-gray-700">Commande {{ order.id }}</p>
+                                <p class="text-sm text-gray-500 truncate">{{ order.name }}</p>
+                                <p class="text-sm text-gray-500 truncate">Quantité: {{ order.quantity }}</p>
+                            </div>
+                            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
+                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir & Traiter →</a>
+                        </li>
+                    @end
+                </ul>
+                <div class="mt-4 text-right">
+                    <a href="#ventes" class="text-red-600 hover:text-red-800 font-medium">Voir toutes les ventes →</a>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+</div>
+    @endslot
+@end

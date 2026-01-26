@@ -46,6 +46,11 @@ router
   .use(middleware.auth())
   .as('dashboard-client')
 
+router
+  .get('dashboard-client/my-order', [NavigationsController, 'showMyOrder'])
+  .use(middleware.auth())
+  .as('showMyOrder')
+
 router.get('payement', [NavigationsController, 'payement']).use(middleware.auth()).as('payement')
 
 router

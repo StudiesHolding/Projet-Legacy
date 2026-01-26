@@ -1,38 +1,42 @@
 <div class="w-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        
-        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500">
-            <p class="text-sm font-medium text-gray-500">
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500 text-right">
+            <p class="text-sm font-medium text-gray-500 text-right">
                 {{ auth.user.role === 'seller' ? 'Revenu (Mois)' : 'Commandes totales' }}
             </p>
-            <p class="text-3xl font-bold text-gray-900 mt-1">
-                {{ auth.user.role === 'seller' ? '25 000 F' : myOrders.length }}
             </p>
-        </div>
-
-        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500">
-            <p class="text-sm font-medium text-gray-500">
-                {{ auth.user.role === 'seller' ? 'Commandes totales' : 'Dépenses totales' }}
-            </p>
-            <p class="text-3xl font-bold text-gray-900 mt-1">
+            <p class="text-2xl font-bold text-gray-900 mt-1">
                 @if(auth.user.role === 'seller')
-                    {{ myOrders.length }}
+                {{formatNumber(totalRevenue)}} XAF
                 @else
-                    12 250 XAF
+                    {{myOrders.length}}
                 @endif
             </p>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500">
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500 text-right">
+            <p class="text-sm font-medium text-gray-500">
+                {{ auth.user.role === 'seller' ? 'Commandes totales' : 'Dépenses totales' }}
+            </p>
+            <p class="text-2xl font-bold text-gray-900 mt-1">
+                @if(auth.user.role === 'seller')
+                    {{ myOrders.length }}
+                @else
+                    {{formatNumber(totalSpend)}} XAF
+                @endif
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500 text-right">
             <p class="text-sm font-medium text-gray-500">
                 {{ auth.user.role === 'seller' ? 'En attente' : 'Commandes en cours' }}
             </p>
-            <p class="text-3xl font-bold text-gray-900 mt-1">
+            <p class="text-2xl font-bold text-gray-900 mt-1">
                 {{-- On filtre le tableau pour compter uniquement les commandes spécifiques --}}
                 @if(auth.user.role === 'seller')
                     {{ myOrders.filter(o => o.status === 'pending').length }}
                 @else
-                    {{ myOrders.filter(o => o.status === 'processing').length }}
+                    {{ myOrders.filter(order => order.status === 'pending').length }}
                 @endif
             </p>
         </div>

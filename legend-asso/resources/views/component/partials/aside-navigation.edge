@@ -40,7 +40,7 @@
                 <span class="hidden lg:inline">Mes Articles</span>
             </a>
         @else
-            <a href="/my-order" 
+            <a href="{{route('showMyOrder')}}" 
                class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
                {{ request.url().includes('/my-order') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
                 <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
