@@ -1,42 +1,21 @@
+import OrderItem from '#models/order_item'
 import type { HttpContext } from '@adonisjs/core/http'
-import Order from '#models/order'
 
 export default class OrdersController {
-  /**
-   * Display a list of resource
-   */
-  async index({}: HttpContext) {
-    console.log('index................................................')
+  async showOrderInfo({ params, view }: HttpContext) {
+    const id = params.id
+    const orderItem = await OrderItem.query().where('id', id)
+    return view.render('pages/dashboard/seller/process', { orderItem })
   }
 
-  /**
-   * Display form to create a new record
-   */
-  async create({}: HttpContext) {
-    console.log('create................................................')
+  async update({ response, request, session }: HttpContext) {
+    console.log(request.all())
+    console.log('saratoga...............................')
+    const orderItem = await OrderItem.findOrFail(id)
+    orderItem.status = 'complete'
+    await orderItem.save()
+    session.flash('success', 'La commande a été marquée comme complétée.')
+
+    return response.redirect().toRoute('dashboard-seller')
   }
-
-  /**
-   * Handle form submission for the create action
-   */
-  async store({ auth, response, session }: HttpContext) {}
-  /**
-   * Show individual record
-   */
-  async show({ params }: HttpContext) {}
-
-  /**
-   * Edit individual record
-   */
-  async edit({ params }: HttpContext) {}
-
-  /**
-   * Handle form submission for the edit action
-   */
-  async update({ params, request }: HttpContext) {}
-
-  /**
-   * Delete record
-   */
-  async destroy({ params }: HttpContext) {}
 }

@@ -3,8 +3,6 @@
     @slot('content')
     <div class="min-h-screen bg-gray-100">
     <div class="flex flex-col md:flex-row">
-
-
         
         <main class="flex-1 p-4 md:p-8">
             <h1 class="text-3xl font-semibold text-gray-900 mb-6">Résumé des Ventes</h1>
@@ -26,13 +24,15 @@
                                 <p class="text-sm text-gray-500 truncate">Quantité: {{ order.quantity }}</p>
                             </div>
                             <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir & Traiter →</a>
+                            <a href="{{route('order.showOrderInfo',{id:order.id})}}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir & Traiter →</a>
                         </li>
                     @end
                 </ul>
                 <div class="mt-4 text-right">
                     <a href="#ventes" class="text-red-600 hover:text-red-800 font-medium">Voir toutes les ventes →</a>
                 </div>
+                                @component('component/partials/pagination', { 'pagination': pagination })
+                @end
             </div>
             
         </main>

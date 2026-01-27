@@ -91,7 +91,12 @@ router
   })
   .prefix('/api')
 
-router.resource('order', OrdersController).use('*', middleware.auth())
+router.group(() => {
+  router
+    .get('/dashboard/my-order/:id', [OrdersController, 'showOrderInfo'])
+    .as('order.showOrderInfo')
+  router.post('/dashboard/process', [OrdersController, 'update']).as('order.update')
+})
 
 router
   .group(() => {

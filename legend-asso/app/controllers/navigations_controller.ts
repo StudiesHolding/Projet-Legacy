@@ -2,6 +2,7 @@ import Article from '#models/article'
 import Category from '#models/category'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
+import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
@@ -118,7 +119,6 @@ export default class NavigationsController {
   }
 
   public async payement({ response }: HttpContext) {
-    console.log('redirect vers order.store............')
     return response.redirect().toRoute('order.store')
   }
 
@@ -142,6 +142,7 @@ export default class NavigationsController {
   public async showSellerDashboard({ auth, view }: HttpContext) {
     const user = await auth.authenticate()
     const myOrders = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
+
     let totalRevenue = 0
     for (const order of myOrders) {
       totalRevenue += Number(order.priceAtPurchase) * Number(order.quantity)

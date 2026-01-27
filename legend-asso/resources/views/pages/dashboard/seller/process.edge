@@ -1,0 +1,43 @@
+@component('component/layouts/dashboard')
+    @slot('content')
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <style>
+                .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; background: #fff; border-radius: 8px; }
+                .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                .invoice-table th { background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6; text-align: left; }
+                .invoice-table td { padding: 12px; border-bottom: 1px solid #eee; }
+            </style>
+
+            <div class="invoice-container">
+                <div class="invoice-box">
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Qté</th>
+                                <th>Prix Unitaire</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.quantity}}</td>
+                                    <td>{{formatNumber(item.priceAtPurchase)}}</td>
+                                    <td>{{formatNumber(Number(item.quantity * item.priceAtPurchase))}}</td>
+                                </tr>   
+                        </tbody>
+                    </table>
+                    <form action="{{ route(`order.update`)}}" method="POST">
+    {{ csrfField() }}
+    <input type="hidden" value="{{orderItem.id}}" name="id">
+    <button type="submit" class="btn w-full bg-[#171B99] text-white py-2 rounded-lg text-center block w-full">
+        Marquer la commande comme prête
+    </button>
+            </div>
+            <div class="mt-6">
+
+            </div>
+        </div>
+    @end
+@end
