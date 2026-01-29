@@ -11,7 +11,6 @@
 
     <nav class="flex justify-around items-center w-full h-full lg:inline-flex lg:h-auto lg:flex-col lg:space-y-2 lg:p-0">
         
-        {{-- TABLEAU DE BORD (Seller ou Client) --}}
         @if(auth.user.role === 'seller')
             <a href="{{ route('dashboard-seller') }}" 
                class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row

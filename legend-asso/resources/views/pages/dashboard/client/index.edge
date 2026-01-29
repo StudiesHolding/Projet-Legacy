@@ -14,7 +14,6 @@
                 
             @component('component/partials/client-header-info', {myOrders , totalSpend})
             @end
-                
                 <ul class="divide-y divide-gray-200">
                     @each(order in myOrders.slice(0,3))
                         @component('component/partials/order-item', { order })

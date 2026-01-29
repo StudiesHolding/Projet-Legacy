@@ -3,7 +3,6 @@ import Transaction from '#models/transaction'
 import env from '#start/env'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
-import Article from '#models/article'
 
 export default class TransactionsController {
   private get isSandbox() {
@@ -57,7 +56,7 @@ export default class TransactionsController {
     try {
       // 1. On attend la réponse de l'API (await est crucial ici)
       const apiResponse = await fetch(this.PAWAPAY_URL, options)
-      const res = await apiResponse.json()
+      const res: any = await apiResponse.json()
 
       console.log('Réponse pawapay:', res)
       switch (res.status) {
@@ -102,7 +101,7 @@ export default class TransactionsController {
         headers: { Authorization: `Bearer ${this.PAWAPAY_KEY}` },
       }
 
-      const apiResponse = await fetch(`${this.PAWAPAY_URL}/${depositId}`, options)
+      const apiResponse: any = await fetch(`${this.PAWAPAY_URL}/${depositId}`, options)
       if (!apiResponse.ok) {
         throw new Error(`Erreur HTTP: ${apiResponse.status}`)
       }

@@ -9,6 +9,7 @@ import { AgrofoodValidator } from '#validators/agrofood'
 import { LifestyleValidator } from '#validators/lifestyle'
 import { CosmeticValidator } from '#validators/cosmetic'
 import { updateArticleValidator } from '#validators/update_article'
+import { DateTime } from 'luxon'
 
 export default class ArticlesController {
   async index({ view, request, auth }: HttpContext) {
@@ -78,8 +79,6 @@ export default class ArticlesController {
     })
     await article.save()
 
-    console.log('recepissé')
-
     // 3. Mettre à jour les données spécifiques selon la catégorie
     const category = await Category.findOrFail(payload.category_id)
 
@@ -88,15 +87,29 @@ export default class ArticlesController {
       await article.related('agrofood').updateOrCreate(
         {},
         {
-          certification: specificData.certification,
-          ingredient_list: specificData.ingredient,
-          expiry_date: specificData.expiry_date,
-          conservation_advice: specificData.conservation_advice,
+          certification: specificData.certification ?? undefined,
+          ingredient_list:
+            specificData.ingredient?.filter((item): item is string => item !== null) ?? undefined,
+          expiry_date: specificData.expiration_date
+            ? DateTime.fromJSDate(specificData.expiration_date)
+            : undefined,
+          conservation_advice: specificData.conservation_advice ?? undefined,
         }
       )
     } else if (category.name === 'lifestyle') {
       const specificData = await request.validateUsing(LifestyleValidator)
-      await article.related('lifestyle').updateOrCreate({}, specificData)
+      await article.related('lifestyle').updateOrCreate(
+        {},
+        {
+          ...specificData,
+          length: specificData.length ?? undefined,
+          width: specificData.width ?? undefined,
+          height: specificData.height ?? undefined,
+          weight: specificData.weight ?? undefined,
+          materials: specificData.materials?.filter((m): m is string => m !== null),
+          variants: specificData.variants?.filter((v): v is string => v !== null),
+        }
+      )
     } else if (category.name === 'Cosmetique') {
       const specificData = await request.validateUsing(CosmeticValidator)
       await article.related('cosmetic').updateOrCreate(

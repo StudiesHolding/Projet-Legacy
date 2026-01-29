@@ -2,7 +2,6 @@ import Article from '#models/article'
 import Category from '#models/category'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
-import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
@@ -141,13 +140,32 @@ export default class NavigationsController {
 
   public async showSellerDashboard({ auth, view }: HttpContext) {
     const user = await auth.authenticate()
-    const myOrders = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
+    const test = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
+
+    const pendingOrders = await Order.query()
+      .whereHas('order_item', (query) => {
+        query.where('seller_id', user.id)
+      })
+      .preload('order_item', (query) => {
+        query.where('seller_id', user.id)
+      })
+      .where('status', '!=', 'pending')
+      .orderBy('id', 'desc')
+
+    const orders = await Order.query()
+      .whereHas('order_item', (query) => {
+        query.where('seller_id', user.id)
+      })
+      .preload('order_item', (query) => {
+        query.where('seller_id', user.id)
+      })
+      .orderBy('id', 'desc')
 
     let totalRevenue = 0
-    for (const order of myOrders) {
+    for (const order of test) {
       totalRevenue += Number(order.priceAtPurchase) * Number(order.quantity)
     }
-    return view.render('pages/dashboard/seller/index', { myOrders, totalRevenue })
+    return view.render('pages/dashboard/seller/index', { pendingOrders, totalRevenue, orders })
   }
 
   public async showClientDashboard({ auth, view }: HttpContext) {

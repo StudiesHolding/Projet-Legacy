@@ -91,12 +91,14 @@ router
   })
   .prefix('/api')
 
-router.group(() => {
-  router
-    .get('/dashboard/my-order/:id', [OrdersController, 'showOrderInfo'])
-    .as('order.showOrderInfo')
-  router.post('/dashboard/process', [OrdersController, 'update']).as('order.update')
-})
+router
+  .group(() => {
+    router.get('my-order/:id', [OrdersController, 'showOrderInfo']).as('order.showOrderInfo')
+    router.post('process/:id', [OrdersController, 'update']).as('order.update')
+    router.get('show-order/:id', [OrdersController, 'show']).as('order.show')
+  })
+  .prefix('/dashboard/')
+  .use(middleware.auth())
 
 router
   .group(() => {

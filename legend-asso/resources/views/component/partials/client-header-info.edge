@@ -20,7 +20,7 @@
             </p>
             <p class="text-2xl font-bold text-gray-900 mt-1">
                 @if(auth.user.role === 'seller')
-                    {{ myOrders.length }}
+                    {{ orders.length }}
                 @else
                     {{formatNumber(totalSpend)}} XAF
                 @endif
@@ -34,7 +34,7 @@
             <p class="text-2xl font-bold text-gray-900 mt-1">
                 {{-- On filtre le tableau pour compter uniquement les commandes spécifiques --}}
                 @if(auth.user.role === 'seller')
-                    {{ myOrders.filter(o => o.status === 'pending').length }}
+                    {{ pendingOrders.filter(o => o.status === 'pending').length }}
                 @else
                     {{ myOrders.filter(order => order.status === 'pending').length }}
                 @endif

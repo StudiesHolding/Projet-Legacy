@@ -13,5 +13,5 @@
         <span class="px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800 mr-4">Annulé</span>
     @end
     <p class="text-sm lg:font-bold text-md ">{{ formatNumber(order.totalPrice)}} XAF</p>
-    <button class="btn">voir les détails</button>
+    <a href="{{route('order.show',{id:order.id})}}" class="btn">voir les détails</a>
 </li>

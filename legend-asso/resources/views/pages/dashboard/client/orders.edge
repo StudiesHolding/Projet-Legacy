@@ -16,7 +16,9 @@
                         @end
                     @end
                 </ul>
-                @partials('pagination')
+                @if(myOrders.length > 10) 
+                    @include('pagination')
+                @end
             </div>
             
         </main>

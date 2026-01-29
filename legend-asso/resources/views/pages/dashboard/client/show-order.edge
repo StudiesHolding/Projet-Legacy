@@ -1,0 +1,49 @@
+@component('component/layouts/dashboard')
+    @slot('content')
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <style>
+                .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; background: #fff; border-radius: 8px; }
+                .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                .invoice-table th { background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6; text-align: left; }
+                .invoice-table td { padding: 12px; border-bottom: 1px solid #eee; }
+            </style>
+
+            <div class="invoice-container">
+                <div class="invoice-box">
+                  <div class="invoice-header">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Commande #{{ order[0].id }}</h2>
+                            <p class="text-gray-500">Date : {{ order[0].createdAt.toFormat('dd/MM/yyyy HH:mm') }}</p>
+                        </div>
+
+                    </div>
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Qté</th>
+                                <th>Prix Unitaire</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          @each( item in order[0].order_item)
+                                <tr>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.quantity}}</td>
+                                    <td>{{formatNumber(item.priceAtPurchase)}}</td>
+                                    <td>{{formatNumber(Number(item.quantity * item.priceAtPurchase))}} XAF</td>                                </tr>   
+                          @end
+                        </tbody>
+                                <td colspan="3" class="text-right py-4 font-bold">MONTANT TOTAL</td>
+                                <td class="text-[#171B99]">
+                                    {{formatNumber(order[0].totalPrice)}} XAF 
+                                </td>
+                    </table>
+            </div>
+            <div class="mt-6">
+
+            </div>
+        </div>
+    @end
+@end
