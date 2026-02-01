@@ -141,22 +141,15 @@ export default class NavigationsController {
   public async showSellerDashboard({ auth, view }: HttpContext) {
     const user = await auth.authenticate()
     const test = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
-
     const pendingOrders = await Order.query()
-      .whereHas('order_item', (query) => {
-        query.where('seller_id', user.id)
-      })
-      .preload('order_item', (query) => {
-        query.where('seller_id', user.id)
-      })
-      .where('status', '!=', 'pending')
+      .whereHas('order_item', (query) =>
+        query.where('seller_id', user.id).where('status', 'pending')
+      )
+      .preload('order_item')
       .orderBy('id', 'desc')
 
     const orders = await Order.query()
       .whereHas('order_item', (query) => {
-        query.where('seller_id', user.id)
-      })
-      .preload('order_item', (query) => {
         query.where('seller_id', user.id)
       })
       .orderBy('id', 'desc')
@@ -170,7 +163,10 @@ export default class NavigationsController {
 
   public async showClientDashboard({ auth, view }: HttpContext) {
     const user = await auth.authenticate()
-    const myOrders = await Order.query().where('buyer_id', user?.id).orderBy('id', 'desc')
+    const myOrders = await Order.query()
+      .where('buyer_id', user?.id)
+      .preload('order_item')
+      .orderBy('id', 'desc')
     let totalSpend = 0
     for (const order of myOrders) {
       totalSpend += Number(order.totalPrice)

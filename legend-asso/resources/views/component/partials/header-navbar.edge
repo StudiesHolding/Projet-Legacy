@@ -45,7 +45,7 @@
                     class="text-white text-sm font-semibold hidden lg:inline-flex hover:text-gray-300 transition"
                     aria-label="Accéder au tableau de bord"
                 >
-                    {{ auth.user.name?.toUpperCase() || 'MON COMPTE' }}
+                    {{ titleCase(auth.user.name) || 'MON COMPTE' }}
                 </a>
             @else
                 <div class="hidden lg:inline-flex">

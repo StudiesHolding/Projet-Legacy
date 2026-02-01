@@ -1,57 +1,3 @@
-{{-- @dd(myOrders)
-@component('component/layouts/dashboard')
-    @slot('content')
-    <div class="min-h-screen bg-gray-100">
-    <div class="flex flex-col md:flex-row">
-        
-        <main class="flex-1 p-4 md:p-8">
-            <h1 class="text-3xl font-semibold text-gray-900 mb-6">Résumé des Ventes</h1>
-            
-            <div class="gap-6 mb-8">
-                @component('component/partials/client-header-info', {orders, totalRevenue, pendingOrders})
-            @end
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                @if(pendingOrders.length !== 0) 
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Commandes en attente (À expédier)</h2>
-                
-                <ul class="divide-y divide-gray-200">
-                    @each(order in pendingOrders.filter(o => o.status === 'pending'))
-                        <li class="flex justify-between items-center py-3">
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-gray-700">Commande {{ order.id }}</p>
-                                <p class="text-sm text-gray-500 truncate">{{ order.name }}</p>
-                                <p class="text-sm text-gray-500 truncate">Quantité: {{ order.quantity }}</p>
-                            </div>
-                            
-                            @if(order.status === 'pending') 
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En préparation</span>
-                            @elseif(order.status === 'complete')
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800 mr-4">En attente de livraison</span>
-                            @else
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800 mr-4">Annulé</span>
-                            @end
-                            <a href="{{route('order.showOrderInfo',{id:order.id})}}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir & Traiter →</a>
-                        </li>
-                    @end
-                </ul>
-                    
-                @end
-                <div class="mt-4 text-right">
-                    <a href="#ventes" class="text-red-600 hover:text-red-800 font-medium">Voir toutes les ventes →</a>
-                </div>
-                    @component('component/partials/pagination', { 'pagination': pagination })
-                @end
-            </div>
-            
-        </main>
-    </div>
-</div>
-    @endslot
-@end
- --}}
-
 @component('component/layouts/dashboard')
     @slot('content')
     <div class="min-h-screen bg-gray-100">
@@ -65,57 +11,47 @@
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-md">
-                    {{-- CORRECTION : .length et non .lenght --}}
                     @if(pendingOrders.length > 0) 
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Commandes en attente (À expédier)</h2>
-                        
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Commandes à traiter</h2>
                         <ul class="divide-y divide-gray-200">
-                            {{-- On filtre les commandes vraiment en attente --}}
-                            @each(order in pendingOrders.filter(o => o.status === 'pending'))
+                            @each(order in pendingOrders)
                                 <li class="flex justify-between items-center py-4">
-                                    <div class="flex-1 min-w-0">
-                                        <p class="font-bold text-gray-800 text-lg">Commande #{{ order.id }}</p>
-                                        
-                                        {{-- Affichage des noms des produits --}}
-                                        <div class="text-sm text-gray-600 italic">
-                                            @if(order.order_item)
-                                                @each(item in order.order_item)
-                                                    <span>{{ item.name }} (x{{ item.quantity }}){{ !loop.last ? ', ' : '' }}</span>
-                                                @end
-                                            @else
-                                                <span class="text-gray-400">Détails indisponibles</span>
-                                            @end
-                                        </div>
+                                    <div>
+                                        <p class="font-bold text-gray-700">Commande #{{ order.id }}</p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ formatNumber(Number(order.totalPrice)) }} XAF 
+                                            • {{ order.createdAt.toRelative() }}
+                                        </p>
                                     </div>
-                                    
+
                                     <div class="flex items-center">
                                         @if(order.status === 'pending') 
-                                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-yellow-100 text-yellow-800 mr-4 uppercase tracking-wider">En préparation</span>
+                                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-yellow-100 text-yellow-800 mr-4">EN ATTENTE</span>
                                         @elseif(order.status === 'complete')
-                                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800 mr-4 uppercase tracking-wider">Prête</span>
+                                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800 mr-4">COMPLÉTÉE</span>
                                         @else
-                                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800 mr-4 uppercase tracking-wider">{{ order.status }}</span>
+                                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800 mr-4">{{ order.status }}</span>
                                         @end
-                                        
-                                        <a href="{{ route('order.showOrderInfo', { id: order.id }) }}" class="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold">
+
+                                        <a href="{{ route('order.showOrderInfo', { id: order.id }) }}" class="text-blue-600 hover:underline font-medium text-sm">
                                             Traiter →
                                         </a>
                                     </div>
                                 </li>
-                    <div class="mt-6 pt-6 border-t border-gray-100 text-right">
-                        <a href="#ventes" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">Voir l'historique complet →</a>
-                    </div>
-
-                    @component('component/partials/pagination', { pagination: pagination })
-                    @end
                             @end
                         </ul>
                     @else
-                        <div class="text-center py-12">
-                            <p class="text-gray-500">Aucune commande en attente pour le moment. 🎉</p>
+                        <div class="text-center py-10">
+                            <p class="text-gray-500 italic">Aucune commande en attente. 🎉</p>
                         </div>
                     @end
-                    
+
+                    @if(pendingOrders.length > 5) 
+                        <div class="mt-6">
+                            @component('component/partials/pagination', { pagination: pagination })
+                            @end
+                        </div>
+                    @end
                 </div>
             </main>
         </div>

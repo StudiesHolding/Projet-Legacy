@@ -29,7 +29,7 @@
                             @end
                         </tbody>
                     </table>
-                    <form action="{{route('order.update',{id})}}" method="POST">
+                    <form action="{{route('order.update',{id:id})}}" method="POST">
                         {{ csrfField() }}
                         <button type="submit" class="btn w-full bg-[#171B99] text-white py-2 rounded-lg text-center block w-full">
                             Marquer la commande comme prête

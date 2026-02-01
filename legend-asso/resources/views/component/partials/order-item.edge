@@ -4,10 +4,11 @@
         <p class="text-sm lg:text-sm lg:font-medium text-gray-700">Commande {{order.id}}</p>
         <p class="text-sm text-gray-500"> Commandé {{ order.createdAt.toRelative() }} </p>
     </div>
-
-    @if(order.status === 'pending') 
-        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En préparation</span>
-    @elseif(article.status === 'accepted')
+    @if(order.isFullyReady) 
+        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-orange-100 text-orange-800 mr-4">En attente de livraison</span>
+    @elseif(order.status === 'pending')
+        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-orange-800 mr-4">En préparation</span>
+    @elseif(order.status === 'complete')
         <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800 mr-4">Livrée</span>
     @else
         <span class="px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800 mr-4">Annulé</span>
