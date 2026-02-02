@@ -30,6 +30,8 @@ export default defineConfig({
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/cache/commands'),
     () => import('@adonisjs/session/commands'),
+    () => import('@adonisjs/bouncer/commands'),
+    () => import('@adonisjs/mail/commands')
   ],
 
   /*
@@ -60,6 +62,8 @@ export default defineConfig({
     () => import('@adonisjs/cache/cache_provider'),
     () => import('@adonisjs/transmit/transmit_provider'),
     () => import('#providers/app_provider'),
+    () => import('@adonisjs/bouncer/bouncer_provider'),
+    () => import('@adonisjs/mail/mail_provider')
   ],
 
   /*

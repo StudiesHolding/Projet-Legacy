@@ -3,6 +3,9 @@ import Transaction from '#models/transaction'
 import env from '#start/env'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
+import mail from '@adonisjs/mail/services/main'
+import OtpVerification from '#models/otp_verification'
+import { DateTime } from 'luxon'
 
 export default class TransactionsController {
   private get isSandbox() {
@@ -20,6 +23,13 @@ export default class TransactionsController {
   public async index() {
     console.log('Transactions index method called')
   }
+
+  public generateOTP() {
+    const otpCode = Math.floor(100000 + Math.random() * 900000)
+    return otpCode
+  }
+
+  // Usage
 
   public async initiateTransaction({ auth, response, request, session }: HttpContext) {
     const payload = await request.all()
@@ -80,7 +90,6 @@ export default class TransactionsController {
           console.log('transaction refusé par pawapay')
           break
         default:
-          console.log(res)
           console.log(options)
           savedTransaction.status = 'refused'
           savedTransaction.note = 'probleme bizzare'
@@ -106,7 +115,6 @@ export default class TransactionsController {
         throw new Error(`Erreur HTTP: ${apiResponse.status}`)
       }
       const res = await apiResponse.json()
-      console.log(res.data)
       const pawapayStatus = res.data.status
 
       if (pawapayStatus === 'COMPLETED') {
@@ -118,7 +126,6 @@ export default class TransactionsController {
         })
         // creation du des orderItems
         const { items } = session.get('cart')
-        console.log(items)
 
         for (const item of items) {
           await OrderItem.create({
@@ -132,10 +139,28 @@ export default class TransactionsController {
           })
         }
 
+        const otpCode = this.generateOTP()
+        const user = await auth.authenticate()
+
         // Nettoie le panier
         session.forget('cart')
         session.forget('totalItems')
         session.forget('totalPrice')
+        await mail.send((message) => {
+          message
+            .to(user.email)
+            .from('onboarding@resend.dev')
+            .subject('Verification de mail')
+            .htmlView('mail/email-verification', { user, otpCode })
+        })
+
+        await OtpVerification.create({
+          userId: user.id,
+          otpValue: otpCode,
+          expireAt: DateTime.now().plus({ minutes: 10 }),
+        })
+
+        console.log('mail envoyé')
         // redirection vers le dashboard
         return response.redirect().toRoute('dashboard-client', { transaction: 'success' })
       }

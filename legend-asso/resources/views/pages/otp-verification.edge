@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification OTP</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f7f6; }
+        .otp-container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+        .otp-inputs input {
+            width: 45px; height: 55px; text-align: center; font-size: 1.5rem;
+            border: 2px solid #ddd; border-radius: 8px; outline: none; transition: border-color 0.3s;
+        }
+        /* Supprime les flèches sur les inputs number */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .otp-inputs input:focus { border-color: #4A90E2; }
+        button {
+            background: #4A90E2; color: white; border: none; padding: 12px 25px;
+            border-radius: 6px; cursor: pointer; font-size: 1rem; width: 100%;
+        }
+        button:hover { background: #357ABD; }
+    </style>
+</head>
+<body>
+
+<div class="otp-container">
+    <h2>Vérification OTP</h2>
+    <p>Entrez le code à 6 chiffres envoyé par email.</p>
+    <form id="otp-form">
+        <div class="otp-inputs">
+            <input type="number" maxlength="1" required>
+            <input type="number" maxlength="1" required>
+            <input type="number" maxlength="1" required>
+            <input type="number" maxlength="1" required>
+            <input type="number" maxlength="1" required>
+            <input type="number" maxlength="1" required>
+        </div>
+        <button type="submit">Vérifier le code</button>
+    </form>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll('.otp-inputs input');
+
+    // Gestion de la navigation automatique entre les inputs
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length > 1) {
+                e.target.value = e.target.value.slice(0, 1); // Empêche plus d'un chiffre
+            }
+            if (e.target.value && index < inputs.length - 1) {
+                inputs[index + 1].focus(); // Passe au suivant
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                inputs[index - 1].focus(); // Retour au précédent si on efface
+            }
+        });
+    });
+
+    // Envoi du formulaire
+    {{-- document.getElementById('otp-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = Array.from(inputs).map(i => i.value).join('');
+                
+    }); --}}
+    document.getElementById('otp-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // 1. Récupération du code complet
+    const code = Array.from(inputs).map(i => i.value).join('');
+
+    // Vérification simple côté client
+    if (code.length < 6) {
+        alert("Veuillez entrer les 6 chiffres.");
+        return;
+    }
+
+    const btn = e.target.querySelector('button');
+    btn.disabled = true; // Empêche le double clic
+    btn.innerText = "Vérification...";
+
+    try {
+        // 2. Envoi au serveur (Remplace l'URL par la tienne)
+        const response = await axios.post({{route('verify-otp')}}, {
+            otp: code
+        });
+
+        // 3. Gestion du succès
+        if (response.status === 200) {
+            alert("Vérification réussie !");
+            window.location.href = '/dashboard-client'; // Redirection
+        }
+
+    } catch (error) {
+        // 4. Gestion des erreurs (OTP invalide, expiré, etc.)
+        console.error("Erreur lors de la vérification:", error);
+        
+        const message = error.response?.data?.message || "Une erreur est survenue";
+        alert("Erreur : " + message);
+        
+        // Optionnel : Réinitialiser les champs en cas d'erreur
+        inputs.forEach(input => input.value = "");
+        inputs[0].focus();
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Vérifier le code";
+    }
+});
+</script>
+
+</body>
+</html>

@@ -116,6 +116,9 @@ export default class NavigationsController {
   public async login({ view }: HttpContext) {
     return view.render('pages/login')
   }
+  public async showOtpPage({ view }: HttpContext) {
+    return view.render('pages/otp-verification')
+  }
 
   public async payement({ response }: HttpContext) {
     return response.redirect().toRoute('order.store')

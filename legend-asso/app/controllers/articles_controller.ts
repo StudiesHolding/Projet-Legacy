@@ -10,6 +10,7 @@ import { LifestyleValidator } from '#validators/lifestyle'
 import { CosmeticValidator } from '#validators/cosmetic'
 import { updateArticleValidator } from '#validators/update_article'
 import { DateTime } from 'luxon'
+import ArticlePolicy from '#policies/article_policy'
 
 export default class ArticlesController {
   async index({ view, request, auth }: HttpContext) {
@@ -36,7 +37,7 @@ export default class ArticlesController {
     })
   }
 
-  async edit({ params, view, auth }: HttpContext) {
+  async edit({ params, view, auth, bouncer, response }: HttpContext) {
     const user = await auth.authenticate()
 
     // On récupère l'article avec toutes ses relations possibles
@@ -50,17 +51,23 @@ export default class ArticlesController {
       .preload('category')
       .firstOrFail()
 
+    if (await bouncer.with('ArticlePolicy').denies('update', article)) {
+      return response.forbidden()
+    }
+
     const categories = await Category.all()
     return view.render('pages/dashboard/seller/edit-article', { categories, article })
   }
 
-  async update({ request, params, response, session, auth }: HttpContext) {
+  async update({ request, params, response, session, auth, bouncer }: HttpContext) {
     const user = await auth.authenticate()
     const article = await Article.query()
       .where('id', params.id)
       .where('seller_id', user.id)
       .firstOrFail()
-
+    if (await bouncer.with(ArticlePolicy).denies('update', article)) {
+      return response.forbidden("Vous n'etes pas authorisé au modifier cet article")
+    }
     // 1. Valider les données de base (ArticleValidator)
     const payload = await request.validateUsing(updateArticleValidator)
     const available = !!request.all().available
@@ -146,7 +153,7 @@ export default class ArticlesController {
     return view.render('pages/dashboard/seller/add_article_1', { categories })
   }
 
-  async show({ params, view }: HttpContext) {
+  async show({ params, view, response, bouncer }: HttpContext) {
     // On récupère l'article avec toutes ses données liées
     const article = await Article.query()
       .where('id', params.id)
@@ -157,10 +164,12 @@ export default class ArticlesController {
       .preload('cosmetic')
       .firstOrFail()
 
+    if (await bouncer.with('ArticlePolicy').denies('show', article)) {
+      return response.forbidden()
+    }
     return view.render('pages/dashboard/seller/show-article', { article })
   }
   async store({ session, response }: HttpContext) {
-    console.log('zoropoto...........................')
     const stepOneData = session.get('stepOneData')
     const imagesPaths = session.get('stepOneImages')
     const stepTwoData = session.get('stepTwoData')

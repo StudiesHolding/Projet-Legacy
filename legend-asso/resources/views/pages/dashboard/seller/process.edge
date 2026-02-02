@@ -1,7 +1,7 @@
 @component('component/layouts/dashboard')
     @slot('content')
         <div class="bg-white p-6 rounded-xl shadow-md">
-            <style>
+             <style>
                 .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; background: #fff; border-radius: 8px; }
                 .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
                 .invoice-table th { background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6; text-align: left; }
@@ -21,21 +21,57 @@
                         <tbody>
                             @each(item in orderItem)
                                 <tr>
-                                    <td>{{item.name}}</td>
-                                    <td>{{item.quantity}}</td>
-                                    <td>{{formatNumber(item.priceAtPurchase)}}</td>
-                                    <td>{{formatNumber(Number(item.quantity * item.priceAtPurchase))}}</td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ formatNumber(item.priceAtPurchase) }}</td>
+                                    <td>{{ formatNumber(Number(item.quantity * item.priceAtPurchase)) }}</td>
                                 </tr>   
                             @end
                         </tbody>
                     </table>
-                    <form action="{{route('order.update',{id:id})}}" method="POST">
-                        {{ csrfField() }}
-                        <button type="submit" class="btn w-full bg-[#171B99] text-white py-2 rounded-lg text-center block w-full">
+
+                    @if(canReady)
+                        <button class="btn w-full bg-[#171B99] text-white py-2 rounded-lg" onclick="modal_confirm_order.showModal()">
                             Marquer la commande comme prête
                         </button>
-                    </form>
+                    @else
+                        <p class="p-6 flex justify-center">
+                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800">COMPLÉTÉE</span>
+                        </p>
+                    @endif
+                </div>
             </div>
         </div>
+
+        <dialog id="modal_confirm_order" class="modal">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold">Confirmation</h3>
+                <p class="py-4">Voulez-vous confirmer que la commande est prête pour la livraison ?</p>
+                
+                <div class="modal-action flex justify-around">
+                    <form action="{{ route('order.update', { id: id }) }}" method="POST">
+                        {{ csrfField() }}
+                        <button type="submit" class="btn bg-blue-500 text-white hover:bg-blue-700">Oui, confirmer</button>
+                    </form>
+                    
+                    <form method="dialog">
+                        <button class="btn">Annuler</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+
+        <dialog id="modal_logout" class="modal">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold text-red-600">Déconnexion</h3>
+                <p class="py-4">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+                <div class="modal-action flex justify-around">
+                    <a href="{{ route('logout_client') }}" class="btn btn-error text-white">Oui, me déconnecter</a>
+                    <form method="dialog">
+                        <button class="btn">Rester connecté</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
     @end
-@end
+@endcomponent

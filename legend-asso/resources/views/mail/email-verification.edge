@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vérification de votre compte</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f4f7f9;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background-color: #4f46e5; /* Couleur indigo type Adonis/Tailwind */
+      color: #ffffff;
+      padding: 30px;
+      text-align: center;
+    }
+    .content {
+      padding: 30px;
+      color: #333333;
+      line-height: 1.6;
+    }
+    .code-container {
+      background-color: #f3f4f6;
+      border: 2px dashed #4f46e5;
+      border-radius: 6px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 32px;
+      font-weight: bold;
+      letter-spacing: 5px;
+      color: #4f46e5;
+    }
+    .footer {
+      background-color: #f9fafb;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Bienvenue, {{ user.name }} !</h1>
+    </div>
+    
+    <div class="content">
+      <p>Merci de nous avoir rejoint. Pour activer votre compte, veuillez saisir le code de vérification ci-dessous sur notre application :</p>
+      
+      <div class="code-container">
+        <div class="code">{{ otpCode }}</div>
+      </div>
+      
+      <p>Ce code est valable pendant <strong>15 minutes</strong>. Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.</p>
+    </div>
+    
+    <div class="footer">
+      <p>&copy; {{ new Date().getFullYear() }} Legend-Association. Tous droits réservés.</p>
+      <p>Ceci est un message automatique, merci de ne pas y répondre.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -12,6 +12,7 @@ import { middleware } from './kernel.js'
 import transmit from '@adonisjs/transmit/services/main'
 transmit.registerRoutes()
 
+const OtpValidationsController = () => import('#controllers/otp_validations_controller')
 const OrdersController = () => import('#controllers/orders_controller')
 const TransactionsController = () => import('#controllers/transactions_controller')
 const AuthController = () => import('#controllers/auth_controller')
@@ -52,6 +53,10 @@ router
   .as('showMyOrder')
 
 router.get('payement', [NavigationsController, 'payement']).use(middleware.auth()).as('payement')
+router
+  .get('otp-verification', [NavigationsController, 'showOtpPage'])
+  .use(middleware.guest())
+  .as('otp-page')
 
 router
   .post('register', [AuthController, 'register_client'])
@@ -88,6 +93,7 @@ router
     router.get('/cart/addToCart', [CartsController, 'addToCart']).as('api.cart.add')
     router.delete('/cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
     router.delete('/cart', [CartsController, 'clearCart']).as('api.cart.clear')
+    router.post('/otpVerification', [OtpValidationsController, 'verifyOtp']).as('verify-otp')
   })
   .prefix('/api')
 

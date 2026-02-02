@@ -39,4 +39,13 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   GOOGLE_CLIENT_ID: Env.schema.string(),
   GOOGLE_CLIENT_SECRET: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring the mail package
+  |----------------------------------------------------------
+  */
+  // MAILGUN_API_KEY: Env.schema.string(),
+  // MAILGUN_DOMAIN: Env.schema.string(),
+  RESEND_API_KEY: Env.schema.string(),
 })

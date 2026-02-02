@@ -3,26 +3,55 @@ import User from '#models/user'
 import { createUserValidator } from '#validators/register'
 import { AuthValidator } from '#validators/auth'
 import RequestService from '#services/request_service'
+import OtpVerification from '#models/otp_verification'
+import { DateTime } from 'luxon'
 
 export default class AuthController {
   public async register_client({ request, response, auth }: HttpContext) {
     const data = await request.validateUsing(createUserValidator)
+
     if (!data.role) {
       data.role = 'client'
     }
     const newUser = await User.create(data)
-    await auth.use('web').login(newUser)
-    return response.redirect().toRoute('dashboard-client')
+
+    if (!newUser.isVerify) {
+      const otpCode = Math.floor(100000 + Math.random() * 900000)
+
+      await OtpVerification.create({
+        userId: newUser.id,
+        otpValue: otpCode,
+        expireAt: DateTime.now().plus({ minutes: 10 }),
+      })
+
+      // await auth.use('web').login(newUser)
+
+      return response.redirect().toRoute('otp-page')
+    }
   }
 
-  public async register_seller({ request, response, auth }: HttpContext) {
+  public async register_seller({ request, response }: HttpContext) {
     const data = await request.validateUsing(createUserValidator)
     if (!data.role) {
       data.role = 'seller'
     }
+
     const newUser = await User.create(data)
-    await auth.use('web').login(newUser)
-    return response.redirect().toRoute('dashboard-client')
+    if (!newUser.isVerify) {
+      const otpCode = Math.floor(100000 + Math.random() * 900000)
+
+      await OtpVerification.create({
+        userId: newUser.id,
+        otpValue: otpCode,
+        expireAt: DateTime.now().plus({ minutes: 10 }),
+      })
+
+      return response.redirect().toPath('pages/otp-verification')
+    }
+    // await auth.use('web').login(newUser)
+
+    // await auth.use('web').login(newUser)
+    // return response.redirect().toRoute('dashboard-client')
   }
 
   public async login_client({ request, auth, response, session }: HttpContext) {
