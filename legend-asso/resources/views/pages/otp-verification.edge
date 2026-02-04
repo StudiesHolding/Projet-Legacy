@@ -4,112 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vérification OTP</title>
+    {{-- Indispensable pour les requêtes Axios/Post --}}
+    {{ csrfMeta() }}
+    
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f7f6; }
-        .otp-container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-        .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f7f6; margin: 0; }
+        .otp-container { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; max-width: 400px; width: 90%; }
+        .alert-info { background: #e3f2fd; color: #0d47a1; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #bbdefb; }
+        .otp-inputs { display: flex; gap: 8px; justify-content: center; margin: 25px 0; }
         .otp-inputs input {
             width: 45px; height: 55px; text-align: center; font-size: 1.5rem;
-            border: 2px solid #ddd; border-radius: 8px; outline: none; transition: border-color 0.3s;
+            border: 2px solid #e0e0e0; border-radius: 10px; outline: none; transition: all 0.2s;
         }
-        /* Supprime les flèches sur les inputs number */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .otp-inputs input:focus { border-color: #4A90E2; }
+        .otp-inputs input:focus { border-color: #4A90E2; box-shadow: 0 0 8px rgba(74, 144, 226, 0.2); }
         button {
-            background: #4A90E2; color: white; border: none; padding: 12px 25px;
-            border-radius: 6px; cursor: pointer; font-size: 1rem; width: 100%;
+            background: #4A90E2; color: white; border: none; padding: 14px;
+            border-radius: 8px; cursor: pointer; font-size: 1rem; width: 100%; font-weight: 600; transition: background 0.3s;
         }
         button:hover { background: #357ABD; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
 <div class="otp-container">
     <h2>Vérification OTP</h2>
-    <p>Entrez le code à 6 chiffres envoyé par email.</p>
+
+    @if(session.has('email'))
+        <div class="alert-info">
+            📩 Un code de vérification a été envoyé à : <br>
+            <strong>{{ session.get('email') }}</strong>
+        </div>
+    @endif
+
+    <p style="color: #666;">Entrez le code à 6 chiffres pour continuer.</p>
+
     <form id="otp-form">
         <div class="otp-inputs">
-            <input type="number" maxlength="1" required>
-            <input type="number" maxlength="1" required>
-            <input type="number" maxlength="1" required>
-            <input type="number" maxlength="1" required>
-            <input type="number" maxlength="1" required>
-            <input type="number" maxlength="1" required>
+            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
+            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
+            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
+            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
+            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
+            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
         </div>
-        <button type="submit">Vérifier le code</button>
+        <button type="submit" id="submit-btn">Vérifier le code</button>
     </form>
 </div>
 
-<script>
-    const inputs = document.querySelectorAll('.otp-inputs input');
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    // Gestion de la navigation automatique entre les inputs
+<script>
+    // Configuration globale d'Axios pour AdonisJS (CSRF)
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    axios.defaults.headers.common['x-csrf-token'] = csrfToken;
+
+    const inputs = document.querySelectorAll('.otp-inputs input');
+    const form = document.getElementById('otp-form');
+    const btn = document.getElementById('submit-btn');
+
+    // Navigation entre les champs
     inputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
-            if (e.target.value.length > 1) {
-                e.target.value = e.target.value.slice(0, 1); // Empêche plus d'un chiffre
-            }
-            if (e.target.value && index < inputs.length - 1) {
-                inputs[index + 1].focus(); // Passe au suivant
-            }
+            if (e.target.value.length > 1) e.target.value = e.target.value.slice(0, 1);
+            if (e.target.value && index < inputs.length - 1) inputs[index + 1].focus();
         });
 
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                inputs[index - 1].focus(); // Retour au précédent si on efface
-            }
+            if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus();
         });
     });
 
-    // Envoi du formulaire
-    {{-- document.getElementById('otp-form').addEventListener('submit', (e) => {
+    // Envoi du formulaire via AJAX
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         const code = Array.from(inputs).map(i => i.value).join('');
-                
-    }); --}}
-    document.getElementById('otp-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // 1. Récupération du code complet
-    const code = Array.from(inputs).map(i => i.value).join('');
+        if (code.length < 6) return alert("Veuillez remplir tous les champs.");
 
-    // Vérification simple côté client
-    if (code.length < 6) {
-        alert("Veuillez entrer les 6 chiffres.");
-        return;
-    }
+        btn.disabled = true;
+        btn.innerText = "Vérification en cours...";
 
-    const btn = e.target.querySelector('button');
-    btn.disabled = true; // Empêche le double clic
-    btn.innerText = "Vérification...";
+        try {
+            // Utilisation de la route nommée générée par Edge
+            const response = await axios.post("{{ route('verify-otp') }}", {
+                otp: code
+            });
+            console.log(response)
 
-    try {
-        // 2. Envoi au serveur (Remplace l'URL par la tienne)
-        const response = await axios.post({{route('verify-otp')}}, {
-            otp: code
-        });
-
-        // 3. Gestion du succès
-        if (response.status === 200) {
-            alert("Vérification réussie !");
-            window.location.href = '/dashboard-client'; // Redirection
+            if (response.status === 200) {
+                // Redirection vers le dashboard
+                window.location.href = response.data.redirectUrl;
+            }
+        } catch (error) {
+            console.error(error);
+            const errorMsg = error.response?.data?.message || "Code incorrect ou expiré.";
+            alert("Erreur : " + errorMsg);
+            
+            // Reset en cas d'échec
+            inputs.forEach(input => input.value = "");
+            inputs[0].focus();
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Vérifier le code";
         }
-
-    } catch (error) {
-        // 4. Gestion des erreurs (OTP invalide, expiré, etc.)
-        console.error("Erreur lors de la vérification:", error);
-        
-        const message = error.response?.data?.message || "Une erreur est survenue";
-        alert("Erreur : " + message);
-        
-        // Optionnel : Réinitialiser les champs en cas d'erreur
-        inputs.forEach(input => input.value = "");
-        inputs[0].focus();
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Vérifier le code";
-    }
-});
+    });
 </script>
 
 </body>

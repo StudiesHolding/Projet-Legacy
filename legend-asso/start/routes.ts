@@ -93,7 +93,10 @@ router
     router.get('/cart/addToCart', [CartsController, 'addToCart']).as('api.cart.add')
     router.delete('/cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
     router.delete('/cart', [CartsController, 'clearCart']).as('api.cart.clear')
-    router.post('/otpVerification', [OtpValidationsController, 'verifyOtp']).as('verify-otp')
+    router
+      .post('/otpVerification', [OtpValidationsController, 'verifyOtp'])
+      .as('verify-otp')
+      .use(middleware.guest())
   })
   .prefix('/api')
 

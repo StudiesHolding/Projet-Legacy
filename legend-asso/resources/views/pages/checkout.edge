@@ -1,4 +1,4 @@
-@component('component/layouts/app')
+{{-- @component('component/layouts/app')
   @slot('title')
     Checkout
   @endslot
@@ -49,6 +49,12 @@
             <div><span id="checkout-total">0 FCFA</span></div>
           </div>
         </div>
+        <form action="{{route('payement')}}">
+          {{csrfField}}
+          <input type="submit">
+        </form>
+
+
         <div class="my-4 justify-center">
           <label for="my_modal_7" class="btn p-2 bg-[#171B99] w-full text-white text-center cursor-pointer">Effectuer le paiement</label>
            
@@ -199,4 +205,172 @@
   </form>
 </dialog>
     @end
-  @end
+  @end --}}
+
+  @component('component/layouts/app')
+  @slot('title') 
+  Checkout 
+  @endslot
+
+  <div class="max-w-2xl mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-6">Récapitulatif du panier</h1>
+
+    <div id="checkout-cart-items-container">
+      @if(cart.items.length === 0)
+        <p class="text-gray-500">Votre panier est vide.</p>
+      @else
+        <div id="checkout-cart-items">
+          @each(item in cart.items)
+            <div class="flex items-center mb-4 bg-white p-3 rounded-lg shadow-sm" data-cart-item-id="{{ item.id }}">
+              <div class="w-24">
+                <img src="{{ item.image || 'https://placehold.co/400' }}" alt="" class="w-full rounded" />
+              </div>
+              <div class="flex-1 ml-4">
+                <p class="font-medium">{{ item.name }}</p>
+                <div class="flex items-center gap-4 mt-2">
+                  <button data-decrement-id="{{ item.id }}" class="btn btn-sm btn-outline">-</button>
+                  <span data-qty-id="{{ item.id }}" class="font-bold">{{ item.quantity }}</span>
+                  <button data-increment-id="{{ item.id }}" class="btn btn-sm btn-outline">+</button>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="block font-bold"><span data-line-total-id="{{ item.id }}">{{ (item.price * item.quantity) }}</span> FCFA</span>
+              </div>
+            </div>
+          @endeach
+        </div>
+      @endif
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md my-6 p-5">
+      <button class="btn btn-outline w-full mb-4 text-[#171B99]" onclick="my_modal_2.showModal()">
+        Choisir la méthode de livraison
+      </button>
+
+      <div class="space-y-2 border-t pt-4">
+        <div class="flex justify-between text-gray-600">
+          <span>Produits</span>
+          <span id="checkout-products-total">0 FCFA</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Livraison</span>
+          <span id="checkout-delivery">2 500 FCFA</span>
+        </div>
+        <div class="flex justify-between text-xl font-bold text-[#171B99] pt-2 border-t">
+          <span>Total à payer</span>
+          <span id="checkout-total">0 FCFA</span>
+        </div>
+      </div>
+      <div class="my-5">
+    <form action="{{ route('payement') }}" method="get">
+  {{ csrfField() }}
+  
+  <button type="submit" class="btn bg-[#171B99] w-full text-white text-lg hover:bg-blue-900 transition-colors">
+    Effectuer le paiement
+  </button>
+</form>
+
+      </div>
+    </div>
+
+
+
+    {{-- <div class="my-4">
+      <label >Effectuer le paiement</label>
+    </div> --}}
+  </div>
+
+  <input type="checkbox" id="my_modal_7" class="modal-toggle" />
+  {{-- <div class="modal" role="dialog">
+    <div class="modal-box max-w-md">
+      <h3 class="font-bold text-lg mb-4 text-[#171B99]">Paiement Mobile</h3>
+      
+      <form method="post" action="{{ route('transaction.initiate') }}">
+        {{ csrfField() }}
+        
+        <input type="hidden" name="amount" id="hidden-total-input" value="0">
+        
+        <label for="phone_input_modal" class="text-sm text-gray-600 mb-2 block">Numéro de téléphone :</label>
+        <div class="flex border rounded-lg overflow-hidden focus-within:ring-2 ring-[#171B99] mb-6">
+          <select name="country_code" class="bg-gray-100 px-3 py-2 border-r outline-none">
+            <option value="237">🇨🇲 +237</option>
+            <option value="225">🇨🇮 +225</option>
+          </select>
+          <input type="tel" name="phone_number" id="phone_input_modal" required
+            placeholder="6XX XX XX XX" class="input w-full border-none focus:outline-none" />
+        </div>
+
+        <div class="modal-action">
+          <button type="submit" class="btn bg-[#171B99] text-white w-full">Confirmer et Payer</button>
+        </div>
+      </form>
+    </div>
+    <label class="modal-backdrop" for="my_modal_7">Fermer</label>
+  </div> --}}
+
+  <dialog id="my_modal_2" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold mb-4">Opérateur de livraison</h3>
+      <div class="grid gap-2">
+        <label class="flex items-center p-3 border rounded cursor-pointer hover:bg-gray-50">
+          <input type="radio" name="transport" value="dhl" class="radio radio-primary mr-4" checked />
+          <span>Gozem</span>
+        </label>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+  </dialog>
+
+  <script>
+    async function refreshCheckoutUI() {
+      try {
+        const data = await fetchCart();
+        const cart = (data && data.cart) ? data.cart : { items: [] };
+        const totalPrice = Number(data.totalPrice) || 0;
+        const delivery = 2500;
+        const finalTotal = totalPrice + delivery;
+
+        // Mise à jour des textes
+        document.getElementById('checkout-products-total').textContent = `${totalPrice} FCFA`;
+        document.getElementById('checkout-total').textContent = `${finalTotal} FCFA`;
+        
+        // Mise à jour du champ caché pour le formulaire de transaction
+        const hiddenInput = document.getElementById('hidden-total-input');
+        if (hiddenInput) hiddenInput.value = finalTotal;
+
+        // Mise à jour des lignes individuelles
+        cart.items.forEach(item => {
+          const container = document.querySelector(`[data-cart-item-id='${item.id}']`);
+          if (container) {
+            container.querySelector(`[data-qty-id='${item.id}']`).textContent = item.quantity;
+            container.querySelector(`[data-line-total-id='${item.id}']`).textContent = (item.quantity * item.price);
+          }
+        });
+
+        // Gestion de la suppression visuelle si l'item n'est plus dans le panier
+        document.querySelectorAll('[data-cart-item-id]').forEach(el => {
+          const id = Number(el.getAttribute('data-cart-item-id'));
+          if (!cart.items.find(i => i.id === id)) el.remove();
+        });
+      } catch (err) {
+        console.error('Erreur UI:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('checkout-cart-items-container')?.addEventListener('click', async (e) => {
+        const incBtn = e.target.closest('[data-increment-id]');
+        const decBtn = e.target.closest('[data-decrement-id]');
+        
+        if (incBtn) {
+          await addToCart(Number(incBtn.dataset.incrementId), 1);
+          refreshCheckoutUI();
+        } else if (decBtn) {
+          await removeFromCart(Number(decBtn.dataset.decrementId), false);
+          refreshCheckoutUI();
+        }
+      });
+      refreshCheckoutUI();
+    });
+  </script>
+@end

@@ -7,9 +7,9 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('user_id')
+      table.string('email')
       table.integer('otp_value')
-      table.string('status')
+      table.string('status').defaultTo('unuse')
       table.timestamp('expire_at')
       table.timestamp('created_at')
       table.timestamp('updated_at')

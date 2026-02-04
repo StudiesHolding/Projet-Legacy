@@ -3,8 +3,9 @@
     login
   @end
   @slot('main')
-  @let(forward = old('forward') ?? request.header('referrer'))
     <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+      @let(urlProvenace = request.header('referer'))
+      @let(finalUrl = (urlProvenace && !urlProvenace.includes('/login')) ? urlProvenace : '')
 
       <div class="mb-3">
         <a href="{{ route('home') }}">
@@ -18,7 +19,7 @@
 
         <form action="{{route('login_client')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
           {{csrfField()}}
-          <input type="hidden" name="forward" value="{{ forward || '' }}">   
+          {{-- <input type="hidden" name="forward" value="{{ forward || '' }}">    --}}
           <a href="https://accounts.google.com/o/oauth2/auth" class="btn w-full py-2 bg-white">
             <img src="/images/google.png" alt="google-icon" class="size-16" />
           </a>
@@ -36,6 +37,7 @@
 
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Votre email</label>
+            <input type="hidden" name="intended_url" value="{{ old('intended_url') || finalUrl }}">
             <input
               type="email"
               id="email"

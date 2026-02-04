@@ -48,11 +48,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   })
   declare seller: HasOne<typeof Seller>
 
-  @hasMany(() => OtpVerification, {
-    foreignKey: 'id',
-  })
-  declare articles: HasMany<typeof OtpVerification>
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

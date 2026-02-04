@@ -107,21 +107,23 @@ export default class NavigationsController {
     })
   }
 
-  // --- Autres méthodes ---
   public async checkout({ view, session }: HttpContext) {
     const cart = session.get('cart') || { items: [] }
     return view.render('pages/checkout', { cart })
   }
 
-  public async login({ view }: HttpContext) {
+  public async login({ request, view, session }: HttpContext) {
+    const targetUrl = request.header('referer') || '/'
+    session.put('targetUrl', targetUrl)
     return view.render('pages/login')
   }
   public async showOtpPage({ view }: HttpContext) {
     return view.render('pages/otp-verification')
   }
 
-  public async payement({ response }: HttpContext) {
-    return response.redirect().toRoute('order.store')
+  public async payement({ view, session }: HttpContext) {
+    console.log(session.flashMessages.all())
+    return view.render('pages/payement')
   }
 
   public async registerClient({ view }: HttpContext) {
