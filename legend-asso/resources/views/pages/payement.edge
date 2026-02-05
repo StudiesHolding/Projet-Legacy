@@ -1,1 +1,284 @@
-<h1>Samurai</h1>
+@component('component/layouts/form')
+  @slot('title') 
+    Finaliser ma commande 
+  @end
+  
+  @slot('main')
+    <div class="min-h-screen w-full bg-slate-50 px-4 sm:px-6 lg:px-8">
+      {{-- Header Logo --}}
+      <div class="max-w-5xl mx-auto p-5 w-full flex justify-center items-center">
+        <a href="{{ route('home') }}">
+          <img src="/images/logo-legaci-new.png" alt="Legaci Logo" class="h-20 w-auto object-contain" />
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {{-- Colonne de gauche : Formulaires --}}
+        <div class="lg:col-span-2 space-y-8">
+          <form action="#" method="POST" id="checkout-form">
+            {{ csrfField() }}
+
+            {{-- ÉTAPE 1 : INFORMATION CLIENT --}}
+            <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <div class="flex items-center gap-4 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#171B99] text-white text-sm font-bold">1</span>
+                <h2 class="text-xl font-bold text-gray-800">Informations Personnelles</h2>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
+                  <input type="text" name="full_name" value="{{ auth.user?.name || '' }}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#171B99] outline-none transition-all">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone de contact</label>
+                  <input type="tel" name="phone" required placeholder="6xx xx xx xx" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#171B99] outline-none transition-all">
+                </div>
+              </div>
+            </section>
+
+            {{-- ÉTAPE 2 : LIVRAISON --}}
+            <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mt-8">
+              <div class="flex items-center gap-4 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#171B99] text-white text-sm font-bold">2</span>
+                <h2 class="text-xl font-bold text-gray-800">Mode de Livraison</h2>
+              </div>
+              <div class="space-y-4">
+                <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-slate-50 transition-all">
+                  <input type="radio" name="shipping" value="standard" checked class="accent-[#171B99] h-4 w-4">
+                  <div class="ml-4 flex-1">
+                    <span class="block font-bold text-gray-900">Livraison Standard</span>
+                    <span class="text-sm text-gray-500">2 à 3 jours ouvrables (Douala & Yaoundé)</span>
+                  </div>
+                  <span class="font-bold text-[#171B99]">2 000 FCFA</span>
+                </label>
+                
+                <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-slate-50 transition-all border-gray-200">
+                  <input type="radio" name="shipping" value="express" class="accent-[#171B99] h-4 w-4">
+                  <div class="ml-4 flex-1">
+                    <span class="block font-bold text-gray-900">Livraison Express</span>
+                    <span class="text-sm text-gray-500">Le jour même</span>
+                  </div>
+                  <span class="font-bold text-gray-900">5 000 FCFA</span>
+                </label>
+              </div>
+              <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Adresse exacte (Quartier, Rue, Précision)</label>
+                <textarea name="address" required rows="2" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#171B99] outline-none transition-all" placeholder="Ex: Akwa, Rue de la Joie, face Boulangerie..."></textarea>
+              </div>
+            </section>
+
+            {{-- ÉTAPE 3 : PAIEMENT --}}
+            <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mt-8">
+              <div class="flex items-center gap-4 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#171B99] text-white text-sm font-bold">3</span>
+                <h2 class="text-xl font-bold text-gray-800">Mode de Paiement</h2>
+              </div>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label class="relative flex flex-col p-4 border rounded-xl cursor-pointer hover:shadow-md transition-all border-gray-200 group">
+                  <input type="radio" name="payment_method" value="momo" class="sr-only peer" checked>
+                  <div class="flex items-center gap-3 mb-2">
+                    <img src="/images/momo_om.png" class="h-8 object-contain" alt="Mobile Money">
+                    <span class="font-bold text-gray-700">Mobile Money / OM</span>
+                  </div>
+                  <p class="text-xs text-gray-500 italic">Paiement instantané via votre téléphone.</p>
+                  <div class="absolute top-2 right-2 text-[#171B99] hidden peer-checked:block">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+                  </div>
+                  <div class="absolute inset-0 border-2 border-transparent peer-checked:border-[#171B99] rounded-xl pointer-events-none"></div>
+                </label>
+
+                <label class="relative flex flex-col p-4 border rounded-xl cursor-pointer hover:shadow-md transition-all border-gray-200 group">
+                  <input type="radio" name="payment_method" value="card" class="sr-only peer">
+                  <div class="flex items-center gap-3 mb-2">
+                    <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    <span class="font-bold text-gray-700">International Card</span>
+                  </div>
+                  <p class="text-xs text-gray-500">Visa, Mastercard via Stripe.</p>
+                  <div class="absolute top-2 right-2 text-[#171B99] hidden peer-checked:block">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+                  </div>
+                  <div class="absolute inset-0 border-2 border-transparent peer-checked:border-[#171B99] rounded-xl pointer-events-none"></div>
+                </label>
+              </div>
+            </section>
+
+            <button type="button" onclick="startPaymentCountdown(0.5); my_modal_5.showModal()" 
+              class="w-full mt-8 bg-[#171B99] hover:bg-[#121570] text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform active:scale-[0.98]">
+              Initier le Paiement
+            </button>
+          </form>
+        </div>
+
+        {{-- Colonne de droite : Récapitulatif --}}
+        <div class="lg:col-span-1">
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-6">Récapitulatif</h2>
+            <div class="space-y-4 mb-6">
+              @each(item in cart.items)
+                <div class="flex justify-between items-center text-sm">
+                  <span class="text-gray-600">{{item.name}} ({{item.quantity}})</span>
+                  <span class="font-semibold">{{formatNumber(Number(item.price) * Number(item.quantity)) }} FCFA</span>
+                </div>
+              @end
+            </div>
+
+            <div class="border-t pt-4 space-y-2">
+              <div class="flex justify-between text-sm text-gray-500">
+                <span>Sous-total</span>
+                <span>{{formatNumber(totalPrice)}} FCFA</span>
+              </div>
+              <div class="flex justify-between text-sm text-gray-500">
+                <span>Livraison</span>
+                <span>2 000 FCFA</span>
+              </div>
+              <div class="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t mt-4">
+                <span>Total</span>
+                <span class="text-[#171B99]">{{formatNumber(totalPrice)}} FCFA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{-- MODALE DE PAIEMENT --}}
+    <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box text-center">
+        
+        {{-- ÉTAT 1 : ATTENTE (CHRONO) --}}
+        <div id="modal-content-active">
+          <div class="flex justify-center mb-4">
+            <span class="loading loading-ring loading-lg text-[#171B99]"></span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800">En attente de confirmation</h3>
+          <p class="text-xs text-gray-500">Veuillez valider le paiement sur votre téléphone</p>
+          
+          <div id="timer-display" class="flex justify-center my-6">
+            <div class="grid grid-flow-col gap-5 text-center auto-cols-max bg-slate-50 p-4 rounded-2xl">
+              <div class="flex flex-col"><span class="countdown font-mono text-3xl text-[#171B99]"><span id="cd-minutes" style="--value:0;"></span></span>min</div>
+              <div class="flex flex-col"><span class="countdown font-mono text-3xl text-[#171B99]"><span id="cd-seconds" style="--value:0;"></span></span>sec</div>
+            </div>
+          </div>
+        </div>
+
+        {{-- ÉTAT 2 : EXPIRÉ --}}
+        <div id="timeout-message" class="hidden py-6">
+          <div class="text-red-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0116 0z" /></svg>
+          </div>
+          <h3 class="text-lg font-bold text-red-600">Session expirée</h3>
+          <p class="text-sm text-gray-500 mb-6">Nous n'avons pas reçu de confirmation à temps.</p>
+          <button onclick="startPaymentCountdown(0.5)" class="btn bg-[#171B99] hover:bg-blue-800 text-white w-full max-w-xs">
+            Relancer une tentative
+          </button>
+        </div>
+
+        {{-- ÉTAT 3 : SUCCÈS --}}
+        <div id="success-message" class="hidden py-6">
+          <div class="text-green-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0116 0z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-800">Commande validée !</h3>
+          <p class="text-sm text-gray-500 mb-8">Votre paiement a été reçu avec succès.</p>
+          <div class="flex flex-col gap-3">
+            <a href="{{ route('home') }}" class="btn bg-[#171B99] hover:bg-blue-800 text-white w-full">Continuer mes achats</a>
+            <a href="/mon-compte/commandes" class="btn btn-outline border-gray-300 w-full">Voir ma commande</a>
+          </div>
+        </div>
+
+        <div class="modal-action flex-col gap-3">
+          <form method="dialog" class="w-full">
+            <button id="btn-close-modal" class="btn btn-ghost btn-sm w-full text-gray-400">Annuler et fermer</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      let paymentInterval;
+      let transactionReference = null; 
+
+      async function startPaymentCountdown(durationInMinutes) {
+        const minDisplay = document.getElementById('cd-minutes');
+        const secDisplay = document.getElementById('cd-seconds');
+        const timeoutMessage = document.getElementById('timeout-message');
+        const contentActive = document.getElementById('modal-content-active');
+        const successMessage = document.getElementById('success-message');
+        const btnClose = document.getElementById('btn-close-modal');
+
+        try {
+          clearInterval(paymentInterval);
+          const phoneInput = document.querySelector('input[name="phone"]');
+          const phone = phoneInput ? phoneInput.value : null;
+
+          if(!phone) {
+            alert("Veuillez entrer un numéro de téléphone");
+            document.getElementById('my_modal_5').close();
+            return;
+          }
+
+          successMessage.classList.add('hidden');
+          timeoutMessage.classList.add('hidden');
+          contentActive.classList.remove('hidden');
+          if(btnClose) btnClose.classList.remove('hidden');
+
+          const response = await axios.post("{{ route('transaction.initiate') }}", { number: phone });
+          transactionReference = response.data.reference || response.data.id;
+
+          if (response.data.status === 'completed') {
+            showSuccessState();
+            return;
+          }
+
+          let time = Math.floor(durationInMinutes * 60);
+          paymentInterval = setInterval(async () => {
+            time--;
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+
+            if (minDisplay) minDisplay.style.setProperty('--value', minutes);
+            if (secDisplay) secDisplay.style.setProperty('--value', seconds);
+
+            if (time > 0 && time % 4 === 0 && transactionReference) {
+              try {
+                const check = await axios.get(`/transaction/status/${transactionReference}`);
+                if (check.data.status === 'completed' || check.data.status === 'success') {
+                  showSuccessState();
+                }
+              } catch (e) {
+                console.log("Vérification...");
+              }
+            }
+
+            if (time <= 0) {
+              clearInterval(paymentInterval);
+              contentActive.classList.add('hidden');
+              timeoutMessage.classList.remove('hidden');
+            }
+          }, 1000);
+
+        } catch (error) {
+          console.error("Erreur:", error);
+          alert("Erreur lors de l'initialisation.");
+          document.getElementById('my_modal_5').close();
+        }
+
+        function showSuccessState() {
+          clearInterval(paymentInterval);
+          contentActive.classList.add('hidden');
+          timeoutMessage.classList.add('hidden');
+          successMessage.classList.remove('hidden');
+          if(btnClose) btnClose.classList.add('hidden');
+        }
+      }
+
+      document.getElementById('my_modal_5').addEventListener('close', () => {
+        clearInterval(paymentInterval);
+      });
+    </script>
+  @endslot
+@end

@@ -17,8 +17,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_KEY: Env.schema.string(),
   HOST: Env.schema.string({ format: 'host' }),
   LOG_LEVEL: Env.schema.string(),
-  LYGOS_API_KEY: Env.schema.string(),
-  LYGOS_API_URL: Env.schema.string(),
+
   PAWAPAY_SANDBOX_KEY: Env.schema.string(),
   PAWAPAY_PRODUCTION_KEY: Env.schema.string(),
   PAWAPAY_SANDBOX_URL: Env.schema.string(),
@@ -39,13 +38,13 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   GOOGLE_CLIENT_ID: Env.schema.string(),
   GOOGLE_CLIENT_SECRET: Env.schema.string(),
+  GOOGLE_CALLBACK_URL: Env.schema.string(),
 
   /*
   |----------------------------------------------------------
   | Variables for configuring the mail package
   |----------------------------------------------------------
   */
-  // MAILGUN_API_KEY: Env.schema.string(),
-  // MAILGUN_DOMAIN: Env.schema.string(),
+
   RESEND_API_KEY: Env.schema.string(),
 })

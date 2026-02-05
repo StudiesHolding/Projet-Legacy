@@ -68,6 +68,8 @@ export default class TransactionsController {
       const apiResponse = await fetch(this.PAWAPAY_URL, options)
       const res: any = await apiResponse.json()
 
+      console.log(request.all())
+
       console.log('Réponse pawapay:', res)
       switch (res.status) {
         case 'ACCEPTED':

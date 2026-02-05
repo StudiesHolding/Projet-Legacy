@@ -122,8 +122,10 @@ export default class NavigationsController {
   }
 
   public async payement({ view, session }: HttpContext) {
-    console.log(session.flashMessages.all())
-    return view.render('pages/payement')
+    const cart = session.get('cart')
+    const totalPrice = session.get('totalPrice')
+
+    return view.render('pages/payement', { cart, totalPrice })
   }
 
   public async registerClient({ view }: HttpContext) {

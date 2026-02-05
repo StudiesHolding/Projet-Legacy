@@ -1,12 +1,11 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column, hasOne, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import Seller from '#models/seller'
-import type { HasOne, HasMany } from '@adonisjs/lucid/types/relations'
+import type { HasOne } from '@adonisjs/lucid/types/relations'
 import Article from './article.js'
-import OtpVerification from './otp_verification.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -32,13 +31,19 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare email: string
 
   @column()
-  declare phone: string
+  declare googleId: string
 
-  @column({ serializeAs: null })
-  declare role: RoleType
+  @column()
+  declare avatarUrl: string
+
+  @column()
+  declare phone: string
 
   @column()
   declare isVerify: boolean
+
+  @column({ serializeAs: null })
+  declare role: RoleType
 
   @column({ serializeAs: null })
   declare password: string

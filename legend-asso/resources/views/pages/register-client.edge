@@ -1,114 +1,126 @@
 @component('component/layouts/form')
-  @slot('title')
-    register
-  @end
+  @slot('title') 
+  Créer un compte
+   @end
+  
   @slot('main')
-    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
-
-      <div class="mb-4">
+    <div class="min-h-screen flex flex-col justify-center items-center bg-slate-50 py-1 px-4">
+      
+      {{-- Logo --}}
+      <div class="mb-6 transition-transform hover:scale-105 duration-300">
         <a href="{{ route('home') }}">
-            <img src="/images/logo-legaci-new.png" alt="" class="h-24 w-auto" />
-
+          <img src="/images/logo-legaci-new.png" alt="Legaci Logo" class="h-20 w-auto object-contain" />
         </a>
       </div>
+
       <div class="w-full max-w-md">
-        <p class="mx-4">
-          Ouvrez votre compte pour accéder à notre marché sécurisé, suivre vos commandes et profiter d’avantages exclusifs.
-        </p>
+        {{-- En-tête --}}
+        <div class="text-center mb-6">
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">Rejoignez Legaci</h1>
+          <p class="text-sm text-gray-600 px-6">
+            Accédez à notre marché sécurisé, suivez vos commandes et soutenez l'artisanat local.
+          </p>
+        </div>
 
-
-        <form action="{{route('register_client')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
-          {{ csrfField() }}
-                   <a href="#" class="btn w-full py-2 bg-white">
-            <img src="/images/google.png" alt="google-icon" class="size-16" />
-          </a>
-          <div class="divider">
-            OU
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Votre nom</label>
-            <input
-              required
-              type="text"
-              id="name"
-              name="name"
-              value="{{old('name') || ''}}"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            @if(flashMessages.has('errors.name'))
-              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.name').join(', ') }}</p>
-            @endif
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Votre email</label>
-            <input
-              required
-              type="email"
-              id="email"
-              name="email"
-              value="{{ old('email') || '' }}"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            @if(flashMessages.has('errors.email'))
-              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.email').join(', ') }}</p>
-            @endif
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Téléphone</label>
-            <input
-              required
-              type="tel"
-              id="phone"
-              name="phone"
-              value="{{ old('phone') || '' }}"
-              placeholder="numero de telephone"
-              class="input w-full border rounded py-2 w-full px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            @if(flashMessages.has('errors.phone'))
-              <p class="text-[#CE0000] text-xs italic mt-1 ">{{ flashMessages.get('errors.phone').join(', ') }}</p>
-            @endif
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mot de passe</label>
-            <input
-              required
-              type="password"
-              name="password"
-              id="password"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            @if(flashMessages.has('errors.password'))
-              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.password').join(', ') }}</p>
-            @endif
-          </div>
-
+        <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+          
+          Social Register
           <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password_confirmation">Confirmation du mot de passe</label>
-            <input
-              required
-              type="password"
-              id="password_confirmation"
-              name="password_confirmation"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            @if(flashMessages.has('errors.password_confirmation'))
-              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.password_confirmation').join(', ') }}</p>
+            <a href="{{ route('redirect') }}" 
+               class="flex items-center justify-center gap-3 w-full py-2.5 border border-gray-300 rounded-xl text-gray-700 font-medium bg-white hover:bg-gray-50 transition-all">
+              <img src="/images/google.png" alt="Google" class="w-5 h-5" />
+              <span>S'inscrire avec Google</span>
+            </a>
+          </div>
+
+          <div class="relative mb-6">
+            <div class="absolute inset-0 flex items-center"><span class="w-full border-t border-gray-200"></span></div>
+            <div class="relative flex justify-center text-xs uppercase"><span class="bg-white px-4 text-gray-400 font-medium">Ou par formulaire</span></div>
+          </div>
+
+          <form action="{{ route('register_client') }}" method="POST" class="space-y-4">
+            {{ csrfField() }}
+
+            {{-- Nom complet --}}
+            <div>
+              <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Nom complet</label>
+              <input
+                required type="text" id="name" name="name"
+                placeholder="Ex: Jean Douala"
+                value="{{ old('name') || '' }}"
+                class="w-full px-4 py-2.5 rounded-xl border {{ flashMessages.has('errors.name') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              />
+              @if(flashMessages.has('errors.name'))
+                <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.name').join(', ') }}</p>
+              @endif
+            </div>
+
+            {{-- Email --}}
+            <div>
+              <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Votre email</label>
+              <input
+                required type="email" id="email" name="email"
+                placeholder="nom@exemple.com"
+                value="{{ old('email') || '' }}"
+                class="w-full px-4 py-2.5 rounded-xl border {{ flashMessages.has('errors.email') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              />
+              @if(flashMessages.has('errors.email'))
+                <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.email').join(', ') }}</p>
+              @endif
+            </div>
+
+            {{-- Téléphone --}}
+            <div>
+              <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1">Téléphone</label>
+              <input
+                required type="tel" id="phone" name="phone"
+                placeholder="6xx xx xx xx"
+                value="{{ old('phone') || '' }}"
+                class="w-full px-4 py-2.5 rounded-xl border {{ flashMessages.has('errors.phone') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              />
+              @if(flashMessages.has('errors.phone'))
+                <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.phone').join(', ') }}</p>
+              @endif
+            </div>
+
+            {{-- Mot de passe --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Mot de passe</label>
+                <input
+                  required type="password" id="password" name="password"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-2.5 rounded-xl border {{ flashMessages.has('errors.password') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                />
+              </div>
+              <div>
+                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-1">Confirmation</label>
+                <input
+                  required type="password" id="password_confirmation" name="password_confirmation"
+                  placeholder="••••••••"
+                  class="w-full px-4 py-2.5 rounded-xl border {{ flashMessages.has('errors.password_confirmation') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                />
+              </div>
+            </div>
+            @if(flashMessages.has('errors.password'))
+                <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.password').join(', ') }}</p>
             @endif
-          </div>
 
-          <div class="flex items-center justify-between">
             <button
-              class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+              class="w-full bg-[#171B99] hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-[0.98] mt-4"
             >
-              Ajouter mon compte
+              Créer mon compte
             </button>
-          </div>
-            <p class="my-5"><a href="{{ route('login') }}" class="text-blue-500 hover:underline">J'ai déja un compte</a></p>
+          </form>
 
-        </form>
+          <p class="mt-8 text-center text-sm text-gray-600">
+            Déjà inscrit ? 
+            <a href="{{ route('login') }}" class="font-bold text-indigo-600 hover:text-indigo-500">
+              Se connecter
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   @endslot

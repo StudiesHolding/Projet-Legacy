@@ -1,79 +1,111 @@
 @component('component/layouts/form')
   @slot('title')
-    login
+   login
   @end
+  
   @slot('main')
-    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+    <div class="min-h-screen flex flex-col justify-center items-center bg-slate-50 py-1 px-4 sm:px-6 lg:px-8">
+      
+      {{-- Gestion de l'URL de provenance --}}
       @let(urlProvenace = request.header('referer'))
       @let(finalUrl = (urlProvenace && !urlProvenace.includes('/login')) ? urlProvenace : '')
 
-      <div class="mb-3">
+      {{-- Logo --}}
+      <div class="mb-8 transition-transform hover:scale-105 duration-300">
         <a href="{{ route('home') }}">
-          <img src="/images/logo-legaci-new.png" alt="" class="h-24 w-auto" />
+          <img src="/images/logo-legaci-new.png" alt="Legaci Logo" class="h-20 w-auto object-contain" />
         </a>
       </div>
-      <div class="w-full max-w-md">
-        <p class="mx-5">
-          Connectez-vous pour découvrir et commander les meilleurs produits “Made in Cameroon”, directement auprès de nos artisans et producteurs locaux.
-        </p>
 
-        <form action="{{route('login_client')}}" method="post" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
-          {{csrfField()}}
-          {{-- <input type="hidden" name="forward" value="{{ forward || '' }}">    --}}
-          <a href="https://accounts.google.com/o/oauth2/auth" class="btn w-full py-2 bg-white">
-            <img src="/images/google.png" alt="google-icon" class="size-16" />
-          </a>
-          <div class="divider">
-            OU
-          </div>
+      <div class="w-full max-w-md">
+        {{-- En-tête --}}
+        <div class="text-center mb-8">
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">Bon retour !</h1>
+          <p class="text-sm text-gray-600 px-4">
+            Commandez les meilleurs produits <span class="font-semibold text-green-600">“Made in Cameroon”</span> auprès de nos artisans locaux.
+          </p>
+        </div>
+
+        <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
           
+          {{-- Social Login: Google --}}
+          <div class="mb-6">
+            <a href="{{ route('redirect') }}" 
+               class="flex items-center justify-center gap-3 w-full py-2.5 border border-gray-300 rounded-xl text-gray-700 font-medium bg-white hover:bg-gray-50 transition-colors duration-200">
+              <img src="/images/google.png" alt="Google" class="w-5 h-5" />
+              <span>Continuer avec Google</span>
+            </a>
+          </div>
+
+          <div class="relative mb-8">
+            <div class="absolute inset-0 flex items-center"><span class="w-full border-t border-gray-200"></span></div>
+            <div class="relative flex justify-center text-xs uppercase"><span class="bg-white px-4 text-gray-400 font-medium">Ou par email</span></div>
+          </div>
+
+          {{-- Messages d'erreur globaux --}}
           @if(flashMessages.has('errors.login'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-lg">
               @each(error in flashMessages.get('errors.login'))
-                <p>{{ error }}</p>
+                <p class="flex items-center">
+                   <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                   {{ error }}
+                </p>
               @end
             </div>
           @endif
 
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Votre email</label>
+          {{-- Formulaire --}}
+          <form action="{{ route('login_client') }}" method="POST" class="space-y-5">
+            {{ csrfField() }}
             <input type="hidden" name="intended_url" value="{{ old('intended_url') || finalUrl }}">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Type here"
-              value="{{ old('email') || '' }}" 
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            @if(flashMessages.has('errors.email'))
-              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.email').join(', ') }}</p>
-            @endif
-          </div>
 
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mot de passe</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Type here"
-              class="input w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            @if(flashMessages.has('errors.password'))
-              <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.password').join(', ') }}</p>
-            @endif
-          </div>
+            <div>
+              <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email professionnel</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="nom@exemple.com"
+                value="{{ old('email') || '' }}" 
+                class="w-full px-4 py-3 rounded-xl border {{ flashMessages.has('errors.email') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+              />
+              @if(flashMessages.has('errors.email'))
+                <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.email').join(', ') }}</p>
+              @endif
+            </div>
 
-          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex justify-between mb-1">
+                <label for="password" class="text-sm font-semibold text-gray-700">Mot de passe</label>
+                <a href="#" class="text-xs text-indigo-600 hover:underline font-medium">Oublié ?</a>
+              </div>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                class="w-full px-4 py-3 rounded-xl border {{ flashMessages.has('errors.password') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+              />
+              @if(flashMessages.has('errors.password'))
+                <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.password').join(', ') }}</p>
+              @endif
+            </div>
+
             <button
-              class="btn w-full bg-[#171B99] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+              class="w-full bg-[#171B99] hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-[0.98]"
             >
-              Connexion
+              Se connecter
             </button>
-          </div>
-        <p class="my-5"><a href="{{ route('register-client') }}" class="text-blue-500 hover:underline">Créer un compte</a></p>
-        </form>
+          </form>
+
+          <p class="mt-8 text-center text-sm text-gray-600">
+            Pas encore de compte ? 
+            <a href="{{ route('register-client') }}" class="font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
+              Créer un compte
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   @endslot

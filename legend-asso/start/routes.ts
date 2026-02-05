@@ -13,6 +13,7 @@ import transmit from '@adonisjs/transmit/services/main'
 transmit.registerRoutes()
 
 const OtpValidationsController = () => import('#controllers/otp_validations_controller')
+const OauthsController = () => import('#controllers/oauths_controller')
 const OrdersController = () => import('#controllers/orders_controller')
 const TransactionsController = () => import('#controllers/transactions_controller')
 const AuthController = () => import('#controllers/auth_controller')
@@ -89,6 +90,13 @@ router
 
 router
   .group(() => {
+    router.get('redirect', [OauthsController, 'redirect']).as('redirect')
+    router.get('callback', [OauthsController, 'callback']).as('callback')
+  })
+  .prefix('google')
+
+router
+  .group(() => {
     router.get('/cart/getCart', [CartsController, 'getCart']).as('api.cart.get')
     router.get('/cart/addToCart', [CartsController, 'addToCart']).as('api.cart.add')
     router.delete('/cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
@@ -118,4 +126,5 @@ router
       .get('transaction/status/:id', [TransactionsController, 'checkStatus'])
       .as('transaction.checkStatus')
   })
+  .prefix('/api')
   .use(middleware.auth())

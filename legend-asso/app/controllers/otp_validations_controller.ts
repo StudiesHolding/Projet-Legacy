@@ -1,6 +1,6 @@
 import OtpVerification from '#models/otp_verification'
 import User from '#models/user'
-import { Redirect, type HttpContext } from '@adonisjs/core/http'
+import { HttpContext } from '@adonisjs/core/http'
 import router from '@adonisjs/core/services/router'
 import { DateTime } from 'luxon'
 
@@ -44,7 +44,6 @@ export default class OtpValidationsController {
       await auth.use('web').login(newUser)
       let redirectUrl: string
       const targetUrl = session.get('targetUrl')
-      console.log('Valeur récupérée en session :', session.get('targetUrl'))
 
       if (targetUrl?.includes('/checkout')) {
         redirectUrl = router.makeUrl('payement')
