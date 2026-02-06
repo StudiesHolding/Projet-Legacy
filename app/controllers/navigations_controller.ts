@@ -2,6 +2,7 @@ import Article from '#models/article'
 import Category from '#models/category'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
+import env from '#start/env'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class NavigationsController {
@@ -67,6 +68,9 @@ export default class NavigationsController {
       )
     })
 
+    const apiUrl = env.get('API_PRODUCTION_URL')
+    //  || 'http://localhost:3333'
+
     return view.render('pages/catalogue/index', {
       articles,
       pagination,
@@ -77,6 +81,7 @@ export default class NavigationsController {
       priceMax,
       availability,
       queryString,
+      apiUrl,
     })
   }
 
