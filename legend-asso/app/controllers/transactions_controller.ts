@@ -3,9 +3,6 @@ import Transaction from '#models/transaction'
 import env from '#start/env'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
-import mail from '@adonisjs/mail/services/main'
-import OtpVerification from '#models/otp_verification'
-import { DateTime } from 'luxon'
 
 export default class TransactionsController {
   private get isSandbox() {
@@ -141,26 +138,10 @@ export default class TransactionsController {
           })
         }
 
-        const otpCode = this.generateOTP()
-        const user = await auth.authenticate()
-
         // Nettoie le panier
         session.forget('cart')
         session.forget('totalItems')
         session.forget('totalPrice')
-        await mail.send((message) => {
-          message
-            .to(user.email)
-            .from('onboarding@resend.dev')
-            .subject('Verification de mail')
-            .htmlView('mail/email-verification', { user, otpCode })
-        })
-
-        await OtpVerification.create({
-          userId: user.id,
-          otpValue: otpCode,
-          expireAt: DateTime.now().plus({ minutes: 10 }),
-        })
 
         console.log('mail envoyé')
         // redirection vers le dashboard

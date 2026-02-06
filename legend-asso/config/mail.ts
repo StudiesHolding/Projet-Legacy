@@ -10,12 +10,6 @@ const mailConfig = defineConfig({
    * options.
    */
   mailers: {
-    mailgun: transports.mailgun({
-      key: env.get('MAILGUN_API_KEY'),
-      baseUrl: 'https://api.mailgun.net/v3',
-      domain: env.get('MAILGUN_DOMAIN'),
-    }),
-
     resend: transports.resend({
       key: env.get('RESEND_API_KEY'),
       baseUrl: 'https://api.resend.com',
