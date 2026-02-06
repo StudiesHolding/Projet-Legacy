@@ -172,9 +172,8 @@
       // ============================================
       // CART MANAGEMENT SYSTEM - Functions modulaires
       // ============================================
-      const BASE_URL = {{apiUrl}};
-      const API_URL = `${BASE_URL}/api/cart`;
-
+      const BASE_URL = '{{ apiUrl }}';
+      const API_URL = `${BASE_URL}api/cart`;
       // Configure axios to always send cookies with requests (needed for session persistence)
       axios.defaults.withCredentials = true;
 
@@ -193,6 +192,7 @@
        * @returns {Promise<{cart: Object, totalItems: number, totalPrice: number}>}
        */
       async function fetchCart() {
+      alert(API_URL)
         try {
           // GET /api/cart (pas de paramètres)
           const res = await axios.get(`${API_URL}/getCart`);
@@ -477,8 +477,6 @@ document.addEventListener('click', async (event) => {
 document.addEventListener('click', (event) => {
   const incrementBtn = event.target.closest('[data-increment-id]');
   const decrementBtn = event.target.closest('[data-decrement-id]');
-
-  console.log(incrementBtn, decrementBtn)
 
   if (incrementBtn) {
     const id = incrementBtn.getAttribute('data-increment-id');
