@@ -69,8 +69,8 @@ export default class NavigationsController {
     })
 
     const apiUrl = env.get('API_PRODUCTION_URL')
-    //  || 'http://localhost:3333'
-
+    console.log(apiUrl)
+    view.share({ apiUrl })
     return view.render('pages/catalogue/index', {
       articles,
       pagination,
@@ -81,7 +81,6 @@ export default class NavigationsController {
       priceMax,
       availability,
       queryString,
-      apiUrl,
     })
   }
 
