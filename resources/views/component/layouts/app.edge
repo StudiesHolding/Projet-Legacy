@@ -164,9 +164,6 @@
         }
       });
     </script>
-    <pre>
-  {{ inspect(apiUrl) }}
-</pre>
 
     <script>
       // ============================================
@@ -192,7 +189,6 @@
        * @returns {Promise<{cart: Object, totalItems: number, totalPrice: number}>}
        */
       async function fetchCart() {
-      alert(API_URL)
         try {
           // GET /api/cart (pas de paramètres)
           const res = await axios.get(`${API_URL}/getCart`);
