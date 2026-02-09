@@ -111,7 +111,7 @@
         </div>
 
         {{-- Colonne de droite : Récapitulatif --}}
-        <div class="lg:col-span-1">
+        {{-- <div class="lg:col-span-1">
           <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-8">
             <h2 class="text-lg font-bold text-gray-800 mb-6">Récapitulatif</h2>
             <div class="space-y-4 mb-6">
@@ -138,7 +138,66 @@
               </div>
             </div>
           </div>
+        </div> --}}
+
+        {{-- Colonne de droite : Récapitulatif --}}
+<div class="lg:col-span-1">
+  <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-8">
+    <h2 class="text-lg font-bold text-gray-800 mb-6">Récapitulatif</h2>
+    
+    {{-- Liste des produits --}}
+    <div class="space-y-4 mb-6">
+      @each(item in cart.items)
+        <div class="flex justify-between items-center text-sm">
+          <span class="text-gray-600">{{item.name}} ({{item.quantity}})</span>
+          <span class="font-semibold">{{formatNumber(Number(item.price) * Number(item.quantity)) }} FCFA</span>
         </div>
+      @end
+    </div>
+
+    {{-- SECTION CODE PROMO --}}
+    <div class="py-4 border-t border-b border-dashed border-gray-200 mb-6">
+      <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Code de réduction</label>
+      <div class="flex gap-2">
+        <input type="text" 
+               id="promo-input"
+               name="promo_code" 
+               placeholder="Ex: LEGACI20" 
+               class="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#171B99] outline-none transition-all uppercase">
+        <button type="button" 
+                onclick="applyPromoCode()"
+                id="apply-promo-btn"
+                class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#171B99] text-sm font-bold rounded-lg transition-colors flex items-center justify-center">
+          <span id="promo-btn-text">Appliquer</span>
+        </button>
+      </div>
+      <p id="promo-message" class="text-[10px] mt-2 hidden"></p>
+    </div>
+
+    {{-- Totaux --}}
+    <div class="space-y-2">
+      <div class="flex justify-between text-sm text-gray-500">
+        <span>Sous-total</span>
+        <span>{{formatNumber(totalPrice)}} FCFA</span>
+      </div>
+      <div class="flex justify-between text-sm text-gray-500">
+        <span>Livraison</span>
+        <span id="shipping-cost">2 000 FCFA</span>
+      </div>
+      
+      {{-- Ligne de réduction (cachée par défaut) --}}
+      <div id="discount-row" class="flex justify-between text-sm text-green-600 hidden">
+        <span id="discount-label">Réduction</span>
+        <span id="discount-amount">- 0 FCFA</span>
+      </div>
+
+      <div class="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t mt-4">
+        <span>Total</span>
+        <span id="final-total" class="text-[#171B99]">{{formatNumber(totalPrice + 2000)}} FCFA</span>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </div>
 
