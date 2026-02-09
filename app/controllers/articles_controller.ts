@@ -50,7 +50,6 @@ export default class ArticlesController {
       .preload('cosmetic')
       .preload('category')
       .firstOrFail()
-
     if (await bouncer.with('ArticlePolicy').denies('update', article)) {
       return response.forbidden()
     }
