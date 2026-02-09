@@ -69,7 +69,6 @@ export default class NavigationsController {
     })
 
     const apiUrl = env.get('API_PRODUCTION_URL')
-    console.log(apiUrl)
     view.share({ apiUrl })
     return view.render('pages/catalogue/index', {
       articles,
@@ -86,6 +85,8 @@ export default class NavigationsController {
 
   public async showArticleBySlug({ view, params }: HttpContext) {
     const slug = params.slug
+    const apiUrl = env.get('API_PRODUCTION_URL')
+    view.share({ apiUrl })
 
     // 1. Récupération de l'article de base
     const article = await Article.query()
@@ -113,6 +114,9 @@ export default class NavigationsController {
 
   public async checkout({ view, session }: HttpContext) {
     const cart = session.get('cart') || { items: [] }
+    const apiUrl = env.get('API_PRODUCTION_URL')
+    view.share({ apiUrl })
+
     return view.render('pages/checkout', { cart })
   }
 
