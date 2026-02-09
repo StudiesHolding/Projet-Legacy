@@ -1,0 +1,77 @@
+@component('component/layouts/form')
+  @slot('title') 
+    Accès Restreint - Legaci
+  @end
+  
+  @slot('main')
+    <div class="min-h-screen w-full bg-slate-50 px-4 flex flex-col items-center">
+      
+      {{-- Header Logo --}}
+      <div class="max-w-5xl mx-auto p-5 w-full flex justify-center items-center">
+        <a href="{{ route('home') }}">
+          <img src="/images/logo-legaci-new.png" alt="Legaci Logo" class="h-20 w-auto object-contain" />
+        </a>
+      </div>
+
+      {{-- Main Content --}}
+      <div class="flex-1 flex items-center justify-center w-full max-w-2xl pb-20">
+        <div class="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 text-center w-full">
+          
+          {{-- Icone de cadenas (Sécurité) --}}
+          <div class="flex justify-center mb-8">
+             <div class="w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center relative">
+               <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+               </svg>
+               {{-- Petit badge d'interdiction --}}
+               <div class="absolute top-0 right-0 bg-red-500 rounded-full p-1 border-4 border-white">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                 </svg>
+               </div>
+             </div>
+          </div>
+
+          <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+            Accès non autorisé
+          </h2>
+          
+          <p class="text-gray-500 mb-10 max-w-md mx-auto">
+            Désolé, vous n'avez pas les permissions nécessaires pour accéder à cette section. Si vous pensez qu'il s'agit d'une erreur, merci de vous reconnecter.
+          </p>
+
+          {{-- Actions --}}
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            @if(auth.isLoggedIn)
+              <a href="{{ route('home') }}" 
+                 class="px-8 py-4 bg-[#171B99] hover:bg-[#121570] text-white font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                Retour à l'accueil
+              </a>
+              <form action="{{ route('auth.logout') }}?_method=DELETE" method="POST" class="w-full sm:w-auto">
+                {{ csrfField() }}
+                <button type="submit" 
+                        class="w-full px-8 py-4 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold rounded-2xl transition-all flex items-center justify-center gap-2">
+                  Se déconnecter
+                </button>
+              </form>
+            @else
+              <a href="{{ route('auth.login') }}" 
+                 class="px-8 py-4 bg-[#171B99] hover:bg-[#121570] text-white font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                Se connecter
+              </a>
+            @end
+          </div>
+
+          {{-- Footer Note --}}
+          <div class="mt-12 pt-8 border-t border-dashed border-gray-100">
+            <p class="text-xs text-gray-400">
+              ID de session : <span class="font-mono">{{ auth.user?.id || 'Invité' }}</span> | 
+              Protocole de sécurité Legaci
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  @endslot
+@end

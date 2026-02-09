@@ -24,6 +24,9 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     '404': (error, { view }) => {
       return view.render('pages/errors/not_found', { error })
     },
+    '403': (error, { view }) => {
+      return view.render('pages/errors/forbidden', { error })
+    },
     '500..599': (error, { view }) => {
       return view.render('pages/errors/server_error', { error })
     },
