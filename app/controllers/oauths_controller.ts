@@ -63,11 +63,13 @@ export default class OauthsController {
       })
       await auth.use('web').login(newUser)
       console.log('redirection vers', targetUrl)
+      session.forget('targetUrl')
       return response.redirect().toPath(redirectUrl)
     } else {
       user.googleId = googleUser.id
       await auth.use('web').login(user)
       console.log('redirection vers', targetUrl)
+      session.forget('targetUrl')
       return response.redirect().toPath(redirectUrl)
     }
   }
