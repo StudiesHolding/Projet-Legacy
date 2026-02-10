@@ -552,7 +552,7 @@
           <p class="text-sm text-gray-500 mb-8">Votre paiement a été reçu avec succès.</p>
           <div class="flex flex-col gap-3">
             <a href="{{ route('home') }}" class="btn bg-[#171B99] hover:bg-blue-800 text-white w-full">Continuer mes achats</a>
-            <a href="/mon-compte/commandes" class="btn btn-outline border-gray-300 w-full">Voir ma commande</a>
+            <a href="{{route("dashboard-client")}}" class="btn btn-outline border-gray-300 w-full">Voir ma commande</a>
           </div>
         </div>
 
@@ -601,6 +601,7 @@
         const modal = document.getElementById('my_modal_5');
         const minDisplay = document.getElementById('cd-minutes');
         const secDisplay = document.getElementById('cd-seconds');
+        const data = 2
         
         // Eléments de la modale
         const timeoutMessage = document.getElementById('timeout-message');
@@ -652,10 +653,12 @@
 
             if (time > 0 && time % 4 === 0 && transactionReference) {
               try {
-                const response = await axios.get(`/transaction/status/${transactionReference}`);
+                {{-- alert("Vérification du statut de la transaction..."); --}}
+                const response = await axios.get(`/api/transaction/status`, { params: { reference: transactionReference , data:data } });
                 console.log('Vérification du statut:', response.data);
                 const status = response.data.status;
-                const reason = response.data.reason;
+                const reason = response.data.reason || 'FAILED'; // Assure-toi que ton API renvoie une "reason" en cas d'échec
+               
                 console.log("Vérification du statut:", status, reason);
                  // Assure-toi que ton contrôleur renvoie le "reason"
 
@@ -678,7 +681,7 @@
           alert("Erreur de connexion au service de paiement.");
         }
 
-        function showState(type, reason = 'FAILED') {
+        function showState(type, reason) {
           clearInterval(paymentInterval);
           contentActive.classList.add('hidden');
           

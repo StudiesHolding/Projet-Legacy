@@ -123,7 +123,7 @@ router
       .post('transaction', [TransactionsController, 'initiateTransaction'])
       .as('transaction.initiate')
     router
-      .get('transaction/status/:id', [TransactionsController, 'checkStatus'])
+      .get('transaction/status', [TransactionsController, 'checkStatus'])
       .as('transaction.checkStatus')
   })
   .prefix('/api')
