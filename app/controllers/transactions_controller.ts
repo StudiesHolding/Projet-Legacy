@@ -109,14 +109,10 @@ export default class TransactionsController {
       const apiResponse = await fetch(`${this.PAWAPAY_URL}/${depositId}`, options)
       if (!apiResponse.ok) throw new Error(`Erreur HTTP: ${apiResponse.status}`)
 
-      const res = await apiResponse.json()
+      const res: any = await apiResponse.json()
 
       // PawaPay renvoie souvent les détails dans un tableau data[] ou objet direct
       const transactionData = Array.isArray(res.data) ? res.data[0] : res.data
-      // console.log(
-      //   'Détails complets de la transaction..................................................:',
-      //   // transactionData
-      // )
 
       const pawapayStatus = transactionData?.status // 'COMPLETED', 'FAILED', 'PENDING'
       const failureCode = transactionData?.failureReason?.failureCode // Ex: 'INSUFFICIENT_BALANCE'
