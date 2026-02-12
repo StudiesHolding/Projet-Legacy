@@ -31,7 +31,6 @@ export default class OtpValidationsController {
       const newUser = await User.create({
         name: registerData.name,
         email: email,
-        phone: registerData.phone,
         password: registerData.password,
         role: registerData.role || 'client',
         isVerify: true,

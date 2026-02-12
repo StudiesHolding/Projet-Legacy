@@ -3,6 +3,8 @@ import Transaction from '#models/transaction'
 import env from '#start/env'
 import Order from '#models/order'
 import OrderItem from '#models/order_item'
+import PhoneNumber from '#models/phone_number'
+import Adress from '#models/adress'
 
 export default class TransactionsController {
   private get isSandbox() {
@@ -96,7 +98,7 @@ export default class TransactionsController {
   public async checkStatus({ auth, response, request, session }: HttpContext) {
     const depositId = request.input('reference')
     const data = request.input('data')
-    console.log('data', data)
+    console.log('data.............................................', data)
 
     try {
       const options = {
@@ -111,14 +113,14 @@ export default class TransactionsController {
 
       // PawaPay renvoie souvent les détails dans un tableau data[] ou objet direct
       const transactionData = Array.isArray(res.data) ? res.data[0] : res.data
-      console.log(
-        'Détails complets de la transaction..................................................:',
-        transactionData
-      )
+      // console.log(
+      //   'Détails complets de la transaction..................................................:',
+      //   // transactionData
+      // )
 
       const pawapayStatus = transactionData?.status // 'COMPLETED', 'FAILED', 'PENDING'
       const failureCode = transactionData?.failureReason?.failureCode // Ex: 'INSUFFICIENT_BALANCE'
-      console.log('Statut PawaPay:', pawapayStatus, 'FailureCode:', failureCode)
+      // console.log('Statut PawaPay:', pawapayStatus, 'FailureCode:', failureCode)
 
       // SUCCESS : Le client a tapé son code PIN
       if (pawapayStatus === 'COMPLETED') {
@@ -128,8 +130,22 @@ export default class TransactionsController {
           const newOrder = await Order.create({
             status: 'pending',
             buyerId: auth.user?.id,
+            phoneNumber: data.phone,
+            paymentMethod: data.payment_method,
             totalPrice: transactionData.amount,
             transactionId: depositId,
+          })
+
+          await PhoneNumber.create({
+            userId: auth?.user?.id,
+            orderId: newOrder.id,
+            phoneNumber: data.phone,
+          })
+
+          await Adress.create({
+            adress: data?.address,
+            orderId: newOrder.id,
+            userId: auth.user?.id,
           })
 
           const cart = session.get('cart')

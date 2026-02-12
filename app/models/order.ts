@@ -1,8 +1,10 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import OrderItem from './order_item.js'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
+import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import { computed } from '@adonisjs/lucid/orm'
+import Adress from './adress.js'
+import PhoneNumber from './phone_number.js'
 
 export default class Order extends BaseModel {
   @column({ isPrimary: true })
@@ -16,6 +18,18 @@ export default class Order extends BaseModel {
 
   @column()
   declare totalPrice: number
+
+  @column()
+  declare phoneNumber: string
+
+  @column()
+  declare paymentMethod: string
+
+  @hasOne(() => Adress)
+  declare shippingAdress: HasOne<typeof Adress>
+
+  @hasOne(() => PhoneNumber)
+  declare PhoneNumber: HasOne<typeof PhoneNumber>
 
   @column()
   declare transactionId: string

@@ -48,7 +48,6 @@ export default class AuthController {
       const otpCode = Math.floor(100000 + Math.random() * 900000)
 
       await OtpVerification.create({
-        // userId: newUser.id,
         otpValue: otpCode,
         expireAt: DateTime.now().plus({ minutes: 10 }),
       })

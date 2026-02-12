@@ -9,6 +9,8 @@ export default class extends BaseSchema {
       table.integer('buyer_id')
       table.string('status')
       table.string('total_price')
+      table.string('payment_method')
+      table.string('phone_number')
       table.string('transaction_id')
 
       table.timestamp('created_at')

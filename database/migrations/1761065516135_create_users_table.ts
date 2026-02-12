@@ -10,7 +10,6 @@ export default class extends BaseSchema {
       table.string('email', 254).notNullable().unique()
       table.string('google_id').nullable().unique()
       table.string('avatar_url').nullable().unique()
-      table.string('phone', 254).nullable().unique()
       table.boolean('is_verify')
       table.string('password').nullable()
       table.enum('role', ['admin', 'seller', 'client']).defaultTo('client')
