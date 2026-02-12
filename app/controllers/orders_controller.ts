@@ -2,6 +2,7 @@ import OrderItem from '#models/order_item'
 import Order from '#models/order'
 import type { HttpContext } from '@adonisjs/core/http'
 import OrderPolicy from '#policies/order_policy'
+import Adress from '#models/adress'
 
 export default class OrdersController {
   async showOrderInfo({ bouncer, params, view, auth, response }: HttpContext) {
@@ -44,7 +45,9 @@ export default class OrdersController {
     const order = await Order.query()
       .where('id', params.id)
       .preload('order_item')
+      .preload('shippingAdress')
       .orderBy('id', 'desc')
+
     return view.render('pages/dashboard/client/show-order', { order })
   }
 }
