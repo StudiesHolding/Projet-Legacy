@@ -128,3 +128,13 @@ router
   })
   .prefix('/api')
   .use(middleware.auth())
+
+router
+  .group(() => {
+    router.get('/sales', [NavigationsController, 'salesPage']).as('sales')
+    router.get('/adress', [NavigationsController, 'myAdressPage']).as('myAdress')
+    router.get('/withdrawal', [NavigationsController, 'withdrawalPage']).as('withdrawal')
+    router.get('/profile', [NavigationsController, 'profilePage']).as('profile')
+  })
+  .prefix('/dashboard')
+  .use(middleware.auth())

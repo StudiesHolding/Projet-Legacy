@@ -1,45 +1,81 @@
-@component('component/layouts/app',{'searchQuery':searchQuery})
+@component('component/layouts/app', { 'searchQuery': searchQuery })
   @slot('title')
-    catalogue
+    Catalogue de produits
   @end
+
   @slot('main')
-    @component('component/partials/category-section', { categories , categoryName, queryString })
+    {{-- Section Catégories --}}
+    @component('component/partials/category-section', { categories, categoryName, queryString })
     @end
 
-    <!-- Toggle Filter Button -->
-    <div class="w-full mb-4">
-      <button id="toggle-filters" class="bg-[#171B99] text-white px-4 py-2 rounded-md hover:bg-blue-700">filtrer</button>
-    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      {{-- Barre d'outils du Catalogue --}}
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-xl font-bold text-gray-900">
+          @if(categoryName)
+            Résultats pour "{{ categoryName }}"
+          @else
+            Tous nos produits
+          @endif
+          <span class="ml-2 text-sm font-normal text-gray-500">({{ articles.length }} articles)</span>
+        </h2>
 
-    <!-- Filter Form -->
-    <div id="filters" class="hidden w-full bg-gray-100 p-4 mb-4 rounded-lg">
-      @component('component/partials/article-filter', { searchQuery, categoryName, priceMin, priceMax, availability })
-      @end
-    </div>
+        {{-- Toggle Filter Button --}}
+        <button id="toggle-filters" class="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-semibold shadow-sm hover:bg-gray-50 hover:border-[#171B99] hover:text-[#171B99] transition-all duration-200">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+          </svg>
+          <span id="filter-text">Filtrer</span>
+        </button>
+      </div>
 
-    <div class="w-full flex-wrap inline-flex">
-      @each(article in articles)
-        @component('component/partials/card',{'article':article})
+      {{-- Filter Form (Hidden by default) --}}
+      <div id="filters" class="hidden transition-all duration-300">
+        @component('component/partials/article-filter', { searchQuery, categoryName, priceMin, priceMax, availability })
         @end
-      @end
-    </div>
-    <div>
-      @component('component/partials/pagination',{'pagination':pagination})
-      @end
+      </div>
+
+      {{-- Grille de Produits --}}
+      <div class="w-full flex-wrap aligns-center inline-flex">
+        @each(article in articles)
+          @component('component/partials/card', { 'article': article })
+          @end
+        @else
+          <div class="col-span-full py-20 text-center bg-red-200">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+              <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Aucun produit trouvé</h3>
+            <p class="text-gray-500">Essayez de modifier vos filtres ou votre recherche.</p>
+          </div>
+        @end
+      </div>
+
+      {{-- Pagination --}}
+      <div class="mt-12 border-t border-gray-100 pt-8">
+        @component('component/partials/pagination', { 'pagination': pagination })
+        @end
+      </div>
     </div>
 
     <script>
-      document.getElementById('toggle-filters').addEventListener('click', function() {
-        const filters = document.getElementById('filters');
-        const button = document.getElementById('toggle-filters');
-        if (filters.classList.contains('hidden')) {
-          filters.classList.remove('hidden');
-          button.textContent = 'Masquer';
+      const btn = document.getElementById('toggle-filters');
+      const filters = document.getElementById('filters');
+      const filterText = document.getElementById('filter-text');
+
+      btn.addEventListener('click', function() {
+        const isHidden = filters.classList.toggle('hidden');
+        
+        // Changement de style du bouton
+        if (!isHidden) {
+          btn.classList.add('bg-blue-50', 'border-[#171B99]', 'text-[#171B99]');
+          filterText.textContent = 'Masquer les filtres';
         } else {
-          filters.classList.add('hidden');
-          button.textContent = 'filtrer';
+          btn.classList.remove('bg-blue-50', 'border-[#171B99]', 'text-[#171B99]');
+          filterText.textContent = 'Filtrer';
         }
       });
     </script>
-@end
+  @end
 @endcomponent

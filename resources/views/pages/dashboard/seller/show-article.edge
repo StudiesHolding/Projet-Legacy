@@ -1,4 +1,4 @@
-@component('component/layouts/app')
+{{-- @component('component/layouts/app')
   @slot('title')
     {{ article.name }} - Détails
   @endslot
@@ -70,6 +70,80 @@
             class="flex-1 bg-[#171B99] text-white py-4 rounded-xl font-bold hover:bg-opacity-90 transition shadow-lg"
             href="{{ route('article.edit', { 'id': article.id }) }}">          
             Modifier mon article
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+@end --}}
+
+@component('component/layouts/app')
+  @slot('title')
+    {{ article.name }} - Détails
+  @endslot
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-12">
+      
+      {{-- Galerie d'images --}}
+      <div class="lg:w-1/2">
+        <div class="sticky top-24">
+          @if(article.images.length > 0)
+            <img id="main-image" src="{{ article.images[0].imageUrl }}" alt="{{ article.name }}" class="w-full rounded-2xl shadow-lg object-cover max-h-[500px]">
+            <div class="flex gap-4 mt-4 overflow-x-auto pb-2">
+              @each(img in article.images)
+                <img src="{{ img.imageUrl }}" onclick="document.getElementById('main-image').src = this.src" class="w-20 h-20 rounded-lg border cursor-pointer hover:border-[#171B99] transition-all">
+              @endeach
+            </div>
+          @else
+            <img src="https://placehold.co/600x400" class="w-full rounded-2xl">
+          @endif
+        </div>
+      </div>
+
+      {{-- Informations Produit --}}
+      <div class="lg:w-1/2">
+        <nav class="text-sm text-gray-500 mb-4">
+          <a href="/" class="hover:underline">Accueil</a> / 
+          <a href="#" class="hover:underline">{{ article.category.name }}</a>
+        </nav>
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ article.name }}</h1>
+
+        <div class="bg-gray-50 p-4 rounded-xl mb-6 border border-gray-100">
+          <p class="text-sm text-gray-600 mb-2"><strong>Disponibilité:</strong> {{ article.available ? 'En stock' : 'Rupture de stock' }}</p>
+          <p class="text-sm text-gray-600"><strong>Livraison:</strong> {{ article.delivery_time || 'Sous 2 à 5 jours' }}</p>
+        </div>
+
+        <div class="prose prose-sm text-gray-700 mb-8">
+          <h3 class="text-lg font-bold">À propos de ce produit</h3>
+          <p>{{ article.about }}</p>
+        </div>
+
+        {{-- Détails techniques --}}
+        <div class="border-t pt-6 mb-8">
+          <h3 class="text-md font-bold mb-4 uppercase tracking-wider text-gray-500">Caractéristiques</h3>
+          <div class="grid grid-cols-2 gap-y-4 text-sm">
+            @if(article.agrofood)
+              <div><span class="text-gray-400">Certification:</span> <span class="font-medium text-gray-700">{{ article.agrofood.certification || 'N/A' }}</span></div>
+              <div><span class="text-gray-400">DLC:</span> <span class="font-medium text-gray-700">{{ article.agrofood.expiry_date || 'N/A' }}</span></div>
+            @elseif(article.cosmetic)
+              <div><span class="text-gray-400">Type de peau:</span> <span class="font-medium text-gray-700">{{ article.cosmetic.skinType }}</span></div>
+              <div><span class="text-gray-400">Contenance:</span> <span class="font-medium text-gray-700">{{ article.cosmetic.capacity_value }} {{ article.cosmetic.capacity_unit }}</span></div>
+            @elseif(article.lifestyle)
+              <div><span class="text-gray-400">Matière:</span> <span class="font-medium text-gray-700">{{ article.lifestyle.materials }}</span></div>
+              <div><span class="text-gray-400">Taille:</span> <span class="font-medium text-gray-700">{{ article.lifestyle.sizes }}</span></div>
+            @endif
+            <div><span class="text-gray-400">Unité:</span> <span class="font-medium text-gray-700">{{ article.unit_value }} {{ article.unit_type }}</span></div>
+          </div>
+        </div>
+
+        {{-- Actions --}}
+        <div class="flex flex-col sm:flex-row gap-4">
+
+          <a class="flex-1 border-2  bg-[#171B99] border-gray-200 text-white py-4 rounded-2xl font-bold hover:bg-gray-50 transition text-center"
+             href="{{ route('article.edit', { 'id': article.id }) }}">          
+            Modifier l'article
           </a>
         </div>
       </div>

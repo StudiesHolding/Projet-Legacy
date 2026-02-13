@@ -1,104 +1,131 @@
 <aside class="
-    fixed
-    bottom-0 left-0 right-0 h-16 w-full flex items-center justify-around 
-    lg:inset-y-0 lg: p-2  rounded-xl left-0 lg:right-auto lg:h-screen lg:w-64 lg:block
-    bg-white shadow-2xl lg:shadow-xl p-0 lg:p-4 lg:static
+    fixed bottom-0 left-0 right-0 z-50 
+    lg:static lg:w-72 lg:h-screen lg:sticky lg:top-0
+    bg-white/80 backdrop-blur-md border-t border-gray-100
+    lg:border-t-0 lg:border-r lg:bg-white
+    shadow-[0_-5px_20px_rgba(0,0,0,0.05)] lg:shadow-none
+    overflow-y-auto
 ">
 
-    <div class="text-2xl font-bold text-gray-800 mb-6 border-b pb-4 hidden lg:block">
-        Mon Compte
+    <div class="px-8 py-10 hidden lg:block">
+        <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-1">Espace personnel</h2>
+        <p class="text-2xl font-extrabold text-[#171B99]">Mon Compte</p>
     </div>
 
-    <nav class="flex justify-around items-center w-full h-full lg:inline-flex lg:h-auto lg:flex-col lg:space-y-2 lg:p-0">
+    <nav class="flex justify-around items-center px-2 h-16 lg:h-auto lg:flex-col lg:px-4 lg:space-y-2">
         
-        @if(auth.user.role === 'seller')
-            <a href="{{ route('dashboard-seller') }}" 
-               class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
-               {{ request.matchesRoute('dashboard-seller') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 001 1h3M11 10V6a2 2 0 00-2-2h-1"></path></svg>
-                <span class="text-xs lg:hidden">Dashboard</span>
-                <span class="hidden lg:inline">Tableau de bord</span>
-            </a>
-        @else
-            <a href="{{ route('dashboard-client') }}" 
-               class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
-               {{ request.matchesRoute('dashboard-client') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 001 1h3M11 10V6a2 2 0 00-2-2h-1"></path></svg>
-                <span class="text-xs lg:hidden">Dashboard</span>
-                <span class="hidden lg:inline">Tableau de bord</span>
-            </a>
-        @end
+        {{-- TABLEAU DE BORD --}}
+        @let(isDash = (auth.user.role === 'seller' ? request.matchesRoute('dashboard-seller') : request.matchesRoute('dashboard-client')))
+        <a href="{{ auth.user.role === 'seller' ? route('dashboard-seller') : route('dashboard-client') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200
+           {{ isDash ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <div class="relative">
+                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 001 1h3M11 10V6a2 2 0 00-2-2h-1"></path></svg>
+                @if(isDash)
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#171B99] rounded-full lg:hidden"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Tableau de bord</span>
+        </a>
 
-        {{-- ARTICLES (Seller) / COMMANDES (Client) --}}
-        @if(auth.user.role === 'seller')
-            <a href="{{ route('article.index') }}" 
-               class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
-               {{ request.url().includes('/article') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m4 0v10m0 0v10"></path></svg>
-                <span class="text-xs lg:hidden">Articles</span>
-                <span class="hidden lg:inline">Mes Articles</span>
-            </a>
-        @else
-            <a href="{{route('showMyOrder')}}" 
-               class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
-               {{ request.url().includes('/my-order') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                <span class="text-xs lg:hidden">Commandes</span>
-                <span class="hidden lg:inline">Mes Commandes</span>
-            </a>
-        @end                
+        {{-- ARTICLES / COMMANDES --}}
+        @let(isOrder = (auth.user.role === 'seller' ? request.url().includes('/article') : request.url().includes('/my-order')))
+        <a href="{{ auth.user.role === 'seller' ? route('article.index') : route('showMyOrder') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200
+           {{ isOrder ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <div class="relative">
+                @if(auth.user.role === 'seller')
+                    <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m4 0v10m0 0v10"></path></svg>
+                @else
+                    <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                @endif
+                
+                @if(isOrder)
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#171B99] rounded-full lg:hidden"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">
+                {{ auth.user.role === 'seller' ? 'Mes Articles' : 'Commandes' }}
+            </span>
+        </a>
 
-        {{-- VENTES (Seller) / ADRESSES (Client) --}}
-        @if(auth.user.role === 'seller')
-            <a href="#ventes" 
-               class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
-               {{ request.url().includes('#ventes') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h6"></path></svg>
-                <span class="text-xs lg:hidden">Ventes</span>
-                <span class="hidden lg:inline">Mes Ventes</span>
-            </a>
-        @else
-            <a href="/my-adress" 
-               class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
-               {{ request.url().includes('/my-adress') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span class="text-xs lg:hidden">Adresses</span>
-                <span class="hidden lg:inline">Mes Adresses</span>
-            </a>
-        @end
+        {{-- VENTES / ADRESSES --}}
+        @let(isSales = (auth.user.role === 'seller' ? request.url().includes('/sales') : request.url().includes('/my-adress')))
+        <a href="{{ auth.user.role === 'seller' ? route('sales') : route('myAdress') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200
+           {{ isSales ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <div class="relative">
+                @if(auth.user.role === 'seller')
+                    <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h6"></path></svg>
+                @else
+                    <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path></svg>
+                @endif
+                
+                @if(isSales)
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#171B99] rounded-full lg:hidden"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">
+                {{ auth.user.role === 'seller' ? 'Ventes' : 'Adresses' }}
+            </span>
+        </a>
 
-        {{-- PROFIL (Client uniquement selon votre code) --}}
+        {{-- RETRAITS (Seller uniquement) --}}
+        @if(auth.user.role === 'seller')
+            @let(isWith = request.url().includes('/withdrawals') || request.url().includes('/withdrawal'))
+            <a href="{{ route('withdrawal') }}" 
+               class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200
+               {{ isWith ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+                <div class="relative">
+                    <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    @if(isWith)
+                        <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#171B99] rounded-full lg:hidden"></span>
+                    @endif
+                </div>
+                <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Retraits</span>
+            </a>
+        @endif
+
+        {{-- PROFIL (Client uniquement) --}}
         @if(auth.user.role !== 'seller')
-            <a href="/profile" 
-               class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full transition duration-150 ease-in-out lg:flex-row
-               {{ request.url().includes('/profile') ? 'bg-[#171B99] text-white' : 'text-gray-600 hover:bg-gray-50' }}">
-                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                <span class="text-xs lg:hidden">Profil</span>
-                <span class="hidden lg:inline">Détails du Compte</span>
+            @let(isProf = request.url().includes('/profile'))
+            <a href="{{route('profile')}}" 
+               class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200
+               {{ isProf ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+                <div class="relative">
+                    <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    @if(isProf)
+                        <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#171B99] rounded-full lg:hidden"></span>
+                    @endif
+                </div>
+                <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Profil</span>
             </a>
-        @end
+        @endif
 
-        {{-- DECONNEXION (Seller) --}}
-            <button class="flex flex-col items-center justify-center p-1 lg:p-3 rounded-lg w-full text-gray-600 hover:bg-red-50 hover:text-red-600 transition duration-150 ease-in-out lg:flex-row border-none bg-transparent cursor-pointer" onclick="my_modal_2.showModal()">
-                <svg class="w-5 h-5 lg:mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                <span class="text-xs lg:hidden">Déconnexion</span>
-                <span class="hidden lg:inline">Déconnexion</span>
-            </button>
+        <div class="hidden lg:block w-full h-px bg-gray-100 my-4"></div>
+
+        {{-- DECONNEXION --}}
+        <button class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full text-red-500 hover:bg-red-50 transition-all duration-200 border-none bg-transparent cursor-pointer" 
+                onclick="my_modal_2.showModal()">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Quitter</span>
+        </button>
     </nav>
 </aside>
 
-{{-- Fenêtre modale inchangée --}}
-<dialog id="my_modal_2" class="modal">
-    <div class="modal-box">
-        <h3 class="text-lg font-bold">Vous souhaitez vous déconnecter ?</h3>
-        <div class="flex w-full justify-evenly mt-4">
+
+<dialog id="my_modal_2" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box p-8 rounded-3xl shadow-2xl border border-gray-50">
+        <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        </div>
+        <h3 class="text-xl font-bold text-center text-gray-800">Déconnexion</h3>
+        <p class="py-4 text-center text-gray-500">Êtes-vous sûr de vouloir quitter votre session ?</p>
+        <div class="modal-action flex justify-center gap-3">
             <form method="dialog">
-                <button class="btn btn-ghost">Non</button>
+                <button class="px-6 py-2.5 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition-all">Annuler</button>
             </form>
-            <a href="{{ route('logout_client') }}" class="btn btn-error text-white">Oui, me déconnecter</a>
+            <a href="{{ route('logout_client') }}" class="px-6 py-2.5 bg-red-500 text-white rounded-xl font-semibold shadow-lg shadow-red-200 hover:bg-red-600 transition-all">Me déconnecter</a>
         </div>
     </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
 </dialog>

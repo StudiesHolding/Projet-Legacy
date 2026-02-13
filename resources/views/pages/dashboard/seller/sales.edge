@@ -1,42 +1,106 @@
 @component('component/layouts/dashboard')
-
     @slot('content')
-    <div class="min-h-screen bg-gray-100">
-    <div class="flex flex-col md:flex-row">
+    <div class="min-h-screen bg-gray-50">
+        <div class="flex flex-col md:flex-row">
 
-
-        
-        <main class="flex-1 p-4 md:p-8">
-            <h1 class="text-3xl font-semibold text-gray-900 mb-6">Résumé</h1>
-            
-            <div class="gap-6 mb-8">
-                @component('component/partials/client-header-info', {myOrders, totalRevenue})
-            @end
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-md">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Commandes en attente (À expédier)</h2>
-                
-                <ul class="divide-y divide-gray-200">
-                    @each(order in myOrders.filter(o => o.status === 'pending'))
-                        <li class="flex justify-between items-center py-3">
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-gray-700">Commande {{ order.id }}</p>
-                                <p class="text-sm text-gray-500 truncate">{{ order.name }}</p>
-                                <p class="text-sm text-gray-500 truncate">Quantité: {{ order.quantity }}</p>
-                            </div>
-                            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Voir & Traiter →</a>
-                        </li>
-                    @end
-                </ul>
-                <div class="mt-4 text-right">
-                    <a href="#ventes" class="text-red-600 hover:text-red-800 font-medium">Voir toutes les ventes →</a>
+            <main class="flex-1 p-4 md:p-8">
+                {{-- En-tête de la page --}}
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Mes Ventes</h1>
+                        <p class="text-gray-600">Gérez vos commandes reçues et suivez vos revenus.</p>
+                    </div>
+                    
+                    {{-- Petit résumé rapide --}}
+                    <div class="flex gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 min-w-[150px]">
+                            <p class="text-sm text-gray-500 uppercase font-semibold">Total Ventes</p>
+                            <p class="text-2xl font-bold text-[#171B99]">{{ totalRevenue }} €</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-        </main>
+
+                {{-- Liste des ventes --}}
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-800">Historique des commandes</h2>
+                        <div class="flex space-x-2">
+                            <span class="text-sm text-gray-500">{{ sales.length }} commande(s) au total</span>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-sm font-semibold text-gray-600">Commande</th>
+                                    <th class="px-6 py-4 text-sm font-semibold text-gray-600">Client / Produit</th>
+                                    <th class="px-6 py-4 text-sm font-semibold text-gray-600">Date</th>
+                                    <th class="px-6 py-4 text-sm font-semibold text-gray-600">Statut</th>
+                                    <th class="px-6 py-4 text-sm font-semibold text-gray-600 text-right">Montant</th>
+                                    <th class="px-6 py-4 text-sm font-semibold text-gray-600"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @each(item in orders)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <span class="font-mono text-sm font-bold text-gray-900">#{{ item.id }}</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm">
+                                                <p class="font-medium text-gray-800">{{ item.order_item[0].name }}</p>
+                                                <p class="text-gray-500 text-xs">Quantité : {{ item.order_item[0].quantity }}</p>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            {{item.order_item[0].createdAt.toRelative() }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            @if(item.status === 'pending')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs text-sm bg-yellow-100 text-yellow-800">
+                                                    À expédier
+                                                </span>
+                                            @elseif(item.status === 'shipped')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs text-sm bg-blue-100 text-blue-800">
+                                                    Expédiée
+                                                </span>
+                                            @elseif(item.status === 'completed')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs text-sm bg-green-100 text-green-800">
+                                                    Terminée
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs text-sm bg-gray-100 text-gray-800">
+                                                    {{ item.status }}
+                                                </span>
+                                            @end
+                                        </td>
+                                        <td class="px-6 py-4 text-right text-sm text-gray-900">
+                                            {{ item.order_item[0].priceAtPurchase || '0.00' }} FCFA
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <a href="#" class="text-[#171B99] hover:text-blue-800 font-medium text-sm inline-flex items-center">
+                                                Détails
+                                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                                            <div class="flex flex-col items-center">
+                                                <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                                <p>Vous n'avez pas encore effectué de ventes.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @end
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
-</div>
     @endslot
+
 @end

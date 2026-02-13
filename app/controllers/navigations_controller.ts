@@ -192,4 +192,50 @@ export default class NavigationsController {
       totalSpend: totalSpend,
     })
   }
+
+  public async salesPage({ auth, view }: HttpContext) {
+    const user = await auth.authenticate()
+    if (user.role !== 'seller') {
+      return view.render('errors/403')
+    }
+    // const sales = await OrderItem.query()
+    const sales = await Order.query().whereHas('order_item', (query) => {
+      query.where('seller_id', user.id)
+    })
+
+    const orders = await Order.query()
+      .whereHas('order_item', (query) => {
+        query.where('seller_id', user.id)
+      })
+      .preload('order_item')
+      .orderBy('id', 'desc')
+    const test = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
+
+    let totalRevenue = 0
+    for (const order of test) {
+      totalRevenue += Number(order.priceAtPurchase) * Number(order.quantity)
+    }
+    return view.render('pages/dashboard/seller/sales', { sales, orders, totalRevenue })
+  }
+
+  public async myAdressPage({ auth, view }: HttpContext) {
+    const user = await auth.authenticate()
+    if (user.role !== 'client') {
+      return view.render('errors/403')
+    }
+    return view.render('pages/dashboard/client/adresses')
+  }
+
+  public async withdrawalPage({ auth, view }: HttpContext) {
+    const user = await auth.authenticate()
+    if (user.role !== 'seller') {
+      return view.render('errors/403')
+    }
+    return view.render('pages/dashboard/seller/withdrawal')
+  }
+
+  public async profilePage({ auth, view }: HttpContext) {
+    const user = await auth.authenticate()
+    return view.render('pages/dashboard/client/profile', { user })
+  }
 }

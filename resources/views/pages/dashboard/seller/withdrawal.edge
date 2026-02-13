@@ -1,0 +1,115 @@
+@component('component/layouts/dashboard')
+
+    @slot('content')
+    <div class="min-h-screen bg-gray-50">
+        <div class="flex flex-col md:flex-row">
+
+            <main class="flex-1 p-4 md:p-8">
+                {{-- En-tête --}}
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">Retrait d'argent</h1>
+                    <p class="text-gray-600">Transférez vos gains vers votre compte Mobile Money.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    {{-- Colonne GAUCHE : Formulaire de retrait --}}
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-6">Demander un retrait</h2>
+                            
+                            <form action="#" method="POST" class="space-y-5">
+                                {{-- Sélection de l'opérateur --}}
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Choisir l'opérateur</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <label class="relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-[#171B99]">
+                                            <input type="radio" name="operator" value="orange" class="w-4 h-4 text-[#171B99]" checked>
+                                            <span class="ml-3 font-medium text-gray-900">Orange Money</span>
+                                        </label>
+                                        <label class="relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 focus-within:ring-2 focus-within:ring-[#171B99]">
+                                            <input type="radio" name="operator" value="mtn" class="w-4 h-4 text-[#171B99]">
+                                            <span class="ml-3 font-medium text-gray-900">MTN MoMo</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {{-- Numéro de téléphone --}}
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Numéro de téléphone</label>
+                                    <input type="tel" id="phone" name="phone" placeholder="6xx xxx xxx" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-[#171B99] focus:border-[#171B99] outline-none transition-all">
+                                </div>
+
+                                {{-- Montant --}}
+                                <div>
+                                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Montant à retirer</label>
+                                    <div class="relative">
+                                        <input type="number" id="amount" name="amount" min="1" max="{{ totalRevenue }}" 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-[#171B99] focus:border-[#171B99] outline-none transition-all">
+                                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-500">
+                                            XAF
+                                        </div>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">Montant minimum de retrait : 500FCFA</p>
+                                </div>
+
+                                <button type="submit" class="w-full bg-[#171B99] text-white font-bold py-4 rounded-xl hover:bg-blue-900 transition duration-200 shadow-lg">
+                                    Confirmer le retrait
+                                </button>
+                            </form>
+                        </div>
+
+                        {{-- Liste des derniers retraits --}}
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="p-6 border-b border-gray-100">
+                                <h3 class="font-semibold text-gray-800">Historique récent</h3>
+                            </div>
+                            <ul class="divide-y divide-gray-100">
+                                {{-- Exemple de ligne --}}
+                                <li class="p-4 flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-green-50 text-green-600 rounded-full flex items-center justify-center mr-3">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">Retrait Orange Money</p>
+                                            <p class="text-xs text-gray-500">12 Fév 2026 • 14:30</p>
+                                        </div>
+                                    </div>
+                                    <p class="font-semibold text-gray-900">- 45.00 €</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {{-- Colonne DROITE : Résumé du solde --}}
+                    <div class="lg:col-span-1">
+                        <div class="bg-[#171B99] text-white p-8 rounded-2xl shadow-xl">
+                            <h3 class="text-sm opacity-80 mb-2">Solde disponible</h3>
+                            <p class="text-xl font-bold mb-6">10 000 XAF</p>
+                            
+                            <div class="space-y-4 border-t border-white/20 pt-6">
+                                <div class="flex justify-between text-sm">
+                                    <span class="opacity-80">En attente</span>
+                                    <span class="font-medium">12 500 XAF</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="opacity-80">Retraits totaux</span>
+                                    <span class="font-medium">12 500 XAF</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 bg-white/10 p-4 rounded-xl text-xs leading-relaxed">
+                                <p><strong>Note :</strong> Les transferts vers Mobile Money sont généralement traités sous 24h ouvrées.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+    @endslot
+
+@end

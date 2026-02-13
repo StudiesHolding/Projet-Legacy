@@ -1,35 +1,45 @@
-<div
-  class="flex flex-col items-center bg-white p-1 rounded-2xl m-2 mt-2 hover:shadow-lg transition-shadow duration-300 w-80 border border-[#E0E0E0]"
->
-  <a href="{{ route(`show.product`,{
-    'slug':article.slug
-  })}}">
-    <div class="p-2.5 h-80 overflow-hidden rounded-xl bg-clip-border">
+<div class="group relative flex flex-col m-1 w-full max-w-[320px] bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+  {{-- Lien sur l'image et le texte --}}
+  <a href="{{ route('show.product', { 'slug': article.slug }) }}" class="block">
+    
+    {{-- Conteneur Image avec ratio fixe --}}
+    <div class="relative aspect-square overflow-hidden bg-gray-50 m-3 rounded-xl">
       <img
-        src="{{ article.images[0]?.imageUrl || 'https://placehold.co/600x400?text=No+Image' }}"
-        {{-- {{{ await $slots.images()}}} --}}
-        alt="card-image"
-        class="h-full w-full rounded-xl object-contain"
-      />
+        src="{{ article.images[0]?.imageUrl || 'https://placehold.co/600x600?text=Produit' }}"
+        alt="{{ article.name }}"
+        class="h-full w-full object-contain mix-blend-multiply p-4 transform group-hover:scale-110 transition-transform duration-500"
+      />      
     </div>
-    <div>
-      <div class="p-2">
-        <p class="text-slate-800 font-medium px-2">
-          {{ truncate(article.name, 35) }}
-        <p class="text-cyan-600 font-semibold px-2">
-          {{ formatNumber(article.price)}} FCFA
-        </p>
+
+    {{-- Infos Produit --}}
+    <div class="px-4 pb-2">
+      <h3 class="text-gray-500 text-xs uppercase tracking-tight mb-1">
+        {{ article.category?.name || 'Article' }}
+      </h3>
+      <p class="text-gray-800 font-semibold text-sm h-10 line-clamp-2 leading-tight">
+        {{ truncate(article.name, 45) }}
+      </p>
+      
+      <div class="mt-3 mb-4">
+        <span class="text-[#171B99] font-bold text-lg">
+          {{ formatNumber(article.price) }} <small class="text-xs">FCFA</small>
+        </span>
       </div>
     </div>
   </a>
-  <button
-    class="btn justify-center items-center mb-2 w-11/12 border-[#171B99] border text-center text-[#171B99] transition-all hover:bg-[#171B99] hover:text-white"
-    type="button"
-    id="add-to-cart-{{ article.id }}"
-    data-article-id="{{ article.id }}"
-  >
-  <p>
-    Ajouter au panier
-  </p>
-  </button>
+
+  {{-- Bouton d'action --}}
+  <div class="px-4 pb-4">
+    <button
+      class="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl border-2 border-[#171B99] text-[#171B99] font-bold text-sm transition-all active:scale-95 group-hover:bg-[#171B99] group-hover:text-white"
+      type="button"
+      id="add-to-cart-{{ article.id }}"
+      data-article-id="{{ article.id }}"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <span>Ajouter au panier</span>
+    </button>
+  </div>
 </div>

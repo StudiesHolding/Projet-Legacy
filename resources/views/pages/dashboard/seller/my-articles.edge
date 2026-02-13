@@ -1,44 +1,279 @@
 @component('component/layouts/dashboard')
 
     @slot('content')
+        {{-- Notification Toast --}}
         @flashMessage('notification')
-            <div class="toast toast-end">
-                <div class="alert alert-success">
-                    <span class="text-white">Votre article a été ajouté</span>
+            <div class="toast toast-end z-[100]">
+                <div class="alert alert-success shadow-lg border-none bg-green-500 text-white rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>Action effectuée avec succès !</span>
                 </div>
             </div>
         @end
 
-        <div class="bg-white p-6 rounded-xl shadow-md">
-            <div class="flex items-center justify-between py-3 w-full ">
-                <h2 class="text-lg font-semibold text-gray-800">Mes articles</h2>
-                <a href="{{route('article.create')}}" class="btn bg-red-500 text-white" >Ajouter</a>
-            </div>
-            
-            @each(article in myArticles)
-            <ul class="divide-y divide-gray-200">
-                <a href="{{route('article.show',{id:article.id})}}">
-
-                <li class="flex justify-between items-center py-3">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-700">{{ truncate(article.name , 15) }}</p>
-                        <p class="text-sm text-gray-500 truncate">{{ formatNumber(article.price) }} FCFA</p>
-                    </div>
-                    @if(article.status === 'pending') 
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 mr-4">En attente</span>
-                    @elseif(article.status === 'accepted')
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800 mr-4">accepté</span>
-                    @else
-                        <span class="px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800 mr-4">refusé</span>
-                    @end
-                </li>    
+        <div class="max-w-5xl mx-auto space-y-6">
+            {{-- Header --}}
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-extrabold text-gray-900">Gestion de l'inventaire</h1>
+                    <p class="text-sm text-gray-500">Gérez vos articles et vos offres promotionnelles.</p>
+                </div>
+                <a href="{{ route('article.create') }}" class="inline-flex items-center px-6 py-3 bg-[#171B99] text-white font-bold rounded-xl hover:bg-blue-900 transition-all shadow-lg shadow-blue-100 active:scale-95">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Ajouter un article
                 </a>
-            </ul>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-50 bg-gray-50/50">
+                    <h2 class="font-bold text-gray-800">Mes articles ({{ myArticles.length }})</h2>
+                </div>
+
+                <ul class="divide-y divide-gray-100">
+                    @each(article in myArticles)
+                        <li class="hover:bg-gray-50 transition-colors group">
+                            <div class="flex items-center p-4 sm:p-6 gap-4">
+                                {{-- Thumbnail --}}
+                                <div class="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
+                                    {{-- <img src="{{ article.images[0]?.imageUrl || 'https://placehold.co/100' }}" class="w-full h-full object-cover"> --}}
+                                </div>
+
+                                {{-- Infos --}}
+                                <div class="flex-1 min-w-0">
+                                    <a href="{{ route('article.show', { id: article.id }) }}" class="block">
+                                        <p class="text-sm font-bold text-gray-900 truncate group-hover:text-[#171B99] transition-colors">
+                                            {{ truncate(article.name, 30) }}
+                                        </p>
+                                        <p class="text-xs font-semibold text-[#171B99]">
+                                            {{ formatNumber(article.price) }} FCFA
+                                        </p>
+                                    </a>
+                                </div>
+
+                                {{-- Actions --}}
+                                <div class="flex items-center gap-2 sm:gap-4">
+                                    @if(article.status === 'accepted')
+                                        <button 
+                                            onclick="openPromoModal('{{ article.id }}', '{{ article.name }}', {{ article.price }})"
+                                            class="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-[#171B99] bg-blue-50 border border-blue-100 rounded-lg hover:bg-[#171B99] hover:text-white transition-all"
+                                        >
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                            <span>Promo</span>
+                                        </button>
+                                    @endif
+
+                                    <div class="hidden md:flex">
+                                        @if(article.status === 'pending') 
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">En attente</span>
+                                        @elseif(article.status === 'accepted')
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Accepté</span>
+                                        @else
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">Refusé</span>
+                                        @end
+                                    </div>
+
+                                    <a href="{{ route('article.show', { id: article.id }) }}" class="p-1 text-gray-300 hover:text-[#171B99]">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    @else
+                        <li class="p-12 text-center text-gray-500">Aucun article trouvé.</li>
+                    @end
+                </ul>
+            </div>
+
+            @component('component/partials/pagination', { 'pagination': pagination })
             @end
         </div>
-    <div>
-        @component('component/partials/pagination', { 'pagination': pagination })
-        @endcomponent
-</div>
+
+        {{-- MODALE CODE PROMO --}}
+        {{-- <dialog id="promo_modal" class="modal modal-bottom sm:modal-middle">
+            <div class="modal-box bg-white rounded-2xl p-0 overflow-hidden border-none shadow-2xl max-w-lg">
+                <div class="p-6 bg-[#171B99] text-white">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+                        Nouveau Code Promo
+                    </h3>
+                    <p class="text-blue-100 text-xs mt-1" id="modal_product_name"></p>
+                    <input type="hidden" id="modal_product_price_raw">
+                </div>
+
+                <form method="POST" action="/seller/promo" class="p-6 space-y-5">
+                    <input type="hidden" name="article_id" id="modal_article_id">
+                    
+                    {{-- Code et Expiration --}}
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Code Promo</label>
+                            <input type="text" name="code" placeholder="PROMO20" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none font-mono uppercase">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Date d'expiration</label>
+                            <input type="date" name="expires_at" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none text-sm">
+                        </div>
+                    </div>
+
+                    {{-- Type et Valeur --}}
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Type de remise</label>
+                            <select id="promo_type" name="type" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none cursor-pointer">
+                                <option value="percentage">Pourcentage (%)</option>
+                                <option value="fixed">Montant fixe (FCFA)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Valeur</label>
+                            <div class="relative">
+                                <input type="number" id="promo_value" name="value" placeholder="0" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none">
+                                <span id="value_unit" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Limite d'usage --}}
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Limite d'usage (optionnel)</label>
+                        <input type="number" name="limit" placeholder="Nombre max d'utilisations" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none">
+                    </div>
+
+                    {{-- Preview Dynamique --}}
+                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 space-y-2">
+                        <div class="flex justify-between text-xs font-bold text-blue-400 uppercase tracking-widest">
+                            <span>Impact sur le prix</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-blue-700">Nouveau prix client :</span>
+                            <span id="price_preview" class="text-lg font-black text-[#171B99]">--- FCFA</span>
+                        </div>
+                    </div>
+
+                    <div class="modal-action flex items-center justify-end gap-3 pt-4">
+                        <button type="button" onclick="promo_modal.close()" class="btn btn-ghost rounded-xl">Annuler</button>
+                        <button type="submit" class="px-8 py-3 bg-[#171B99] text-white font-bold rounded-xl hover:bg-blue-900 transition-all shadow-lg shadow-blue-100">
+                            Activer la promo
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <form method="dialog" class="modal-backdrop bg-black/40 backdrop-blur-sm"><button>close</button></form>
+        </dialog> --}}
+
+        {{-- MODALE CODE PROMO --}}
+<dialog id="promo_modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box bg-white rounded-2xl p-0 overflow-hidden border-none shadow-2xl max-w-lg">
+        {{-- Header --}}
+        <div class="p-6 bg-[#171B99] text-white">
+            <h3 class="font-bold text-lg flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+                Appliquer une promotion
+            </h3>
+            <p class="text-blue-100 text-xs mt-1" id="modal_product_name"></p>
+            <input type="hidden" id="modal_product_price_raw">
+        </div>
+
+        <form method="POST" action="/seller/promo" class="p-6 space-y-5">
+            <input type="hidden" name="article_id" id="modal_article_id">
+            
+            <div class="grid grid-cols-2 gap-4">
+                {{-- Code Promo --}}
+                <div class="col-span-1">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-tight">Code Promo</label>
+                    <input type="text" name="code" placeholder="EX: VENTE20" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none font-mono uppercase">
+                </div>
+                {{-- Date Expiration --}}
+                <div class="col-span-1">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-tight">Date Limite</label>
+                    <input type="date" name="expires_at" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none text-sm">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                {{-- Type --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-tight">Type de remise</label>
+                    <select id="promo_type" name="type" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none cursor-pointer text-sm">
+                        <option value="percentage">Pourcentage (%)</option>
+                        <option value="fixed">Somme fixe (FCFA)</option>
+                    </select>
+                </div>
+                {{-- Valeur --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-tight">Valeur</label>
+                    <div class="relative">
+                        <input type="number" id="promo_value" name="value" placeholder="0" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none">
+                        <span id="value_unit" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">%</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Limite d'usage --}}
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-tight">Limite d'utilisation (nombre de clients)</label>
+                <input type="number" name="limit" placeholder="Ex: 100 (Laissez vide pour illimité)" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#171B99] outline-none">
+            </div>
+
+            {{-- Recapitulatif Impact Prix --}}
+            <div class="bg-gray-50 rounded-2xl p-4 border border-dashed border-gray-200">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Prix après promo</span>
+                    <span id="price_preview" class="text-xl font-black text-[#171B99]">--- FCFA</span>
+                </div>
+            </div>
+
+            {{-- Zone de validation tout en bas --}}
+            <div class="pt-4 flex flex-col gap-3">
+                <button type="submit" class="w-full py-4 bg-[#171B99] text-white font-black rounded-xl hover:bg-blue-900 transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Valider la promotion
+                </button>
+                <button type="button" onclick="promo_modal.close()" class="w-full py-3 text-gray-400 text-sm font-semibold hover:text-gray-600 transition-colors">
+                    Annuler et fermer
+                </button>
+            </div>
+        </form>
+    </div>
+    <form method="dialog" class="modal-backdrop bg-black/40 backdrop-blur-sm"><button>fermer</button></form>
+</dialog>
+
+        <script>
+            const promoType = document.getElementById('promo_type');
+            const promoValue = document.getElementById('promo_value');
+            const valueUnit = document.getElementById('value_unit');
+            const pricePreview = document.getElementById('price_preview');
+            const rawPriceInput = document.getElementById('modal_product_price_raw');
+
+            function updatePricePreview() {
+                const originalPrice = parseFloat(rawPriceInput.value) || 0;
+                const val = parseFloat(promoValue.value) || 0;
+                const type = promoType.value;
+                let finalPrice = originalPrice;
+
+                if (type === 'percentage') {
+                    valueUnit.textContent = '%';
+                    finalPrice = originalPrice - (originalPrice * (val / 100));
+                } else {
+                    valueUnit.textContent = 'FCFA';
+                    finalPrice = originalPrice - val;
+                }
+
+                finalPrice = Math.max(0, finalPrice);
+                pricePreview.textContent = new Intl.NumberFormat().format(Math.round(finalPrice)) + " FCFA";
+            }
+
+            promoType.addEventListener('change', updatePricePreview);
+            promoValue.addEventListener('input', updatePricePreview);
+
+            function openPromoModal(id, name, price) {
+                document.getElementById('modal_article_id').value = id;
+                document.getElementById('modal_product_name').textContent = "Article : " + name;
+                rawPriceInput.value = price;
+                promoValue.value = ""; // Reset
+                updatePricePreview();
+                promo_modal.showModal();
+            }
+        </script>
     @end
 @end
