@@ -9,9 +9,7 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
-import transmit from '@adonisjs/transmit/services/main'
-transmit.registerRoutes()
-
+const AdminController = () => import('#controllers/admin_controller')
 const OtpValidationsController = () => import('#controllers/otp_validations_controller')
 const OauthsController = () => import('#controllers/oauths_controller')
 const OrdersController = () => import('#controllers/orders_controller')
@@ -138,3 +136,18 @@ router
   })
   .prefix('/dashboard')
   .use(middleware.auth())
+
+router
+  .group(() => {
+    router.get('/login', [AdminController, 'login']).as('admin.login')
+    router.post('/login', [AdminController, 'handleLogin']).as('admin.handleLogin')
+  })
+  .prefix('/admin-space')
+  .use(middleware.guest())
+
+router
+  .group(() => {
+    router.get('/', [AdminController, 'home']).as('admin.home')
+  })
+  .prefix('/admin-space')
+  .use(middleware.auth({ guards: ['admin'] }))
