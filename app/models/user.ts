@@ -3,11 +3,11 @@ import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
-import Seller from '#models/seller'
 import type { HasOne, HasMany } from '@adonisjs/lucid/types/relations'
 import Article from './article.js'
 import Adress from './adress.js'
 import PhoneNumber from './phone_number.js'
+import type SellerClass from '#models/seller'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -47,10 +47,10 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
-  @hasOne(() => Seller, {
+  @hasOne(() => import('#models/seller') as any, {
     foreignKey: 'seller_id',
   })
-  declare seller: HasOne<typeof Seller>
+  declare seller: HasOne<typeof SellerClass>
 
   @hasMany(() => Adress)
   declare adress: HasMany<typeof Adress>

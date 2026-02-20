@@ -15,7 +15,11 @@ export default class NavigationsController {
     const page = request.input('page', 1)
     const categories = await Category.query().orderBy('name', 'asc')
 
-    const query = Article.query().preload('images').orderBy('createdAt', 'desc')
+    const query = Article.query()
+      .where('is_validated', true)
+      .where('available', true)
+      .preload('images')
+      .orderBy('createdAt', 'desc')
 
     // Filter by availability
     if (availability === 'available') {
@@ -149,7 +153,10 @@ export default class NavigationsController {
   }
   public async showMyOrder({ auth, view }: HttpContext) {
     const user = await auth.authenticate()
-    const myOrders = await Order.query().where('buyer_id', user.id).orderBy('id', 'desc')
+    const myOrders = await Order.query()
+      .where('buyer_id', user.id)
+      .preload('order_item')
+      .orderBy('id', 'desc')
     return view.render('pages/dashboard/client/orders', { myOrders })
   }
 
@@ -167,6 +174,7 @@ export default class NavigationsController {
       .whereHas('order_item', (query) => {
         query.where('seller_id', user.id)
       })
+      .preload('order_item')
       .orderBy('id', 'desc')
 
     let totalRevenue = 0

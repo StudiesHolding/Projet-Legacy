@@ -1,42 +1,68 @@
 <div class="w-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500 text-right">
-            <p class="text-sm font-medium text-gray-500 text-right">
-                {{ auth.user.role === 'seller' ? 'Revenu (Mois)' : 'Commandes totales' }}
-            </p>
+        
+        {{-- CARTE 1 : Revenus ou Volume --}}
+        <div class="bg-white pt-6 px-2 rounded-xl shadow-md border-t-4 border-[#171B99] text-right">
+            <p class="text-sm font-medium text-gray-500">
+                @if(auth.user.role === 'admin')
+                    transactions du jour
+                @elseif(auth.user.role === 'seller')
+                    Revenu (Mois)
+                @else
+                    Commandes totales
+                @endif
             </p>
             <p class="text-2xl font-bold text-gray-900 mt-1">
-                @if(auth.user.role === 'seller')
-                {{formatNumber(totalRevenue)}} XAF
+                @if(auth.user.role === 'admin')
+                    {{ todayTransactionsCount }} 
+                @elseif(auth.user.role === 'seller')
+                    {{ formatNumber(totalRevenue) }} XAF
                 @else
-                    {{myOrders.length}}
+                    {{ myOrders.length }}
                 @endif
             </p>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500 text-right">
+        {{-- CARTE 2 : Utilisateurs ou Dépenses --}}
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#171B99] text-right">
             <p class="text-sm font-medium text-gray-500">
-                {{ auth.user.role === 'seller' ? 'Commandes totales' : 'Dépenses totales' }}
+                @if(auth.user.role === 'admin')
+                    Utilisateurs inscrits
+                @elseif(auth.user.role === 'seller')
+                    Commandes totales
+                @else
+                    Dépenses totales
+                @endif
             </p>
             <p class="text-2xl font-bold text-gray-900 mt-1">
-                @if(auth.user.role === 'seller')
+                @if(auth.user.role === 'admin')
+                    {{ userCount }}
+                @elseif(auth.user.role === 'seller')
                     {{ orders.length }}
                 @else
-                    {{formatNumber(totalSpend)}} XAF
+                    {{ formatNumber(totalSpend) }} XAF
                 @endif
             </p>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-500 text-right">
+        {{-- CARTE 3 : Alertes ou En cours --}}
+        <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#171B99] text-right">
             <p class="text-sm font-medium text-gray-500">
-                {{ auth.user.role === 'seller' ? 'En attente' : 'Commandes en cours' }}
+                @if(auth.user.role === 'admin')
+                    Articles a valider
+                @elseif(auth.user.role === 'seller')
+                    En attente
+                @else
+                    Commandes en cours
+                @endif
             </p>
             <p class="text-2xl font-bold text-gray-900 mt-1">
-                {{-- On filtre le tableau pour compter uniquement les commandes spécifiques --}}
-                @if(auth.user.role === 'seller')
+                @if(auth.user.role === 'admin')
+                    {{ pendingArticles.length }}
+                @elseif(auth.user.role === 'seller')
                     {{ pendingOrders.filter(o => o.status === 'pending').length }}
                 @else
-                    {{ myOrders.filter(order => order.status === 'pending').length }}
+                    {{ myOrders.filter(o => o.status === 'pending').length }}
                 @endif
             </p>
         </div>

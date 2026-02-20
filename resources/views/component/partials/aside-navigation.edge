@@ -70,6 +70,18 @@
             </span>
         </a>
 
+        @let(isReclamation = request.url().includes('/reclamation'))
+        <a href="#" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200
+           {{ isReclamation ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <div class="relative">
+                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806l.003-.002a3.42 3.42 0 014.438 2.998c0 .162-.005.325-.015.485A3.42 3.42 0 0016.92 9M19 20H5a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v10a2 2 0 01-2 2z"></path></svg>
+                @if(isReclamation)
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#171B99] rounded-full lg:hidden"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Réclamations</span>
+
         {{-- RETRAITS (Seller uniquement) --}}
         @if(auth.user.role === 'seller')
             @let(isWith = request.url().includes('/withdrawals') || request.url().includes('/withdrawal'))
@@ -129,3 +141,4 @@
         </div>
     </div>
 </dialog>
+</aside>

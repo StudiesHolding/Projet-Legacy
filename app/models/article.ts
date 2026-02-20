@@ -40,6 +40,12 @@ export default class Article extends BaseModel {
   @column()
   declare unit_type: string
 
+  @column()
+  declare stock: number
+
+  @column()
+  declare isValidated: boolean
+
   @column({ columnName: 'seller_id' })
   declare sellerId: number
 

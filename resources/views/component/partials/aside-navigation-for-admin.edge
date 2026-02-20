@@ -1,0 +1,109 @@
+<aside class="
+    fixed bottom-0 left-0 right-0 z-50 
+    lg:static lg:w-72 lg:h-screen lg:sticky lg:top-0
+    bg-white/80 backdrop-blur-md border-t border-gray-100
+    lg:border-t-0 lg:border-r lg:bg-white
+    shadow-[0_-5px_20px_rgba(0,0,0,0.05)] lg:shadow-none
+    overflow-y-auto
+">
+
+    <div class="px-8 py-10 hidden lg:block">
+        <h2 class="text-xs uppercase tracking-widest font-bold text-gray-400 mb-1">Espace personnel</h2>
+        <p class="text-2xl font-extrabold text-[#171B99]">Administration</p>
+    </div>
+
+    <nav class="flex justify-around items-center px-2 h-16 lg:h-auto lg:flex-col lg:px-4 lg:space-y-2">
+        
+        {{-- TABLEAU DE BORD --}}
+        @let(isDash = request.matchesRoute('admin.home'))
+        <a href="{{ route('admin.home') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200
+           {{ isDash ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <div class="relative">
+                <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 001 1h3M11 10V6a2 2 0 00-2-2h-1"></path></svg>
+                @if(isDash)
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#171B99] rounded-full lg:hidden"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Vue d'ensemble</span>
+        </a>
+
+        {{-- GESTION DES UTILISATEURS --}}
+        @let(isUsers = request.matchesRoute('admin.users'))
+        <a href="{{ route('admin.users') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
+           {{ isUsers ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87"></path><path d="M16 3.13a4 4 0 010 7.75"></path></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Utilisateurs</span>
+        </a>
+
+        {{-- CATALOGUES / PRODUITS --}}
+        @let(isCatalog = request.matchesRoute('admin.catalog'))
+        <a href="{{ route('admin.catalog') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
+           {{ isCatalog ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Catalogues</span>
+        </a>
+
+        {{-- LOGISTIQUE --}}
+        @let(isLogistics = request.matchesRoute('admin.logistics'))
+        <a href="{{ route('admin.logistics') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
+           {{ isLogistics ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Logistiques</span>
+        </a>
+
+        {{-- FINANCES --}}
+        @let(isFinance = request.matchesRoute('admin.finance'))
+        <a href="{{ route('admin.finances') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
+           {{ isFinance ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"></path></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Finances</span>
+        </a>
+
+        {{-- STATISTIQUES (ICONE MISE À JOUR) --}}
+        @let(isStatistics = request.matchesRoute('admin.statistics'))
+        <a href="{{ route('admin.statistics') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
+           {{ isStatistics ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Statistiques</span>
+        </a>
+
+        {{-- AUTRES (ICONE MISE À JOUR) --}}
+        @let(isOthers = request.matchesRoute('admin.others'))
+        <a href="{{ route('admin.others') }}" 
+           class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
+           {{ isOthers ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Autres</span>
+        </a>
+
+        <div class="hidden lg:block w-full h-px bg-gray-100 my-4"></div>
+
+        {{-- DECONNEXION --}}
+        <button class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full text-red-500 hover:bg-red-50 transition-all duration-200 border-none bg-transparent cursor-pointer" 
+                onclick="logout_modal.showModal()">
+            <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            <span class="text-[10px] mt-1 font-medium lg:text-sm lg:mt-0 lg:font-semibold">Déconnexion</span>
+        </button>
+    </nav>
+</aside>
+<dialog id="logout_modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box p-8 rounded-3xl shadow-2xl border border-gray-50">
+        <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        </div>
+        <h3 class="text-xl font-bold text-center text-gray-800">Quitter l'administration ?</h3>
+        <p class="py-4 text-center text-gray-500">Vous allez être déconnecté de votre espace sécurisé.</p>
+        <div class="modal-action flex justify-center gap-3">
+            <form method="dialog">
+                <button class="px-6 py-2.5 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition-all">Annuler</button>
+            </form>
+            <a href="{{ route('admin.logout') }}" class="px-6 py-2.5 bg-red-500 text-white rounded-xl font-semibold shadow-lg shadow-red-200 hover:bg-red-600 transition-all">Confirmer</a>
+        </div>
+    </div>
+</dialog>

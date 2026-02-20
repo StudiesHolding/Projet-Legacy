@@ -253,6 +253,7 @@ export default class ArticlesController {
       price: payload.price,
       status: 'pending',
       available: true,
+      stock: payload.stock,
     })
 
     session.put('stepOneImages', imagesPaths)

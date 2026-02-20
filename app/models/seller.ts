@@ -1,7 +1,7 @@
 import { column, hasMany } from '@adonisjs/lucid/orm'
-import User from '#models/user'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Article from './article.js'
+import User from './user.js'
 
 export default class Seller extends User {
   public static table = 'users'

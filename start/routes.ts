@@ -147,7 +147,19 @@ router
 
 router
   .group(() => {
+    router.get('/logout', [AdminController, 'handleLogout']).as('admin.logout')
     router.get('/', [AdminController, 'home']).as('admin.home')
+    router.get('users', [AdminController, 'showUserOption']).as('admin.users')
+    router.get('catalogue', [AdminController, 'showCatalogueOption']).as('admin.catalog')
+    router.get('logistics', [AdminController, 'showDeliveryOption']).as('admin.logistics')
+    router.get('finances', [AdminController, 'showFinanceOption']).as('admin.finances')
+    router.get('others', [AdminController, 'showOthers']).as('admin.others')
+    router.get('/statistics', [AdminController, 'showStatistics']).as('admin.statistics')
+    router.get('/article/:id', [AdminController, 'showArticle']).as('admin.article')
+    router
+      .get('/article/:id/validate', [AdminController, 'validateArticle'])
+      .as('admin.validate.article')
+    router.get('/article/:id/reject', [AdminController, 'rejectArticle']).as('admin.reject.article')
   })
+  .use(middleware.auth())
   .prefix('/admin-space')
-  .use(middleware.auth({ guards: ['admin'] }))

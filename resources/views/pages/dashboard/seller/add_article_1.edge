@@ -1,4 +1,4 @@
-@component('component/layouts/dashboard')
+{{-- @component('component/layouts/dashboard')
 @slot('content')
     <div class="bg-white p-6 rounded-xl shadow-md">
         <h2 class="text-xl font-semibold text-gray-800 mb-6">Ajouter un article</h2>
@@ -103,10 +103,144 @@
                 @end
             </div>
 
+            {{-- Stock disponible --}}
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">Stock disponible</label>
+                <input type="number" id="stock" name="stock" value="{{ old('stock') || 0 }}" 
+                required
+                    class="input input-bordered w-full" placeholder="Ex: 2" />
+                @if(flashMessages.has('errors.stock'))
+                    <p class="text-[#CE0000] text-xs italic mt-1">{{ flashMessages.get('errors.stock').join(', ') }}</p>
+                @end
+            </div>
+
             <button type="submit" class="btn btn-primary w-full bg-[#171B99] border-none text-white hover:bg-blue-800">
                 Seconde étape (Détails spécifiques)
             </button>
         </form>
     </div>
+@endslot
+@end --}}
+
+
+@component('component/layouts/dashboard')
+@slot('content')
+<div class="max-w-4xl mx-auto my-8 px-4">
+    {{-- En-tête --}}
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Ajouter un nouvel article</h1>
+        <p class="text-sm text-gray-600">
+            Remplissez les informations de base pour commencer la mise en ligne de votre produit <span class="font-semibold text-green-600">"Made in Cameroon"</span>.
+        </p>
+    </div>
+
+    <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 border border-gray-100">
+        <form action="{{ route('handleStepOneForArticle') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            {{ csrfField() }}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Nom de l'article --}}
+                <div class="md:col-span-2">
+                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Nom de l'article</label>
+                    <input type="text" id="name" name="name" value="{{ old('name') || '' }}" required
+                        placeholder="Ex: Poivre Blanc de Penja"
+                        class="w-full px-4 py-3 rounded-xl border {{ flashMessages.has('errors.name') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" />
+                    @if(flashMessages.has('errors.name'))
+                        <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.name').join(',') }}</p>
+                    @end
+                </div>
+
+                {{-- Catégorie --}}
+                <div>
+                    <label for="category" class="block text-sm font-semibold text-gray-700 mb-1">Catégorie</label>
+                    <select id="category" name="category_id" required
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white">
+                        <option value="" disabled selected>Sélectionnez une catégorie</option>
+                        @each(category in categories)
+                            <option value="{{ category.id }}" {{ old('category_id') == category.id ? 'selected' : '' }}>
+                                {{ category.name }}
+                            </option>
+                        @end
+                    </select>
+                    @if(flashMessages.has('errors.category_id'))
+                        <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.category_id').join(', ') }}</p>
+                    @end
+                </div>
+
+                {{-- Images --}}
+                <div>
+                    <label for="images" class="block text-sm font-semibold text-gray-700 mb-1">Images (plusieurs possibles)</label>
+                    <input type="file" id="images" name="images[]" multiple required
+                        class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all border border-gray-300 rounded-xl" />
+                    @if(flashMessages.has('errors.images'))
+                        <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.images').join(', ') }}</p>
+                    @end
+                </div>
+            </div>
+
+            {{-- Description --}}
+            <div>
+                <label for="about" class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+                <textarea id="about" name="about" required
+                    placeholder="Décrivez les spécificités de votre produit..."
+                    class="w-full px-4 py-3 rounded-xl border {{ flashMessages.has('errors.about') ? 'border-red-500' : 'border-gray-300' }} focus:ring-2 focus:ring-indigo-500 outline-none transition-all h-32 resize-none">{{ old('about') ?? '' }}</textarea>
+                @if(flashMessages.has('errors.about'))
+                    <p class="text-red-500 text-xs mt-1 font-medium">{{ flashMessages.get('errors.about').join(', ') }}</p>
+                @end
+            </div>
+
+            {{-- Section Prix et Unités (Grisée comme dans l'original mais stylisée) --}}
+            <div class="bg-slate-50 p-6 rounded-2xl border border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Prix (FCFA)</label>
+                        <input type="number" id="price" name="price" value="{{ old('price') }}" required
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 5000">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Quantité de réf.</label>
+                        <input type="number" name="unit_value" value="{{ old('unit_value') || 1 }}" required
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 1">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Unité de vente</label>
+                        <select name="unit_type" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                            <option value="UNIT" {{ old('unit_type') == 'UNIT' ? 'selected' : '' }}>L'unité (Pièce)</option>
+                            <option value="KG" {{ old('unit_type') == 'KG' ? 'selected' : '' }}>Le Kilogramme (Kg)</option>
+                            <option value="L" {{ old('unit_type') == 'L' ? 'selected' : '' }}>Le Litre (L)</option>
+                            <option value="PACK" {{ old('unit_type') == 'PACK' ? 'selected' : '' }}>Le Paquet / Sac</option>
+                            <option value="CARTON" {{ old('unit_type') == 'CARTON' ? 'selected' : '' }}>Le Carton</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Livraison --}}
+                <div>
+                    <label for="delivery_time" class="block text-sm font-semibold text-gray-700 mb-1">Délai de livraison (jours)</label>
+                    <input type="number" id="delivery_time" name="delivery_time" value="{{ old('delivery_time') || '' }}" required
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 2" />
+                </div>
+
+                {{-- Stock --}}
+                <div>
+                    <label for="stock" class="block text-sm font-semibold text-gray-700 mb-1">Stock disponible</label>
+                    <input type="number" id="stock" name="stock" value="{{ old('stock') || 0 }}" required
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 10" />
+                </div>
+            </div>
+
+            {{-- Bouton Submit --}}
+            <button type="submit" 
+                class="w-full bg-[#171B99] hover:bg-blue-800 text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-blue-100 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group">
+                Continuer vers l'étape suivante
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
 @endslot
 @end

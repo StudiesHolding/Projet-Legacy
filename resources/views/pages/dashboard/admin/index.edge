@@ -1,1 +1,26 @@
-Bienvenu petit hakuma sur le dasboard
+@component('component/layouts/app')
+@slot('title')
+    Espace administrateur
+@end
+@slot('main')
+<div class="min-h-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+        @include('component/partials/aside-navigation-for-admin')
+        <main class="flex-1 md:p-8">
+            <div class="bg-white w-full p-6 rounded-xl shadow-md">
+            @component('component/partials/client-header-info', {myOrders , totalSpend , pendingArticles , userCount , todayTransactionsCount , globalRevenue , totalRevenue})
+            @end
+            @if(auth.user.role == 'admin') 
+                <ul class="divide-y divide-gray-200">
+                    @each(order in pendingArticles)
+                        @component('component/partials/order-item', { order })
+                        @end
+                    @end
+                </ul>
+            @end
+            </div>
+        </main>
+    </div>
+</div>
+@endslot
+@end

@@ -41,7 +41,7 @@
             {{-- Authentication (Desktop) --}}
             @if(auth.isAuthenticated)
                 <a 
-                    href="{{ auth.user.role === 'client' ? route('dashboard-client') : route('dashboard-seller') }}" 
+                    href="{{ auth.user.role === 'client' ? route('dashboard-client') : auth.user.role === 'seller' ? route('dashboard-seller') : route('admin.home') }}" 
                     class="text-white text-sm font-semibold hidden lg:inline-flex hover:text-gray-300 transition"
                     aria-label="Accéder au tableau de bord"
                 >

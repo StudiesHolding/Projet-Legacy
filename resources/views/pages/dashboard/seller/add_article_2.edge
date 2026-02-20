@@ -1,4 +1,4 @@
-@component('component/layouts/dashboard')
+{{-- @component('component/layouts/dashboard')
 @slot('content')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -44,6 +44,81 @@
     @elseif(category === 'lifestyle')
         {{-- @include('component/partials/add-lifestyle-form') --}}
     @end
+</div>
+@endslot
+@end --}}
+
+@component('component/layouts/dashboard')
+@slot('content')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('ingredients-container');
+        const addButton = document.getElementById('add-ingredient');
+
+        addButton.addEventListener('click', () => {
+            const group = document.createElement('div');
+            // Utilisation de classes modernes pour le groupe d'ingrédients
+            group.className = 'flex gap-3 items-center ingredient-group animate-in fade-in slide-in-from-top-2 duration-300';
+
+            group.innerHTML = `
+                <input
+                    type="text"
+                    name="ingredient[]"
+                    placeholder="Ex: Beurre de Karité"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                />
+                <button type="button" class="remove-ingredient p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            `;
+            container.appendChild(group);
+        });
+
+        container.addEventListener('click', (e) => {
+            // Gestion améliorée du clic sur le bouton ou l'icône
+            if (e.target.classList.contains('remove-ingredient') || e.target.closest('.remove-ingredient')) {
+                const target = e.target.classList.contains('remove-ingredient') ? e.target : e.target.closest('.remove-ingredient');
+                target.closest('.ingredient-group').remove();
+            }
+        });
+    });
+</script>
+
+<div class="max-w-4xl mx-auto my-8 px-4">
+    {{-- En-tête avec Fil d'Ariane/Step indicator --}}
+    <div class="mb-8 flex justify-between items-end">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">Étape 2 : Détails spécifiques</h1>
+            <p class="text-sm text-gray-600">
+                Personnalisez les informations selon la catégorie <span class="font-semibold text-[#171B99]">{{ category }}</span>.
+            </p>
+        </div>
+        <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Progression : 50%</span>
+    </div>
+
+    <div class="bg-white shadow-xl rounded-2xl border border-gray-100 overflow-hidden">
+        {{-- Barre de progression visuelle --}}
+        <div class="h-1.5 w-full bg-gray-100">
+            <div class="h-full bg-green-500 w-1/2"></div>
+        </div>
+
+        <div class="p-6 md:p-8">
+            {{-- Le contenu dynamique des partiels --}}
+            <div class="space-y-6">
+                @if(category === 'Agroalimentaire') 
+                    @include('component/partials/add-agrofood-form')
+                @elseif(category === 'Mode/Artisanat')
+                    @include('component/partials/add-lifestyle-form')
+                @elseif(category === 'Cosmetique')
+                    @include('component/partials/add-cosmetic-form')
+                @elseif(category === 'lifestyle')
+                    {{-- @include('component/partials/add-lifestyle-form') --}}
+                @end
+            </div>
+        </div>
+    </div>
 </div>
 @endslot
 @end

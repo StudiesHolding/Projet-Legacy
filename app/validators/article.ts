@@ -17,6 +17,7 @@ export const ArticleValidator = vine.compile(
     ingredient: vine.array(vine.string()).optional(),
     expiration_date: vine.date({ formats: ['YYYY-MM-DD'] }).optional(),
     conservation_advice: vine.string().trim().optional(),
+    stock: vine.number().min(0),
     images: vine
       .array(
         vine.file({

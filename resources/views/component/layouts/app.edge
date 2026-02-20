@@ -49,9 +49,11 @@
   </head>
 
   <body class="flex flex-col items-center bg-[#F7F7F7]">
-    
     {{-- 5. Inclusion du Header (assurez-vous que le header contient le "burger-button" et l'élément "cart-count") --}}
-    @include('component/partials/header')
+    
+    @unless(request.url().includes('/admin-space'))
+      @include('component/partials/header')
+    @end
 
     <main class="w-10/12 mt-28 md:mt-32 flex-grow"> {{-- Ajout de flex-grow pour un footer en bas --}}
       {{{ await $slots.main() }}}
