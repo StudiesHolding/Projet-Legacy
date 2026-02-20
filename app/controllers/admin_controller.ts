@@ -21,14 +21,14 @@ export default class AdminController {
       .count('* as total')
       .then((res) => Number(res[0].$extras.total))
 
-    return view.render('pages/dashboard/admin/index', {
+    return view.render('pages/dashboard/admin/home/index', {
       pendingArticles,
       userCount,
       todayTransactionsCount,
     })
   }
   public async login({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/login')
+    return view.render('pages/dashboard/admin/home/login')
   }
 
   public async handleLogin({ response, request, auth }: HttpContext) {
@@ -55,15 +55,15 @@ export default class AdminController {
   }
 
   public async showUserOption({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/users')
+    return view.render('pages/dashboard/admin/users/index')
   }
 
   public async showDeliveryOption({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/logistics')
+    return view.render('pages/dashboard/admin/logistics/home')
   }
 
   public async showCatalogueOption({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/catalog')
+    return view.render('pages/dashboard/admin/catalog/home')
   }
 
   public async showFinanceOption({ view }: HttpContext) {
@@ -74,14 +74,14 @@ export default class AdminController {
     return view.render('pages/dashboard/admin/statistics')
   }
 
-  public async validateArticle({ params, response }: HttpContext) {
+  public async validate({ params, response }: HttpContext) {
     const article = await Article.findOrFail(params.id)
     article.isValidated = true
     await article.save()
     return response.redirect().back()
   }
 
-  public async rejectArticle({ params, response }: HttpContext) {
+  public async reject({ params, response }: HttpContext) {
     const article = await Article.findOrFail(params.id)
     article.status = 'rejected'
     await article.save()
@@ -90,5 +90,42 @@ export default class AdminController {
 
   public async showOthers({ view }: HttpContext) {
     return view.render('pages/dashboard/admin/other')
+  }
+  public async showUser({ view, params }: HttpContext) {
+    const user = await User.findOrFail(params.id)
+    return view.render('pages/dashboard/admin/show-user', { user })
+  }
+
+  public async showAddSellerPage({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/add-seller')
+  }
+
+  public async adminList({ view }: HttpContext) {
+    const admins = await User.query().where('role', 'admin')
+    return view.render('pages/dashboard/admin/users/admin/admin-list', { admins })
+  }
+
+  public async showAddAdminPage({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/users/admin/add-admin')
+  }
+
+  public async showAdmin({ view, params }: HttpContext) {
+    const admin = await User.findOrFail(params.id)
+    return view.render('pages/dashboard/admin/show-admin', { admin })
+  }
+
+  public async deleteAdmin({ params, response }: HttpContext) {
+    const admin = await User.findOrFail(params.id)
+    await admin.delete()
+    return response.redirect().back()
+  }
+
+  public async userList({ view }: HttpContext) {
+    const users = await User.query().where('role', '!=', 'admin')
+    return view.render('pages/dashboard/admin/users/list', { users })
+  }
+
+  public async showCategories({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/categories')
   }
 }

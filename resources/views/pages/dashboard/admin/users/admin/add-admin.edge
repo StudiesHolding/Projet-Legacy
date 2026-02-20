@@ -1,0 +1,98 @@
+@component('component/layouts/app')
+  @slot('title')
+    Ajouter un administrateur
+  @end
+
+  @slot('main')
+  <div class="min-h-screen bg-gray-50">
+    <div class="flex flex-col md:flex-row">
+      @include('component/partials/aside-navigation-for-admin')
+      
+      <main class="flex-1 p-4 md:p-8">
+        {{-- Fil d'ariane / Retour --}}
+        <div class="mb-6">
+            <a href="#" class="text-sm text-gray-500 hover:text-[#171B99] flex items-center gap-2 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Retour à la liste
+            </a>
+        </div>
+
+        <div class="max-w-4xl">
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Nouvel Administrateur</h1>
+                <p class="text-gray-500 mt-1">Invitez un membre et définissez ses accès.</p>
+            </header>
+
+            <form action="#" method="POST" class="space-y-6">
+                {{ csrfField() }}
+
+                {{-- Section 1 : Informations de base --}}
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                    <div class="grid grid-cols-1 gap-6">
+                        <div>
+                            <label for="email" class="block text-sm font-bold text-gray-700 mb-2">Adresse Email Professionnelle</label>
+                            <input type="email" name="email" id="email" required placeholder="ex: nom@legaci.com" 
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#171B99]/20 focus:border-[#171B99] outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Section 2 : Droits & Permissions --}}
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                    <h2 class="text-lg font-bold text-gray-900 mb-6">Droits d'accès</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- Permission : Catalogue --}}
+                        <label class="group flex items-start gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#171B99]/30 hover:bg-blue-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="permissions[]" value="catalog" class="mt-1 w-5 h-5 rounded border-gray-300 text-[#171B99] focus:ring-[#171B99]">
+                            <div>
+                                <span class="block text-sm font-bold text-gray-800">Gestion du catalogue</span>
+                                <span class="block text-xs text-gray-500">Ajouter, modifier ou supprimer des articles.</span>
+                            </div>
+                        </label>
+
+                        {{-- Permission : Logistique --}}
+                        <label class="group flex items-start gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#171B99]/30 hover:bg-blue-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="permissions[]" value="logistics" class="mt-1 w-5 h-5 rounded border-gray-300 text-[#171B99] focus:ring-[#171B99]">
+                            <div>
+                                <span class="block text-sm font-bold text-gray-800">Logistique</span>
+                                <span class="block text-xs text-gray-500">Gérer les commandes, livraisons et transporteurs.</span>
+                            </div>
+                        </label>
+
+                        {{-- Permission : Utilisateurs --}}
+                        <label class="group flex items-start gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#171B99]/30 hover:bg-blue-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="permissions[]" value="users" class="mt-1 w-5 h-5 rounded border-gray-300 text-[#171B99] focus:ring-[#171B99]">
+                            <div>
+                                <span class="block text-sm font-bold text-gray-800">Utilisateurs</span>
+                                <span class="block text-xs text-gray-500">Gérer les comptes clients et l'équipe administrative.</span>
+                            </div>
+                        </label>
+
+                        {{-- Permission : Statistiques --}}
+                        <label class="group flex items-start gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#171B99]/30 hover:bg-blue-50/50 cursor-pointer transition">
+                            <input type="checkbox" name="permissions[]" value="stats" class="mt-1 w-5 h-5 rounded border-gray-300 text-[#171B99] focus:ring-[#171B99]">
+                            <div>
+                                <span class="block text-sm font-bold text-gray-800">Analytique</span>
+                                <span class="block text-xs text-gray-500">Accéder aux revenus, transactions et statistiques.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                {{-- Boutons d'action --}}
+                <div class="flex justify-end gap-4">
+                    <button type="button" class="px-6 py-3 rounded-xl text-gray-500 font-bold hover:bg-gray-200 transition">Annuler</button>
+                    <button type="submit" class="px-8 py-3 rounded-xl bg-[#171B99] text-white font-bold shadow-lg shadow-[#171B99]/20 hover:bg-[#0f127a] transition">
+                        Envoyer le mail d'invitation
+                    </button>
+                </div>
+            </form>
+        </div>
+      </main>
+    </div>
+  </div>
+  @endslot
+@end

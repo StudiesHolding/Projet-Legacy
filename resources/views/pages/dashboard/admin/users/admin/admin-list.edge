@@ -1,0 +1,53 @@
+@component('component/layouts/app')
+  @slot('title')
+    Gestion des Administrateurs
+  @end
+
+  @slot('main')
+  <div class="min-h-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+      @include('component/partials/aside-navigation-for-admin')
+      
+      <main class="flex-1 md:p-8">
+        {{-- En-tête avec bouton Ajouter --}}
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Équipe Administrative</h1>
+                <p class="text-sm text-gray-500 mt-1">Gérez les accès et les permissions des administrateurs de la plateforme.</p>
+            </div>
+            
+            <a href="{{route('admin.users.admin.addAdmin')}}" class="inline-flex items-center px-5 py-2.5 bg-[#171B99] text-white text-sm font-semibold rounded-xl shadow-lg hover:bg-[#0f127a] hover:-translate-y-0.5 transition-all duration-200 gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Ajouter un admin
+            </a>
+        </div>
+
+        {{-- Conteneur de Liste --}}
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400">Liste des administrateurs</h2>
+            </div>
+
+            <ul class="divide-y divide-gray-100">
+                @each(admin in admins)
+                  @component('component/partials/admin-user-item', { user: admin })
+                  @end
+                @else
+                  <li class="p-12 text-center">
+                      <div class="text-gray-300 mb-2">
+                          <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                      </div>
+                      <p class="text-gray-500 font-medium">Aucun administrateur trouvé.</p>
+                  </li>
+                @end
+            </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+  @endslot
+@end

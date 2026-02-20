@@ -139,27 +139,63 @@ router
 
 router
   .group(() => {
-    router.get('/login', [AdminController, 'login']).as('admin.login')
-    router.post('/login', [AdminController, 'handleLogin']).as('admin.handleLogin')
+    router.get('/login', [AdminController, 'login']).as('login')
+    router.post('/login', [AdminController, 'handleLogin']).as('handleLogin')
   })
   .prefix('/admin-space')
+  .as('admin')
   .use(middleware.guest())
 
 router
   .group(() => {
-    router.get('/logout', [AdminController, 'handleLogout']).as('admin.logout')
-    router.get('/', [AdminController, 'home']).as('admin.home')
-    router.get('users', [AdminController, 'showUserOption']).as('admin.users')
-    router.get('catalogue', [AdminController, 'showCatalogueOption']).as('admin.catalog')
-    router.get('logistics', [AdminController, 'showDeliveryOption']).as('admin.logistics')
-    router.get('finances', [AdminController, 'showFinanceOption']).as('admin.finances')
-    router.get('others', [AdminController, 'showOthers']).as('admin.others')
-    router.get('/statistics', [AdminController, 'showStatistics']).as('admin.statistics')
-    router.get('/article/:id', [AdminController, 'showArticle']).as('admin.article')
+    router.get('/logout', [AdminController, 'handleLogout']).as('logout')
+    router.get('/', [AdminController, 'home']).as('home')
     router
-      .get('/article/:id/validate', [AdminController, 'validateArticle'])
-      .as('admin.validate.article')
-    router.get('/article/:id/reject', [AdminController, 'rejectArticle']).as('admin.reject.article')
+      .group(() => {
+        router.get('/', [AdminController, 'showUserOption']).as('home')
+        router.get('list', [AdminController, 'userList']).as('list')
+        router.get('/:id', [AdminController, 'showUser']).as('showUser')
+        router.get('addSeller', [AdminController, 'showAddSellerPage']).as('addSeller')
+        router
+          .group(() => {
+            router.get('/', [AdminController, 'adminList']).as('home')
+            router.get('list', [AdminController, 'adminList']).as('list')
+            router.get('admin', [AdminController, 'showAdmin']).as('showAdmin')
+            router.get('addAdmin', [AdminController, 'showAddAdminPage']).as('addAdmin')
+            router.delete('admin/:id', [AdminController, 'deleteAdmin']).as('deleteAdmin')
+          })
+          .as('admin')
+          .prefix('admin')
+      })
+      .prefix('users')
+      .as('users')
+    router
+      .group(() => {
+        router.get('/', [AdminController, 'showCatalogueOption']).as('home')
+        router.get('categories', [AdminController, 'showCategories']).as('categories')
+      })
+      .prefix('catalog')
+      .as('catalog')
+
+    router
+      .group(() => {
+        router.get('/', [AdminController, 'showDeliveryOption']).as('home')
+      })
+      .prefix('logistics')
+      .as('logistics')
+
+    router.get('finances', [AdminController, 'showFinanceOption']).as('finances')
+    router.get('others', [AdminController, 'showOthers']).as('others')
+    router.get('/statistics', [AdminController, 'showStatistics']).as('statistics')
+    router.get('/article/:id', [AdminController, 'showArticle']).as('article')
+
+    router
+      .group(() => {
+        router.get('/article/:id/validate', [AdminController, 'validate']).as('validate')
+        router.get('/article/:id/reject', [AdminController, 'reject']).as('reject')
+      })
+      .as('article')
   })
   .use(middleware.auth())
   .prefix('/admin-space')
+  .as('admin')

@@ -1,9 +1,26 @@
-    <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-[#171B99]/20 transition-all duration-300">
+    {{-- <a href={{ $slots.href() }} class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-[#171B99]/20 transition-all duration-300">
         <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                {{-- <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path> --}}
+                {{ await $slots.icon() }}
             </svg>
         </div>
-        <h3 class="font-bold text-gray-800 text-lg">Nouvel Utilisateur</h3>
-        <p class="text-sm text-gray-500 mt-1">Enregistrer un client standard sur la plateforme.</p>
-    </a>
+        <h3 class="font-bold text-gray-800 text-lg">{{ await $slots.title() }}</h3>
+        <p class="text-sm text-gray-500 mt-1">{{ await $slots.description() }}</p>
+    </a> --}}
+
+
+    {{-- resources/views/components/card-admin.edge --}}
+<a href="{{ route || '#' }}" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-[#171B99]/20 transition-all duration-300">
+    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            {{{ await $slots.icon() }}}
+        </svg>
+    </div>
+    <h3 class="font-bold text-gray-800 text-lg">
+        {{{ await $slots.title() }}}
+    </h3>
+    <p class="text-sm text-gray-500 mt-1">
+        {{{ await $slots.description() }}}
+    </p>
+</a>

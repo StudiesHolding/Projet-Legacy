@@ -1,0 +1,101 @@
+{{-- <li class="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-6 bg-white hover:bg-gray-50 transition">
+    
+    <div class="flex items-center gap-4 mb-3 sm:mb-0">
+        {{-- Avatar Cercle --}}
+        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#171B99] font-bold text-xs border border-blue-100 uppercase">
+            {{ user.name.substring(0, 2) }}
+            {{-- {{ user.name}} --}}
+        </div>
+{{-- @dd(user) --}}
+        <div>
+            <div class="flex items-center gap-2">
+                <p class="text-sm font-bold text-gray-900">{{ user.name }}</p>
+                {{-- Badge de Rôle --}}
+                {{-- <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full {{ user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600' }}">
+                    {{ user.role }}
+                </span> --}}
+            </div>
+            <p class="text-xs text-gray-500">{{ user.email }}</p>
+        </div>
+    </div>
+    
+    <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+        <div class="text-right hidden sm:block">
+            <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Inscrit le</p>
+            <p class="text-xs font-medium text-gray-700">{{ user.createdAt.toFormat('dd LLL yyyy') }}</p>
+        </div>
+        
+        <div class="flex gap-2">
+            {{-- Action : Modifier --}}
+            <a href="#" class="px-3 py-1.5 text-xs font-medium text-[#171B99] bg-blue-50 rounded-md hover:bg-[#171B99] hover:text-white transition">
+                Suspendre
+            </a>
+
+            {{-- Action : Supprimer (Rouge comme ton bouton Refuser) --}}
+            <form action="#" method="POST">
+                {{ csrfField() }}
+                <button type="submit" class="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-100 rounded-md hover:bg-red-600 hover:text-white transition">
+                    Supprimer
+                </button>
+            </form>
+            
+            {{-- Détails --}}
+            <a href="#" class="p-1.5 text-gray-400 hover:text-[#171B99] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</li> --}}
+
+<li class="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-6 bg-white hover:bg-gray-50 transition">
+    
+    <div class="flex items-center gap-4 mb-3 sm:mb-0">
+        {{-- Avatar Cercle --}}
+        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#171B99] font-bold text-xs border border-blue-100 uppercase">
+            {{ user.name.substring(0, 2) }}
+            {{-- {{ user.name}} --}}
+        </div>
+{{-- @dd(user) --}}
+        <div>
+            <div class="flex items-center gap-2">
+                <p class="text-sm font-bold text-gray-900">{{ user.name }}</p>
+                {{-- Badge de Rôle --}}
+                {{-- <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full {{ user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600' }}">
+                    {{ user.role }}
+                </span> --}}
+            </div>
+            <p class="text-xs text-gray-500">{{ user.email }}</p>
+        </div>
+    </div>
+    
+    <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+        <div class="text-right hidden sm:block">
+            <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Inscrit le</p>
+            <p class="text-xs font-medium text-gray-700">{{ user.createdAt.toFormat('dd LLL yyyy') }}</p>
+        </div>
+        
+        <div class="flex gap-2">
+            {{-- Action : Modifier --}}
+            <a href="#" class="px-3 py-1.5 text-xs font-medium text-[#171B99] bg-blue-50 rounded-md hover:bg-[#171B99] hover:text-white transition">
+                Suspendre
+            </a>
+
+            {{-- Action : Supprimer (Rouge comme ton bouton Refuser) --}}
+            <form action="#" method="POST">
+                {{ csrfField() }}
+                <button type="submit" class="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-100 rounded-md hover:bg-red-600 hover:text-white transition">
+                    Supprimer
+                </button>
+            </form>
+            
+            {{-- Détails --}}
+            <a href="#" class="p-1.5 text-gray-400 hover:text-[#171B99] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</li>
