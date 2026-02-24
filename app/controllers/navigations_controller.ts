@@ -1,3 +1,5 @@
+import PhoneNumber from '#models/phone_number'
+import Adress from '#models/adress'
 import Article from '#models/article'
 import Category from '#models/category'
 import Order from '#models/order'
@@ -231,7 +233,8 @@ export default class NavigationsController {
     if (user.role !== 'client') {
       return view.render('errors/403')
     }
-    return view.render('pages/dashboard/client/adresses')
+    const myAdress = await Adress.query().where('user_id', user.id)
+    return view.render('pages/dashboard/client/adresses', { myAdress })
   }
 
   public async withdrawalPage({ auth, view }: HttpContext) {
@@ -244,6 +247,7 @@ export default class NavigationsController {
 
   public async profilePage({ auth, view }: HttpContext) {
     const user = await auth.authenticate()
-    return view.render('pages/dashboard/client/profile', { user })
+    const phones = await PhoneNumber.query().where('user_id', user.id)
+    return view.render('pages/dashboard/client/profile', { user, phones })
   }
 }

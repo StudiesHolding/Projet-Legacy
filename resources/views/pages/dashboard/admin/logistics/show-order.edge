@@ -1,0 +1,128 @@
+@component('component/layouts/app')
+@slot('title')
+    Détails Commande #{{ order.id }}
+@end
+
+@slot('main')
+<div class="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+    @include('component/partials/aside-navigation-for-admin')
+
+    <main class="flex-1 p-4 md:p-8">
+        <div class="max-w-5xl mx-auto">
+            
+            {{-- Fil d'Ariane & Actions --}}
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div>
+                    <a href="#" class="text-xs font-bold text-[#171B99] uppercase tracking-widest flex items-center gap-2 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7 7-7" />
+                        </svg>
+                        Retour aux commandes
+                    </a>
+                    <h1 class="text-3xl font-black text-gray-900">Commande #{{ order.id }}</h1>
+                    <p class="text-sm text-gray-500">Passée le {{ order.createdAt }}</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl hover:bg-gray-50 transition">
+                        Imprimer Facture
+                    </button>
+                    <form action="#" method="POST">
+                        {{ csrfField() }}
+                        <button type="submit" class="px-5 py-2.5 bg-[#171B99] text-white text-sm font-bold rounded-xl hover:bg-opacity-90 transition shadow-lg shadow-blue-900/20">
+                            Marquer comme Livrée
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                {{-- Colonne Gauche : Articles --}}
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-6 border-b border-gray-50">
+                            <h2 class="text-lg font-bold text-gray-900">Articles commandés</h2>
+                        </div>
+                        <ul class="divide-y divide-gray-100">
+                            @each(item in order.orderItems)
+                                <li class="p-6 flex items-center gap-4">
+                                    <div class="w-20 h-20 rounded-2xl bg-gray-50 overflow-hidden border border-gray-100 flex-shrink-0">
+                                        @if(item.article.images.length > 0)
+                                            <img src="{{ item.article.images[0].url }}" class="w-full h-full object-cover">
+                                        @endif
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-base font-bold text-gray-900">{{ item.article.name }}</p>
+                                        <p class="text-sm text-gray-500 italic">Quantité: {{ item.quantity }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-base font-black text-[#171B99]">{{ (item.price * item.quantity).toLocaleString() }} FCFA</p>
+                                        <p class="text-xs text-gray-400">{{ item.price.toLocaleString() }} / unité</p>
+                                    </div>
+                                </li>
+                            @end
+                        </ul>
+                        {{-- @dd(order) --}}
+                        {{-- Totaux --}}
+                        <div class="bg-gray-50/50 p-6 space-y-3">
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span>Sous-total</span>
+                                <span>{{ order.totalPrice }} FCFA</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span>Frais de livraison</span>
+                                <span>Calculé au départ</span>
+                            </div>
+                            <div class="flex justify-between text-xl font-black text-gray-900 pt-3 border-t border-gray-200">
+                                <span>Total TTC</span>
+                                <span class="text-[#171B99]">{{ order.totalPrice }} FCFA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Colonne Droite : Infos Client & Statut --}}
+                <div class="space-y-6">
+                    {{-- Carte Client --}}
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Informations Client</h2>
+                        <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-50">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#171B99] font-bold">
+                                {{ order.phoneNumber }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">nom</p>
+                                <p class="text-xs text-gray-500">email</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase">Adresse de livraison</p>
+                                <p class="text-sm text-gray-700 mt-1 leading-relaxed">
+                                    {{ order.shippingAddress || 'Aucune adresse renseignée' }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase">Téléphone</p>
+                                <p class="text-sm text-gray-700 mt-1">{{ order.phoneNumber || 'Non renseigné' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- État du Paiement --}}
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Statut du Paiement</p>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-bold">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            Payé par Mobile Money
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+@endslot
+@end

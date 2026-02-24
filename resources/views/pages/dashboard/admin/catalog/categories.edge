@@ -1,0 +1,83 @@
+@component('component/layouts/app')
+@slot('title')
+    Gestion des catégories
+@end
+
+@slot('main')
+
+{{-- @dd(categories) --}}
+
+<div class="min-h-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+        @include('component/partials/aside-navigation-for-admin')
+        
+        <main class="flex-1 p-4 md:p-8">
+            <div class="max-w-4xl mx-auto">
+                {{-- En-tête avec bouton Ajouter --}}
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Catégories</h1>
+                        <p class="text-sm text-gray-500">Gérez les segments de votre catalogue</p>
+                    </div>
+
+                    <a href="#" class="flex items-center gap-2 px-5 py-2.5 bg-[#171B99] text-white text-sm font-bold rounded-xl hover:bg-opacity-90 transition shadow-lg shadow-blue-900/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Ajouter une catégorie
+                    </a>
+                </div>
+
+                {{-- Liste des catégories --}}
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="p-6 border-b border-gray-50 bg-gray-50/50">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Liste des catégories actives</p>
+                    </div>
+
+                    <ul class="divide-y divide-gray-100">
+                        @each(category in categories)
+                            <li class="flex items-center justify-between py-4 px-6 hover:bg-gray-50 transition">
+                                <div class="flex items-center gap-4">
+                                    {{-- Icône ou Lettre --}}
+                                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-[#171B99] font-bold">
+                                        {{ category.name.substring(0, 1).toUpperCase() }}
+                                    </div>
+                                    
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900">{{ category.name }}</p>
+                                        <p class="text-[10px] text-gray-400 font-medium uppercase">{{ category.articles.length || 0 }} Articles liés</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-3">
+                                    {{-- Action : Modifier --}}
+                                    <a href="#" class="p-2 text-gray-400 hover:text-[#171B99] hover:bg-blue-50 rounded-lg transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </a>
+
+                                    {{-- Action : Supprimer --}}
+                                    <form action="#" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ? Cela pourrait impacter les articles liés.')">
+                                        {{ csrfField() }}
+                                        <button type="submit" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        @else
+                            <li class="py-12 text-center text-gray-500">
+                                <p>Aucune catégorie enregistrée.</p>
+                            </li>
+                        @end
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+@endslot
+@end

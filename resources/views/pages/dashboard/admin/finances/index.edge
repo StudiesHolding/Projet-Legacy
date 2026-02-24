@@ -1,0 +1,94 @@
+{{-- - Voir les transaction en cours
+- Voir les transactions terminées
+- Gérer les remboursements
+- Gérer les méthodes de paiement
+- Gérer les factures
+-Gérer les litiges de paiement
+- Statistiques financières --}}
+
+@component('component/layouts/app')
+@slot('title')
+    Gestion des Finances
+@end
+
+@slot('main')
+<div class="min-h-screen bg-gray-50">
+    <div class="flex flex-col md:flex-row">
+        @include('component/partials/aside-navigation-for-admin')
+        
+        <main class="flex-1 p-4 md:p-8">
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Finance & Flux de Trésorerie</h1>
+                <p class="text-gray-500 text-sm mt-1">Supervisez les encaissements, gérez les remboursements et résolvez les litiges clients.</p>
+            </header>
+
+            {{-- Grille Financière --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                {{-- TRANSACTIONS --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-emerald-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"></path>
+                            <path d="M2 17l10 5 10-5M2 12l10 5 10-5M12 2L2 7l10 5 10-5-10-5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Transactions</h3>
+                    <p class="text-sm text-gray-500 mt-1">Historique complet des paiements entrants et des factures générées.</p>
+                </a>
+
+                {{-- GÉRER LES REMBOURSEMENTS --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-orange-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Remboursements</h3>
+                    <p class="text-sm text-gray-500 mt-1">Traiter les demandes de retour de fonds et suivre leur statut.</p>
+                </a>
+
+                {{-- MÉTHODES DE REMBOURSEMENT --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Méthodes de retour</h3>
+                    <p class="text-sm text-gray-500 mt-1">Configurer (Mobile Money, Virement, Crédit magasin).</p>
+                </a>
+
+                {{-- STATISTIQUES DE PAIEMENT --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-violet-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-violet-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Performance Financière</h3>
+                    <p class="text-sm text-gray-500 mt-1">Analyse du Chiffre d'Affaire, paniers moyens et taux de conversion.</p>
+                </a>
+
+                {{-- GÉRER LES LITIGES --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-red-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.952 11.952 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01"></path>
+                        </svg>
+                        {{-- Indicateur d'alerte pour les litiges non résolus --}}
+                        <span class="absolute top-0 right-0 flex h-3 w-3">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Litiges de paiement</h3>
+                    <p class="text-sm text-gray-500 mt-1">Gérer les contestations de prélèvements et erreurs de facturation.</p>
+                </a>
+
+            </div>
+        </main>
+    </div>
+</div>
+@endslot
+@end

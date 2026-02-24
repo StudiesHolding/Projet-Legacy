@@ -2,8 +2,11 @@ import { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { AdminValidator } from '#validators/admin'
 import Article from '#models/article'
+import Category from '#models/category'
+import Order from '#models/order'
 import Transaction from '#models/transaction'
 import { DateTime } from 'luxon'
+import OrderItem from '#models/order_item'
 
 export default class AdminController {
   startOfToday = DateTime.now().startOf('day').toSQL()
@@ -44,7 +47,6 @@ export default class AdminController {
   }
 
   public async showArticle({ view, params }: HttpContext) {
-    console.log(params.id)
     const article = await Article.query()
       .where('id', params.id)
       .preload('images')
@@ -62,16 +64,36 @@ export default class AdminController {
     return view.render('pages/dashboard/admin/logistics/home')
   }
 
-  public async showCatalogueOption({ view }: HttpContext) {
+  public async homeCatalogue({ view }: HttpContext) {
     return view.render('pages/dashboard/admin/catalog/home')
   }
 
+  // public async articleList({ view }: HttpContext) {
+  //   const articles = await Article.all()
+  //   console.log(articles)
+  //   return view.render('pages/dashboard/admin/catalog/list', articles)
+  // }
+  public async articleList({ view }: HttpContext) {
+    // 1. On récupère les articles avec leurs relations pour éviter le problème de N+1 queries
+    // (On charge l'utilisateur qui a posté et les images)
+    const articles = await Article.query()
+      .preload('seller')
+      .preload('images')
+      .orderBy('createdAt', 'desc')
+    // .paginate(10)
+
+    // 2. On passe les articles dans un OBJET { articles }
+    return view.render('pages/dashboard/admin/catalog/list', {
+      articles,
+    })
+  }
+
   public async showFinanceOption({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/finances')
+    return view.render('pages/dashboard/admin/finances/index')
   }
 
   public async showStatistics({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/statistics')
+    return view.render('pages/dashboard/admin/statistics/index')
   }
 
   public async validate({ params, response }: HttpContext) {
@@ -97,7 +119,7 @@ export default class AdminController {
   }
 
   public async showAddSellerPage({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/add-seller')
+    return view.render('pages/dashboard/admin/users/admin/add-seller')
   }
 
   public async adminList({ view }: HttpContext) {
@@ -126,6 +148,63 @@ export default class AdminController {
   }
 
   public async showCategories({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/categories')
+    const categories = await Category.query().preload('articles').orderBy('name')
+    return view.render('pages/dashboard/admin/catalog/categories', { categories })
+  }
+
+  public async suspendArticle({ view }: HttpContext) {
+    ''
+  }
+
+  public async deleteArticle({ view }: HttpContext) {
+    ''
+  }
+
+  public async updateCategory({ view }: HttpContext) {
+    ''
+  }
+
+  public async deleteCategory({ view }: HttpContext) {
+    console.log('***************** deleteCategory *********************')
+  }
+
+  public async pendingOrder({ view }: HttpContext) {
+    const pendingOrder = await Order.query()
+      .where('status', 'pending')
+      .preload('order_item')
+      .preload('shippingAdress')
+      .preload('PhoneNumber')
+    return view.render('pages/dashboard/admin/logistics/show-pendingOrder', { pendingOrder })
+  }
+
+  public async showOrder({ view, params }: HttpContext) {
+    const order = await Order.query()
+      .orderBy('createdAt', 'desc')
+      .where('id', params.id)
+      .preload('shippingAdress')
+      .preload('PhoneNumber')
+      .preload('order_item')
+    return view.render('pages/dashboard/admin/logistics/show-order', { order })
+  }
+
+  public async delivry({ view }: HttpContext) {
+    const ordersInDelivry = await Order.query()
+      .orderBy('createdAt', 'desc')
+      .where('status', 'delivry on progress')
+      .preload('order_item')
+      .preload('shippingAdress')
+    return view.render('pages/dashboard/admin/logistics/show-delivry-order', { ordersInDelivry })
+  }
+
+  public async delivryCost({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/logistics/shipping-rules')
+  }
+
+  public async history({ view }: HttpContext) {
+    console.log('***************** Historique *********************')
+  }
+
+  public async performance({ view }: HttpContext) {
+    console.log('***************** Performance *********************')
   }
 }

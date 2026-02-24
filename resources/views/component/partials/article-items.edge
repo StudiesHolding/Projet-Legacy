@@ -1,0 +1,109 @@
+<li class="flex flex-col lg:flex-row justify-between items-start lg:items-center py-5 px-6 bg-white hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
+    
+    {{-- Partie Gauche : Visuel et Infos de base --}}
+    <div class="flex items-center gap-4 mb-4 lg:mb-0">
+        {{-- Miniature de l'article --}}
+        <div class="w-14 h-14 rounded-xl bg-gray-100 overflow-hidden border border-gray-100 flex-shrink-0">
+            @if(article.images && article.images.length > 0)
+                <img src="{{ article.images[0].imageUrl }}" alt="{{ article.name }}" class="w-full h-full object-cover">
+            @else
+                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            @endif
+        </div>
+        {{-- @dd(article) --}}
+        <div>
+            <div class="flex items-center gap-2 flex-wrap">
+                <p class="text-sm font-bold text-gray-900">{{ article.name }}</p>
+                
+                {{-- Badge de Statut Dynamique --}}
+                @let(statusMap = {
+                    approved: { class: 'bg-green-100 text-green-700', label: 'En ligne' },
+                    suspended: { class: 'bg-orange-100 text-orange-700', label: 'Suspendu' },
+                    blocked: { class: 'bg-gray-800 text-white', label: 'Bloqué' },
+                    pending: { class: 'bg-blue-100 text-blue-700', label: 'En attente' }
+                })
+                @let(currentStatus = statusMap[article.status] || statusMap.pending)
+                
+                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full {{ currentStatus.class }}">
+                    {{ currentStatus.label }}
+                </span>
+            </div>
+            <p class="text-xs text-gray-500 mt-0.5">Vendeur : <span class="font-semibold text-[#171B99]">{{ article.seller?.name || 'vendeur inconnue'}}</span></p>
+        </div>
+    </div>
+    
+    {{-- Partie Droite : Prix, Date et Actions --}}
+    <div class="flex flex-wrap items-center gap-4 lg:gap-6 w-full lg:w-auto justify-between lg:justify-end">
+        
+        {{-- Prix --}}
+        <div class="text-left lg:text-right">
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Prix</p>
+            <p class="text-sm font-black text-gray-900">{{ article.price.toLocaleString() }} <span class="text-[10px]">FCFA</span></p>
+        </div>
+
+        {{-- Date --}}
+        <div class="text-right hidden sm:block">
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Publié le</p>
+            <p class="text-xs font-medium text-gray-700">{{ article.createdAt.toFormat('dd LLL yyyy') }}</p>
+        </div>
+        
+        {{-- Barre d'actions --}}
+        <div class="flex items-center gap-2 bg-gray-50 lg:bg-transparent p-2 lg:p-0 rounded-xl w-full lg:w-auto justify-center">
+            
+            {{-- Voir / Modifier --}}
+            <a href="#" title="Modifier"
+               class="p-2 text-gray-600 bg-white lg:bg-blue-50 rounded-lg hover:bg-[#171B99] hover:text-white border border-gray-100 lg:border-0 transition shadow-sm lg:shadow-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+            </a>
+
+            {{-- Suspendre / Réactiver --}}
+            <form action="#" method="POST">
+                {{ csrfField() }}
+                <input type="hidden" name="status" value="{{ article.status === 'suspended' ? 'approved' : 'suspended' }}">
+                <button type="submit" 
+                        title="{{ article.status === 'suspended' ? 'Remettre en ligne' : 'Suspendre' }}"
+                        class="p-2 {{ article.status === 'suspended' ? 'text-green-600 bg-green-50' : 'text-orange-600 bg-orange-50' }} rounded-lg hover:opacity-80 transition shadow-sm lg:shadow-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+            </form>
+
+            {{-- Bloquer (Action forte) --}}
+            <form action="#" method="POST">
+                {{ csrfField() }}
+                <input type="hidden" name="status" value="blocked">
+                <button type="submit" title="Bloquer définitivement"
+                        class="p-2 text-gray-100 bg-gray-800 rounded-lg hover:bg-black transition shadow-sm lg:shadow-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                </button>
+            </form>
+
+            {{-- Supprimer --}}
+            <form action="#" method="POST" onsubmit="return confirm('Confirmer la suppression définitive ?')">
+                {{ csrfField() }}
+                <button type="submit" title="Supprimer"
+                        class="p-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-600 hover:text-white transition shadow-sm lg:shadow-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            </form>
+
+            {{-- Lien flèche détails --}}
+            <a href="#" class="ml-2 p-1.5 text-gray-300 hover:text-[#171B99] transition hidden sm:block">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</li>

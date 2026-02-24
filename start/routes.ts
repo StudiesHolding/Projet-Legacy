@@ -154,8 +154,8 @@ router
       .group(() => {
         router.get('/', [AdminController, 'showUserOption']).as('home')
         router.get('list', [AdminController, 'userList']).as('list')
-        router.get('/:id', [AdminController, 'showUser']).as('showUser')
         router.get('addSeller', [AdminController, 'showAddSellerPage']).as('addSeller')
+        router.get('/:id', [AdminController, 'showUser']).as('showUser')
         router
           .group(() => {
             router.get('/', [AdminController, 'adminList']).as('home')
@@ -171,8 +171,25 @@ router
       .as('users')
     router
       .group(() => {
-        router.get('/', [AdminController, 'showCatalogueOption']).as('home')
-        router.get('categories', [AdminController, 'showCategories']).as('categories')
+        router
+          .group(() => {
+            router.get('/', [AdminController, 'homeCatalogue']).as('home')
+            router.get('list', [AdminController, 'articleList']).as('list')
+            router.delete('/:id', [AdminController, 'deleteArticle']).as('delete')
+            router.patch('/:id', [AdminController, 'suspendArticle']).as('suspend')
+            router.get('/:id', [AdminController, 'showArticle']).as('show')
+          })
+          .as('article')
+          .prefix('article')
+
+        router
+          .group(() => {
+            router.get('/', [AdminController, 'showCategories']).as('home')
+            router.patch('/:id', [AdminController, 'updateCategory']).as('update')
+            router.delete('/:id', [AdminController, 'deleteCategory']).as('delete')
+          })
+          .as('categories')
+          .prefix('categories')
       })
       .prefix('catalog')
       .as('catalog')
@@ -180,13 +197,32 @@ router
     router
       .group(() => {
         router.get('/', [AdminController, 'showDeliveryOption']).as('home')
+        router.get('pendingOrder', [AdminController, 'pendingOrder']).as('pendingOrder')
+        router.get('delivry', [AdminController, 'delivry']).as('delivry')
+        router.get('history', [AdminController, 'history']).as('history')
+        router.get('performance', [AdminController, 'performance']).as('performance')
+        router.get('delivry-cost', [AdminController, 'delivryCost']).as('delivryCost')
+        // router.get('delivry-zone', [AdminController, 'delivryZone']).as('delivryZone')
+        router.get('show-order/:id', [AdminController, 'showOrder']).as('show-order')
       })
       .prefix('logistics')
       .as('logistics')
 
-    router.get('finances', [AdminController, 'showFinanceOption']).as('finances')
+    router
+      .group(() => {
+        router.get('/', [AdminController, 'showFinanceOption']).as('index')
+      })
+      .prefix('finances')
+      .as('finances')
     router.get('others', [AdminController, 'showOthers']).as('others')
-    router.get('/statistics', [AdminController, 'showStatistics']).as('statistics')
+
+    router
+      .group(() => {
+        router.get('/', [AdminController, 'showStatistics']).as('index')
+      })
+      .prefix('statistics')
+      .as('statistics')
+
     router.get('/article/:id', [AdminController, 'showArticle']).as('article')
 
     router

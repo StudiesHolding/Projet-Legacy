@@ -38,8 +38,8 @@
         </a>
 
         {{-- CATALOGUES / PRODUITS --}}
-        @let(isCatalog = request.matchesRoute('admin.catalog.home'))
-        <a href="{{ route('admin.catalog.home') }}" 
+        @let(isCatalog = request.matchesRoute('admin.catalog'))
+        <a href="{{ route('admin.catalog.article.home') }}" 
            class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
            {{ isCatalog ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
             <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
@@ -56,8 +56,8 @@
         </a>
 
         {{-- FINANCES --}}
-        @let(isFinance = request.matchesRoute('admin.finance'))
-        <a href="{{ route('admin.finances') }}" 
+        @let(isFinance = request.matchesRoute('admin.finance.index'))
+        <a href="{{ route('admin.finances.index') }}" 
            class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
            {{ isFinance ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
             <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"></path></svg>
@@ -65,8 +65,8 @@
         </a>
 
         {{-- STATISTIQUES (ICONE MISE À JOUR) --}}
-        @let(isStatistics = request.matchesRoute('admin.statistics'))
-        <a href="{{ route('admin.statistics') }}" 
+        @let(isStatistics = request.matchesRoute('admin.statistics.index'))
+        <a href="{{ route('admin.statistics.index') }}" 
            class="group flex flex-col lg:flex-row items-center justify-center lg:justify-start p-2 lg:p-3 rounded-xl w-full transition-all duration-200 
            {{ isStatistics ? 'bg-[#171B99]/5 text-[#171B99]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
             <svg class="w-6 h-6 lg:w-5 lg:h-5 lg:mr-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
