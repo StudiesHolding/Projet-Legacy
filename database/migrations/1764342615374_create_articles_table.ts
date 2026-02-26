@@ -16,6 +16,7 @@ export default class extends BaseSchema {
       table.boolean('is_validated').defaultTo(false)
       table.boolean('available')
       table.integer('delivery_time')
+      table.integer('weight')
       table.string('unit_value')
       table.string('unit_type')
       table.integer('stock')

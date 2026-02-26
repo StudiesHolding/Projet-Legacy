@@ -1,7 +1,7 @@
-import Seller from '#models/seller'
 import { createUserValidator } from '#validators/register'
 import { stepTwoValidator } from '#validators/step_two'
 import type { HttpContext } from '@adonisjs/core/http'
+import User from '#models/user'
 
 const REGISTER_SUPPLIER_1_ROUTE = 'register-supplier-1'
 const REGISTER_SUPPLIER_2_ROUTE = 'register-supplier-2'
@@ -34,14 +34,14 @@ export default class SellerRegistrationsController {
       return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
     }
 
-    const stepTwoData = await request.validateUsing(stepTwoValidator)
+    // const stepTwoData = await request.validateUsing(stepTwoValidator)
 
     try {
-      const user = await Seller.create({
+      const user = await User.create({
         ...stepOneData,
-        ...stepTwoData,
         role: DEFAULT_ROLE,
       })
+      // ...stepTwoData,
       await auth.use('web').login(user)
 
       return response.redirect().toRoute(DASHBOARD_SELLER_ROUTE)

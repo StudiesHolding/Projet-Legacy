@@ -1,4 +1,4 @@
-import User from '#models/user'
+import Client from '#models/client'
 import type { HttpContext } from '@adonisjs/core/http'
 import router from '@adonisjs/core/services/router'
 
@@ -50,14 +50,13 @@ export default class OauthsController {
       redirectUrl = router.makeUrl('dashboard-client')
     }
     console.log(redirectUrl)
-    let user = await User.findBy('email', googleUser.email)
+    let client = await Client.findBy('email', googleUser.email)
 
-    if (!user) {
-      const newUser = await User.create({
+    if (!client) {
+      const newUser = await Client.create({
         email: googleUser.email,
         name: googleUser.name,
         googleId: googleUser.id,
-        avatarUrl: googleUser.avatarUrl,
         role: 'client',
         isVerify: true,
       })
@@ -66,8 +65,8 @@ export default class OauthsController {
       session.forget('targetUrl')
       return response.redirect().toPath(redirectUrl)
     } else {
-      user.googleId = googleUser.id
-      await auth.use('web').login(user)
+      client.googleId = googleUser.id
+      await auth.use('web').login(client)
       console.log('redirection vers', targetUrl)
       session.forget('targetUrl')
       return response.redirect().toPath(redirectUrl)

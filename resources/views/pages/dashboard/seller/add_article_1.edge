@@ -222,6 +222,12 @@
                     <input type="number" id="delivery_time" name="delivery_time" value="{{ old('delivery_time') || '' }}" required
                         class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 2" />
                 </div>
+                {{-- Masse --}}
+                <div>
+                    <label for="weight" class="block text-sm font-semibold text-gray-700 mb-1">Poids de l' article en kg</label>
+                    <input type="number" id="delivery_time" name="weight" value="{{ old('weight') || '' }}" required
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ex: 2" />
+                </div>
 
                 {{-- Stock --}}
                 <div>

@@ -32,6 +32,9 @@ export default class Article extends BaseModel {
   declare measure: number
 
   @column()
+  declare weight: number
+
+  @column()
   declare delivery_time: number
 
   @column()
@@ -46,7 +49,7 @@ export default class Article extends BaseModel {
   @column()
   declare isValidated: boolean
 
-  @column({ columnName: 'seller_id' })
+  @column()
   declare sellerId: number
 
   @column()

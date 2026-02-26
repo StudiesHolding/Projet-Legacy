@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       table.string('password').nullable()
       table.enum('role', ['admin', 'seller', 'client']).defaultTo('client')
       table.string('location').nullable()
-      table.string('sector').nullable()
+      table.string('activity_branch').nullable()
       table.string('member_code').nullable()
       table.boolean('is_member').nullable()
 

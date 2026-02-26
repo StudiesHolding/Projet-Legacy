@@ -1,116 +1,138 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vérification OTP</title>
-    {{-- Indispensable pour les requêtes Axios/Post --}}
-    {{ csrfMeta() }}
-    
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f7f6; margin: 0; }
-        .otp-container { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; max-width: 400px; width: 90%; }
-        .alert-info { background: #e3f2fd; color: #0d47a1; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #bbdefb; }
-        .otp-inputs { display: flex; gap: 8px; justify-content: center; margin: 25px 0; }
-        .otp-inputs input {
-            width: 45px; height: 55px; text-align: center; font-size: 1.5rem;
-            border: 2px solid #e0e0e0; border-radius: 10px; outline: none; transition: all 0.2s;
-        }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .otp-inputs input:focus { border-color: #4A90E2; box-shadow: 0 0 8px rgba(74, 144, 226, 0.2); }
-        button {
-            background: #4A90E2; color: white; border: none; padding: 14px;
-            border-radius: 8px; cursor: pointer; font-size: 1rem; width: 100%; font-weight: 600; transition: background 0.3s;
-        }
-        button:hover { background: #357ABD; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-    </style>
-</head>
-<body>
+@component('component/layouts/form')
+  @slot('title')
+    Vérification OTP
+  @end
 
-<div class="otp-container">
-    <h2>Vérification OTP</h2>
+  @slot('main')
+    <div class="min-h-screen flex flex-col justify-center items-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+      
+      {{-- Logo --}}
+      <div class="mb-8 transition-transform hover:scale-105 duration-300">
+        <a href="{{ route('home') }}">
+          <img src="/images/logo-legaci-new.png" alt="Legaci Logo" class="h-20 w-auto object-contain" />
+        </a>
+      </div>
 
-    @if(session.has('email'))
-        <div class="alert-info">
-            📩 Un code de vérification a été envoyé à : <br>
-            <strong>{{ session.get('email') }}</strong>
+      <div class="w-full max-w-md">
+        {{-- En-tête --}}
+        <div class="text-center mb-8">
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">Vérifiez votre identité</h1>
+          <p class="text-sm text-gray-600 px-4">
+            Entrez le code à 6 chiffres pour sécuriser votre accès.
+          </p>
         </div>
-    @endif
 
-    <p style="color: #666;">Entrez le code à 6 chiffres pour continuer.</p>
+        <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+          
+          {{-- Information sur l'email --}}
+          @if(session.has('email'))
+            <div class="mb-6 p-4 bg-blue-50 border-l-4 border-[#171B99] text-blue-900 text-sm rounded-r-lg flex items-start">
+              <span class="mr-3 text-lg">📩</span>
+              <p>
+                Un code a été envoyé à : <br>
+                <span class="font-bold">{{ session.get('email') }}</span>
+              </p>
+            </div>
+          @endif
 
-    <form id="otp-form">
-        <div class="otp-inputs">
-            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
-            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
-            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
-            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
-            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
-            <input type="number" pattern="\d*" inputmode="numeric" maxlength="1" required>
+          {{-- Formulaire OTP --}}
+          <form id="otp-form" class="space-y-6">
+            {{ csrfField() }}
+            
+            <div class="flex gap-2 sm:gap-4 justify-center" id="otp-inputs-container">
+              @each(i in [1, 2, 3, 4, 5, 6])
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  pattern="\d*"
+                  maxlength="1"
+                  required
+                  class="otp-input w-10 h-14 sm:w-12 sm:h-16 text-center text-2xl font-bold text-[#171B99] bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-[#171B99] focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                />
+              @end
+            </div>
+
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full bg-[#171B99] hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-[0.98] flex justify-center items-center"
+            >
+              Vérifier le code
+            </button>
+          </form>
+
+          <div class="mt-8 text-center text-sm">
+            <p class="text-gray-600 mb-2">Vous n'avez pas reçu le code ?</p>
+            <button class="font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
+              Renvoyer un nouveau code
+            </button>
+          </div>
         </div>
-        <button type="submit" id="submit-btn">Vérifier le code</button>
-    </form>
-</div>
+      </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+      if (csrfToken) axios.defaults.headers.common['x-csrf-token'] = csrfToken;
 
-<script>
-    // Configuration globale d'Axios pour AdonisJS (CSRF)
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    axios.defaults.headers.common['x-csrf-token'] = csrfToken;
+      const inputs = document.querySelectorAll('.otp-input');
+      const form = document.getElementById('otp-form');
+      const btn = document.getElementById('submit-btn');
 
-    const inputs = document.querySelectorAll('.otp-inputs input');
-    const form = document.getElementById('otp-form');
-    const btn = document.getElementById('submit-btn');
-
-    // Navigation entre les champs
-    inputs.forEach((input, index) => {
+      // Gestion intelligente du clavier et du focus
+      inputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
-            if (e.target.value.length > 1) e.target.value = e.target.value.slice(0, 1);
-            if (e.target.value && index < inputs.length - 1) inputs[index + 1].focus();
+          if (e.inputType === "insertFromPaste") return; 
+          if (e.target.value.length > 1) e.target.value = e.target.value.slice(0, 1);
+          if (e.target.value && index < inputs.length - 1) inputs[index + 1].focus();
         });
 
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus();
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            inputs[index - 1].focus();
+          }
         });
-    });
 
-    // Envoi du formulaire via AJAX
-    form.addEventListener('submit', async (e) => {
+        // Permettre de coller un code entier (ex: 123456)
+        input.addEventListener('paste', (e) => {
+          const data = e.clipboardData.getData('text').trim();
+          if (data.length === 6 && /^\d+$/.test(data)) {
+            data.split('').forEach((char, i) => {
+              inputs[i].value = char;
+            });
+            inputs[5].focus();
+          }
+          e.preventDefault();
+        });
+      });
+
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const code = Array.from(inputs).map(i => i.value).join('');
-        if (code.length < 6) return alert("Veuillez remplir tous les champs.");
+        if (code.length < 6) return;
 
         btn.disabled = true;
-        btn.innerText = "Vérification en cours...";
+        btn.innerHTML = `<svg class="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg> Vérification...`;
 
         try {
-            // Utilisation de la route nommée générée par Edge
-            const response = await axios.post("{{ route('verify-otp') }}", {
-                otp: code
-            });
-            console.log(response)
-
-            if (response.status === 200) {
-                // Redirection vers le dashboard
-                window.location.href = response.data.redirectUrl;
-            }
+          const response = await axios.post("{{ route('verify-otp') }}", { otp: code });
+          if (response.status === 200) {
+            window.location.href = response.data.redirectUrl;
+          }
         } catch (error) {
-            console.error(error);
-            const errorMsg = error.response?.data?.message || "Code incorrect ou expiré.";
-            alert("Erreur : " + errorMsg);
-            
-            // Reset en cas d'échec
-            inputs.forEach(input => input.value = "");
-            inputs[0].focus();
+          const errorMsg = error.response?.data?.message || "Code incorrect ou expiré.";
+          alert(errorMsg);
+          inputs.forEach(input => input.value = "");
+          inputs[0].focus();
         } finally {
-            btn.disabled = false;
-            btn.innerText = "Vérifier le code";
+          btn.disabled = false;
+          btn.innerText = "Vérifier le code";
         }
-    });
-</script>
-
-</body>
-</html>
+      });
+    </script>
+  @endslot
+@end

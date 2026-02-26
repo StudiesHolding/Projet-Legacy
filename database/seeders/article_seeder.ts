@@ -23,6 +23,7 @@ export default class extends BaseSeeder {
         status: faker.helpers.arrayElement(possibleStatuses),
         available: faker.datatype.boolean(),
         isValidated: faker.datatype.boolean(),
+        weight: faker.number.int({ min: 0.5, max: 20 }),
         stock: faker.number.int({ min: 0, max: 50 }),
         delivery_time: faker.number.int({ min: 1, max: 7 }),
         unit_value: faker.number.int({ min: 1, max: 100 }).toString(),

@@ -40,26 +40,37 @@
             <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mt-8">
               <div class="flex items-center gap-4 mb-6">
                 <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#171B99] text-white text-sm font-bold">2</span>
-                <h2 class="text-xl font-bold text-gray-800">Mode de Livraison</h2>
+                <h2 class="text-xl font-bold text-gray-800">Livraison</h2>
               </div>
               <div class="space-y-4">
-                <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-slate-50 transition-all">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Ville de livraison</label>
+                  <select name="city" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#171B99] outline-none bg-white transition-all">
+                    <option value="" disabled selected>Choisir une ville</option>
+                    <option value="Douala">Douala</option>
+                    <option value="Yaoundé">Yaoundé</option>
+                    <option value="Bafoussam">Bafoussam</option>
+                    <option value="Garoua">Garoua</option>
+                    <option value="Autre">Autre ville (Cameroun)</option>
+                  </select>
+                </div>
+                {{-- <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-slate-50 transition-all">
                   <input type="radio" name="shipping" value="standard" checked class="accent-[#171B99] h-4 w-4">
                   <div class="ml-4 flex-1">
                     <span class="block font-bold text-gray-900">Livraison Standard</span>
                     <span class="text-sm text-gray-500">2 à 3 jours ouvrables (Douala & Yaoundé)</span>
                   </div>
                   <span class="font-bold text-[#171B99]">2 000 FCFA</span>
-                </label>
+                </label> --}}
                 
-                <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-slate-50 transition-all border-gray-200">
+                {{-- <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-slate-50 transition-all border-gray-200">
                   <input type="radio" name="shipping" value="express" class="accent-[#171B99] h-4 w-4">
                   <div class="ml-4 flex-1">
                     <span class="block font-bold text-gray-900">Livraison Express</span>
                     <span class="text-sm text-gray-500">Le jour même</span>
                   </div>
                   <span class="font-bold text-gray-900">5 000 FCFA</span>
-                </label>
+                </label> --}}
               </div>
               <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Adresse exacte (Quartier, Rue, Précision)</label>

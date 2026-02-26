@@ -100,7 +100,7 @@ export default class NavigationsController {
       .preload('images')
       .preload('agrofood')
       .preload('category')
-      .preload('seller')
+      // .preload('seller')
       .preload('lifestyle')
       .preload('cosmetic')
       .firstOrFail()
@@ -126,6 +126,13 @@ export default class NavigationsController {
     return view.render('pages/checkout', { cart })
   }
 
+  public async getDelivryFee(cart: any) {
+    let cartWeight = 0
+    cart.items.map((item: any) => {
+      cartWeight += Number(item.weight)
+    })
+  }
+
   public async login({ request, view, session }: HttpContext) {
     const targetUrl = request.header('referer') || '/'
     session.put('targetUrl', targetUrl)
@@ -138,6 +145,9 @@ export default class NavigationsController {
   public async payement({ view, session }: HttpContext) {
     const cart = session.get('cart')
     const totalPrice = session.get('totalPrice')
+    // const delivery_fee = getDelivryfee(cart)
+    const cartWeight = await this.getDelivryFee(cart)
+    console.log(cartWeight)
 
     return view.render('pages/payement', { cart, totalPrice })
   }

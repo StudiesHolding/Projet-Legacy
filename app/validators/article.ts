@@ -10,6 +10,7 @@ export const ArticleValidator = vine.compile(
     price: vine.number(),
     delivery_time: vine.number(),
     unit_value: vine.string(),
+    weight: vine.number(),
     unit_type: vine.string(),
     available: vine.boolean().optional(),
     category_id: vine.string(),

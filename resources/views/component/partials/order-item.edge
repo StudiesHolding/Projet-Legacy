@@ -9,7 +9,7 @@
         <p class="text-lg font-bold text-gray-900">{{ formatNumber(order.price) }} <span class="text-xs font-normal text-gray-500">XAF</span></p>
         
         <div class="flex gap-2">
-            <a href="{{route('admin.validate.article', { id: order.id })}}" class="px-3 py-1.5 text-xs font-medium text-white bg-[#171B99] rounded-md hover:bg-[#0f127a] transition">Valider</a>
+            {{-- <a href="{{route('admin.validate.article', { id: order.id })}}" class="px-3 py-1.5 text-xs font-medium text-white bg-[#171B99] rounded-md hover:bg-[#0f127a] transition">Valider</a> --}}
             <a href="#" class="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 transition">Refuser</a>
             <a href="{{ route('admin.article', { id: order.id }) }}" class="p-1.5 text-gray-400 hover:text-[#171B99] transition" title="Détails">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
