@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, column, hasOne } from '@adonisjs/lucid/orm'
 import Order from './order.js'
-import User from './user.js'
+import type User from './user.js'
 import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations'
 
 export default class Adress extends BaseModel {
@@ -20,7 +20,7 @@ export default class Adress extends BaseModel {
   @hasOne(() => Order)
   declare order: HasOne<typeof Order>
 
-  @belongsTo(() => User)
+  @belongsTo(() => import('./user.js') as any)
   declare user: BelongsTo<typeof User>
 
   @column.dateTime({ autoCreate: true })

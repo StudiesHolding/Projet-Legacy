@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import Image from '#models/image'
 import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
-import Seller from './seller.js'
+import type Seller from './seller.js'
 import Category from './category.js'
 import Agrofood from './agrofood.js'
 import Lifestyle from './lifestyle.js'
@@ -89,7 +89,7 @@ export default class Article extends BaseModel {
   })
   declare category: BelongsTo<typeof Category>
 
-  @belongsTo(() => Seller, {
+  @belongsTo(() => import('./seller.js') as any, {
     foreignKey: 'sellerId',
   })
   declare seller: BelongsTo<typeof Seller>

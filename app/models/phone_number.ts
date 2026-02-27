@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
-import User from './user.js'
 import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import Order from './order.js'
+import type User from './user.js'
 
 export default class PhoneNumber extends BaseModel {
   @column({ isPrimary: true })
@@ -17,7 +17,7 @@ export default class PhoneNumber extends BaseModel {
   @column()
   declare orderId: number
 
-  @hasMany(() => User)
+  @hasMany(() => import('./user.js') as any)
   declare user: HasMany<typeof User>
 
   @hasOne(() => Order)

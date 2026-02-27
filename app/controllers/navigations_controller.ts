@@ -126,7 +126,7 @@ export default class NavigationsController {
     return view.render('pages/checkout', { cart })
   }
 
-  public async getDelivryFee(cart: any) {
+  static async getCartWeight(cart: any) {
     let cartWeight = 0
     cart.items.map((item: any) => {
       cartWeight += Number(item.weight)
@@ -145,10 +145,6 @@ export default class NavigationsController {
   public async payement({ view, session }: HttpContext) {
     const cart = session.get('cart')
     const totalPrice = session.get('totalPrice')
-    // const delivery_fee = getDelivryfee(cart)
-    const cartWeight = await this.getDelivryFee(cart)
-    console.log(cartWeight)
-
     return view.render('pages/payement', { cart, totalPrice })
   }
 

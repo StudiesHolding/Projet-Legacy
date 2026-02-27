@@ -20,6 +20,7 @@ const ArticlesController = () => import('#controllers/articles_controller')
 const ImagesController = () => import('#controllers/images_controller')
 const NavigationsController = () => import('#controllers/navigations_controller')
 const CartsController = () => import('#controllers/carts_controller')
+const WsController = () => import('#controllers/ws_controller')
 
 router.get('/', [NavigationsController, 'home']).as('home')
 router.get('catalogue/:slug', [NavigationsController, 'showArticleBySlug']).as('show.product')
@@ -202,6 +203,7 @@ router
         router.get('history', [AdminController, 'history']).as('history')
         router.get('performance', [AdminController, 'performance']).as('performance')
         router.get('delivry-cost', [AdminController, 'delivryCost']).as('delivryCost')
+        router.post('delivry-cost', [AdminController, 'handleDelivryCost']).as('handleDelivryCost')
         // router.get('delivry-zone', [AdminController, 'delivryZone']).as('delivryZone')
         router.get('show-order/:id', [AdminController, 'showOrder']).as('show-order')
       })
@@ -235,3 +237,5 @@ router
   .use(middleware.auth())
   .prefix('/admin-space')
   .as('admin')
+
+router.ws('/ws', [WsController, 'calculateDeliveryFee'])

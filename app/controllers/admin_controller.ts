@@ -7,6 +7,8 @@ import Order from '#models/order'
 import Transaction from '#models/transaction'
 import { DateTime } from 'luxon'
 import OrderItem from '#models/order_item'
+import { DelivryPriceRuleValidator } from '#validators/delivry_price_rule'
+import DelivryPriceRule from '#models/delivry_price_rule'
 
 export default class AdminController {
   startOfToday = DateTime.now().startOf('day').toSQL()
@@ -197,7 +199,35 @@ export default class AdminController {
   }
 
   public async delivryCost({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/logistics/shipping-rules')
+    const allRules = await DelivryPriceRule.query().orderBy('minWeight', 'asc')
+
+    // On regroupe les règles par nom de ville
+    const groupedRules = allRules.reduce(
+      (acc, rule) => {
+        const city = rule.city
+        if (!acc[city]) {
+          acc[city] = []
+        }
+        acc[city].push(rule)
+        return acc
+      },
+      {} as Record<string, DelivryPriceRule[]>
+    )
+
+    return view.render('pages/dashboard/admin/logistics/shipping-rules', {
+      groupedRules,
+    })
+  }
+
+  public async handleDelivryCost({ request, response }: HttpContext) {
+    const payload = await request.validateUsing(DelivryPriceRuleValidator)
+    await DelivryPriceRule.create({
+      city: payload.city,
+      maxWeight: Number(payload.maxWeight),
+      minWeight: Number(payload.minWeight),
+      price: Number(payload.price),
+    })
+    return response.redirect().back()
   }
 
   public async history({ view }: HttpContext) {

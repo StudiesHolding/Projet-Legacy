@@ -64,7 +64,8 @@ export default defineConfig({
     () => import('#providers/app_provider'),
     () => import('@adonisjs/bouncer/bouncer_provider'),
     () => import('@adonisjs/mail/mail_provider'),
-    () => import('@adonisjs/cors/cors_provider')
+    () => import('@adonisjs/cors/cors_provider'),
+    () => import('adonisjs-websocket/websocket_provider')
   ],
 
   /*

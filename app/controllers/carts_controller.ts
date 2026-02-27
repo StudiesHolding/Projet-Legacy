@@ -1,5 +1,7 @@
 import Article from '#models/article'
+import { CartService } from '#services/cart_service'
 import type { HttpContext } from '@adonisjs/core/http'
+import NavigationsController from './navigations_controller.js'
 
 export default class CartsController {
   public async addToCart({ request, session, response }: HttpContext) {
@@ -114,5 +116,18 @@ export default class CartsController {
     session.put('cart', cart)
 
     return response.ok({ message: 'Panier vidé.', cart, totalItems: 0, totalPrice: 0 })
+  }
+
+  public async addDeliveryFeeToCart({ request, session, response }: HttpContext) {
+    const cart = session.get('cart')
+    const weight = NavigationsController.getCartWeight(cart)
+    const deliveryFee = CartService.getDeliveryCost(request.city, weight)
+    return deliveryFee
+  }
+
+  public async totalAmount({ session, response }: HttpContext) {
+    const cart = session.get('cart')
+    const fee = this.addDeliveryFeeToCart()
+    const totalPrice = cart.totalAmount
   }
 }
