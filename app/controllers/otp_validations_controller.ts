@@ -16,17 +16,6 @@ export default class OtpValidationsController {
       })
     }
 
-    const otpRecord = await OtpVerification.query()
-      .where('otpValue', code)
-      .where('email', email)
-      .where('status', 'unuse')
-      .where('expireAt', '>', DateTime.now().toSQL())
-      .first()
-
-    if (!otpRecord) {
-      return response.badRequest({ message: 'Code invalide ou expiré mouf.' })
-    }
-
     try {
       const newUser = await User.create({
         name: registerData.name,

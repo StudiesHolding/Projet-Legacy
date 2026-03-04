@@ -126,13 +126,6 @@ export default class NavigationsController {
     return view.render('pages/checkout', { cart })
   }
 
-  static async getCartWeight(cart: any) {
-    let cartWeight = 0
-    cart.items.map((item: any) => {
-      cartWeight += Number(item.weight)
-    })
-  }
-
   public async login({ request, view, session }: HttpContext) {
     const targetUrl = request.header('referer') || '/'
     session.put('targetUrl', targetUrl)
@@ -169,6 +162,7 @@ export default class NavigationsController {
   }
 
   public async showSellerDashboard({ auth, view }: HttpContext) {
+    console.log('yakuza')
     const user = await auth.authenticate()
     const test = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
     const pendingOrders = await Order.query()
@@ -178,6 +172,7 @@ export default class NavigationsController {
       .preload('order_item')
       .orderBy('id', 'desc')
 
+    console.log('yakuza 2')
     const orders = await Order.query()
       .whereHas('order_item', (query) => {
         query.where('seller_id', user.id)
@@ -193,6 +188,7 @@ export default class NavigationsController {
   }
 
   public async showClientDashboard({ auth, view }: HttpContext) {
+    console.log('9')
     const user = await auth.authenticate()
     const myOrders = await Order.query()
       .where('buyer_id', user?.id)
@@ -203,6 +199,7 @@ export default class NavigationsController {
       totalSpend += Number(order.totalPrice)
     }
 
+    console.log('10')
     return view.render('pages/dashboard/client/index', {
       myOrders: myOrders,
       totalSpend: totalSpend,

@@ -55,7 +55,7 @@
           @endif
 
           {{-- Formulaire --}}
-          <form action="{{ route('login_client') }}" method="POST" class="space-y-5">
+          <form action="{{ route('loginClient') }}" method="POST" class="space-y-5">
             {{ csrfField() }}
             <input type="hidden" name="intended_url" value="{{ old('intended_url') || finalUrl }}">
 

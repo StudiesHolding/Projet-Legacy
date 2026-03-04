@@ -1,133 +1,26 @@
-import Article from '#models/article'
 import { CartService } from '#services/cart_service'
-import type { HttpContext } from '@adonisjs/core/http'
-import NavigationsController from './navigations_controller.js'
+import { HttpContext } from '@adonisjs/core/http'
 
 export default class CartsController {
-  public async addToCart({ request, session, response }: HttpContext) {
-    const articleId = Number(request.input('articleId'))
-    const quantity = Number(request.input('quantity')) || 1
-
-    if (!articleId) {
-      return response.badRequest({ message: "ID de l'article manquant" })
-    }
-
-    const article = await Article.query().where('id', articleId).preload('images').first()
-    if (!article) {
-      return response.notFound({ message: 'Article introuvable.' })
-    }
-
-    // Récupérer le panier et s'assurer que cart.items est un tableau
-    const cart = session.get('cart') || { items: [] }
-    if (!Array.isArray(cart.items)) {
-      cart.items = []
-    }
-
-    // Vérifier si l’article existe déjà dans le panier
-    const existingItem = cart.items.find((item: { id: number }) => item.id === article.id)
-
-    if (existingItem) {
-      existingItem.quantity += quantity
-    } else {
-      cart.items.push({
-        id: article.id,
-        name: article.name,
-        price: article.price,
-        weight: article.weight,
-        quantity,
-        sellerId: article.sellerId,
-        image: article.images[0]?.imageUrl || null,
-      })
-    }
-    session.put('cart', cart)
-
-    // Calcul totals
-    const totalItems = cart.items.reduce(
-      (sum: any, item: { quantity: any }) => sum + item.quantity,
-      0
-    )
-    const totalPrice = cart.items.reduce(
-      (sum: number, item: { quantity: number; price: number }) => sum + item.quantity * item.price,
-      0
-    )
-    return response.ok({
-      message: 'Produit ajouté au panier.',
-      cart,
-      totalItems,
-      totalPrice,
-    })
+  async addToCart(ctx: HttpContext) {
+    return await CartService.add(ctx)
   }
 
-  public async getCart({ session, response }: HttpContext) {
-    const cart = session.get('cart') || { items: [] }
-    if (!Array.isArray(cart.items)) cart.items = []
-
-    const totalItems = cart.items.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0)
-    const totalPrice = cart.items.reduce(
-      (sum: number, item: any) => sum + (item.quantity || 0) * (item.price || 0),
-      0
-    )
-    session.put('totalPrice', totalPrice)
-
-    return response.ok({ cart, totalItems, totalPrice })
+  async getCart(ctx: HttpContext) {
+    return await CartService.get(ctx)
   }
 
-  public async removeFromCart({ request, session, response }: HttpContext) {
-    const paramId = Number(request.param('id'))
-    const bodyId = Number(request.input('articleId'))
-    const articleId = paramId || bodyId
-
-    if (!articleId) {
-      return response.badRequest({ message: "ID de l'article manquant" })
-    }
-
-    const cart = session.get('cart') || { items: [] }
-    if (!Array.isArray(cart.items)) cart.items = []
-
-    // Find the item in the cart
-    const itemIndex = cart.items.findIndex((item: any) => item.id === articleId)
-    if (itemIndex === -1) {
-      return response.notFound({ message: 'Article non trouvé dans le panier.' })
-    }
-
-    const item = cart.items[itemIndex]
-
-    // If quantity > 1, decrement quantity by 1. Otherwise remove the item.
-    if (item.quantity && item.quantity > 1) {
-      item.quantity -= 1
-    } else {
-      cart.items.splice(itemIndex, 1)
-    }
-
-    // Save updated cart to session
-    session.put('cart', cart)
-
-    const totalItems = cart.items.reduce((sum: number, it: any) => sum + (it.quantity || 0), 0)
-    const totalPrice = cart.items.reduce(
-      (sum: number, it: any) => sum + (it.quantity || 0) * (it.price || 0),
-      0
-    )
-
-    return response.ok({ message: 'Panier mis à jour.', cart, totalItems, totalPrice })
+  async removeToCart(ctx: HttpContext) {
+    return await CartService.remove(ctx)
   }
 
-  public async clearCart({ session, response }: HttpContext) {
-    const cart = { items: [] }
-    session.put('cart', cart)
-
-    return response.ok({ message: 'Panier vidé.', cart, totalItems: 0, totalPrice: 0 })
+  async clearCart(ctx: HttpContext) {
+    return await CartService.clear(ctx)
   }
 
-  public async addDeliveryFeeToCart({ request, session, response }: HttpContext) {
-    const cart = session.get('cart')
-    const weight = NavigationsController.getCartWeight(cart)
-    const deliveryFee = CartService.getDeliveryCost(request.city, weight)
-    return deliveryFee
-  }
-
-  public async totalAmount({ session, response }: HttpContext) {
-    const cart = session.get('cart')
-    const fee = this.addDeliveryFeeToCart()
-    const totalPrice = cart.totalAmount
+  async getDelivery(ctx: HttpContext) {
+    const fee = await CartService.addDeliveryFeeToCart(ctx)
+    const total = await CartService.totalAmount(ctx)
+    return { fee, total }
   }
 }

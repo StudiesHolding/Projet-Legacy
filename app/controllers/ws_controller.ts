@@ -8,10 +8,4 @@ export default class WsController {
       cartWeight += Number(item.weight)
     })
   }
-  public async calculateDeliveryFee({ request, ws, session }: WebSocketContext) {
-    const { weigth, city } = request.only(['city', 'weigth'])
-    const deliveryCost = CartService.getDeliveryCost(city, weigth)
-    const deliveryFee = JSON.stringify({ event: 'delivery_fee', price: deliveryCost })
-    ws.send(deliveryFee)
-  }
 }

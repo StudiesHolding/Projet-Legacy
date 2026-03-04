@@ -1,6 +1,6 @@
 import vine from '@vinejs/vine'
 
-export const stepTwoValidator = vine.compile(
+export const registerStepTwoValidator = vine.compile(
   vine.object({
     location: vine.string(),
     is_member: vine.boolean(),

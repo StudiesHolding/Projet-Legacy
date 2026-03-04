@@ -12,7 +12,7 @@ export default class OtpVerification extends BaseModel {
   declare status: string
 
   @column()
-  declare otpValue: number
+  declare otpValue: string
 
   @column()
   declare expireAt: DateTime

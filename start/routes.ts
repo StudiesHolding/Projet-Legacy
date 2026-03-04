@@ -63,10 +63,15 @@ router
   .as('register_client')
   .use(middleware.guest())
 
-router.post('login', [AuthController, 'login_client']).as('login_client').use(middleware.guest())
-router.get('logout', [AuthController, 'logout_client']).as('logout_client').use(middleware.auth())
-router.post('handleStepOne', [SellerRegistrationsController, 'handleStepOne']).as('handleStepOne')
-router.post('handleStepTwo', [SellerRegistrationsController, 'finalize']).as('finalize')
+router
+  .group(() => {
+    router.post('login', [AuthController, 'loginClient']).as('loginClient').use(middleware.guest())
+    router.get('logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
+    router.post('handleStepOne', [AuthController, 'registerSeller']).as('registerSeller')
+    router.post('handleStepTwo', [AuthController, 'finalize']).as('finalize')
+  })
+  .use(middleware.guest())
+
 router
   .group(() => {
     router
@@ -98,10 +103,10 @@ router
   .group(() => {
     router.get('/cart/getCart', [CartsController, 'getCart']).as('api.cart.get')
     router.get('/cart/addToCart', [CartsController, 'addToCart']).as('api.cart.add')
-    router.delete('/cart/:id', [CartsController, 'removeFromCart']).as('api.cart.remove')
+    router.delete('/cart/:id', [CartsController, 'removeToCart']).as('api.cart.remove')
     router.delete('/cart', [CartsController, 'clearCart']).as('api.cart.clear')
     router
-      .post('/otpVerification', [OtpValidationsController, 'verifyOtp'])
+      .post('/otpVerification', [AuthController, 'handleOtpVerification'])
       .as('verify-otp')
       .use(middleware.guest())
   })
@@ -238,4 +243,4 @@ router
   .prefix('/admin-space')
   .as('admin')
 
-router.ws('/ws', [WsController, 'calculateDeliveryFee'])
+// router.ws('/ws', [WsController, 'calculateDeliveryFee'])

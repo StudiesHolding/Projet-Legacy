@@ -11,6 +11,8 @@ const SESSION_KEY = 'registration_data'
 
 export default class SellerRegistrationsController {
   public async handleStepOne({ request, response, session }: HttpContext) {
+    console.log('badaboom')
+    console.log('**************************** badaboom *******************************')
     const payload = await request.validateUsing(createUserValidator)
     session.put(SESSION_KEY, payload)
     return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
