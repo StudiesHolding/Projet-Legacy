@@ -105,7 +105,9 @@ export default class AuthController {
   }
 
   public async logout({ auth, response }: HttpContext) {
+    console.log('deconnexion en cours')
     await auth.use('web').logout()
+    console.log('deconnexion en cours')
     return response.redirect().toRoute('login')
   }
 

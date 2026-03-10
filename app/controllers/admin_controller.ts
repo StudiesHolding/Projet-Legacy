@@ -3,18 +3,25 @@ import User from '#models/user'
 import { AdminValidator } from '#validators/admin'
 import Article from '#models/article'
 import Category from '#models/category'
+import { inject } from '@adonisjs/core'
 import Order from '#models/order'
 import Transaction from '#models/transaction'
 import { DateTime } from 'luxon'
-import OrderItem from '#models/order_item'
 import { DelivryPriceRuleValidator } from '#validators/delivry_price_rule'
 import DelivryPriceRule from '#models/delivry_price_rule'
+import Client from '#models/client'
+import { AdminService } from '#services/admin_service'
+import { registerAdminValidator } from '#validators/register_admin'
 
+@inject()
 export default class AdminController {
+  constructor(private adminService: AdminService) {}
   startOfToday = DateTime.now().startOf('day').toSQL()
 
   public async home({ view }: HttpContext) {
-    const pendingArticles = await Article.query().where('status', 'pending')
+    const pendingArticles = await Article.query()
+      .where('is_validated', 'true')
+      .where('status', 'accepted')
     const userCount = await User.query()
       .where('role', 'client')
       .count('* as total')
@@ -34,6 +41,27 @@ export default class AdminController {
   }
   public async login({ view }: HttpContext) {
     return view.render('pages/dashboard/admin/home/login')
+  }
+
+  public async registerAdmin({ view, params, request, response }: HttpContext) {
+    const email = params.email
+    if (request.hasValidSignature()) {
+      return view.render('pages/dashboard/admin/home/register', { email })
+    }
+    return response.redirect().back()
+  }
+
+  public async storeAdmin({ auth, response, request }: HttpContext) {
+    const payload = await request.validateUsing(registerAdminValidator)
+    const newAdmin = await User.create({
+      name: payload.username,
+      password: payload.password,
+      email: payload.email,
+      role: 'admin',
+    })
+
+    await auth.use('web').login(newAdmin)
+    return response.redirect().toRoute('admin.home')
   }
 
   public async handleLogin({ response, request, auth }: HttpContext) {
@@ -113,7 +141,7 @@ export default class AdminController {
   }
 
   public async showOthers({ view }: HttpContext) {
-    return view.render('pages/dashboard/admin/other')
+    return view.render('pages/dashboard/admin/others/index')
   }
   public async showUser({ view, params }: HttpContext) {
     const user = await User.findOrFail(params.id)
@@ -131,6 +159,11 @@ export default class AdminController {
 
   public async showAddAdminPage({ view }: HttpContext) {
     return view.render('pages/dashboard/admin/users/admin/add-admin')
+  }
+
+  public async showAddAdminPage2({ view }: HttpContext) {
+    console.log('zoropoto')
+    return view.render('pages/dashboard/admin/users/admin/add-admin-2')
   }
 
   public async showAdmin({ view, params }: HttpContext) {
@@ -236,5 +269,52 @@ export default class AdminController {
 
   public async performance({ view }: HttpContext) {
     console.log('***************** Performance *********************')
+  }
+
+  public async analytics({ view }: HttpContext) {
+    console.log('le benin')
+    return view.render('pages/dashboard/admin/finances/analysis')
+  }
+
+  public async chargeBack({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/finances/analysis')
+  }
+
+  public async refund({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/finances/analysis')
+  }
+
+  public async transaction({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/finances/transaction')
+  }
+
+  public async setUserStatus({ params, response }: HttpContext) {
+    const userId = await params.id
+    const client = await Client.query().where('id', userId).firstOrFail()
+    if (client.status === 'accepted') {
+      client.status = 'suspend'
+    } else if (client.status === 'suspend') {
+      client.status = 'accepted'
+    }
+    await client.save()
+    return response.redirect().back()
+  }
+
+  public async removeClient({ response, params }: HttpContext) {
+    const userId = await params.id
+    const client = await Client.query().where('id', userId).firstOrFail()
+    await client.delete()
+    return response.redirect().back()
+  }
+
+  public async addAdmin({ response, request }: HttpContext) {
+    const email = request.input('email')
+    const permissions = JSON.stringify(request.input('permissions'))
+    await this.adminService.sendEmail(email, permissions)
+    return response.redirect().back()
+  }
+
+  public async addAdminForm({ view }: HttpContext) {
+    return view.render('pages/dashboard/admin/users/admin/add-admin')
   }
 }

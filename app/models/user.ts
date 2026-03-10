@@ -12,6 +12,7 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 })
 
 type RoleType = 'admin' | 'client' | 'seller'
+type StatusType = 'accepted' | 'suspend' | 'banned'
 
 export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
@@ -25,6 +26,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column()
   declare isVerify: boolean
+
+  @column()
+  declare status: StatusType
 
   @column({ serializeAs: null })
   declare role: RoleType

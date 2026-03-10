@@ -10,17 +10,15 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 const AdminController = () => import('#controllers/admin_controller')
-const OtpValidationsController = () => import('#controllers/otp_validations_controller')
 const OauthsController = () => import('#controllers/oauths_controller')
 const OrdersController = () => import('#controllers/orders_controller')
 const TransactionsController = () => import('#controllers/transactions_controller')
 const AuthController = () => import('#controllers/auth_controller')
-const SellerRegistrationsController = () => import('#controllers/seller_registrations_controller')
 const ArticlesController = () => import('#controllers/articles_controller')
 const ImagesController = () => import('#controllers/images_controller')
 const NavigationsController = () => import('#controllers/navigations_controller')
 const CartsController = () => import('#controllers/carts_controller')
-const WsController = () => import('#controllers/ws_controller')
+// const WsController = () => import('#controllers/ws_controller')
 
 router.get('/', [NavigationsController, 'home']).as('home')
 router.get('catalogue/:slug', [NavigationsController, 'showArticleBySlug']).as('show.product')
@@ -146,7 +144,9 @@ router
 router
   .group(() => {
     router.get('/login', [AdminController, 'login']).as('login')
+    router.get('register/:email', [AdminController, 'registerAdmin']).as('register')
     router.post('/login', [AdminController, 'handleLogin']).as('handleLogin')
+    router.post('register', [AdminController, 'storeAdmin']).as('registerAdmin')
   })
   .prefix('/admin-space')
   .as('admin')
@@ -160,14 +160,18 @@ router
       .group(() => {
         router.get('/', [AdminController, 'showUserOption']).as('home')
         router.get('list', [AdminController, 'userList']).as('list')
-        router.get('addSeller', [AdminController, 'showAddSellerPage']).as('addSeller')
+        router.get('addAdmin', [AdminController, 'addAdmin']).as('addAdmin')
+        router.post('addSeller', [AdminController, 'showAddSellerPage']).as('addSeller')
         router.get('/:id', [AdminController, 'showUser']).as('showUser')
+        router.delete(':id', [AdminController, 'removeClient']).as('removeClient')
+        router.patch(':id', [AdminController, 'setUserStatus']).as('setUserStatus')
         router
           .group(() => {
             router.get('/', [AdminController, 'adminList']).as('home')
             router.get('list', [AdminController, 'adminList']).as('list')
             router.get('admin', [AdminController, 'showAdmin']).as('showAdmin')
-            router.get('addAdmin', [AdminController, 'showAddAdminPage']).as('addAdmin')
+            router.get('show-admin', [AdminController, 'addAdminForm']).as('addAdminForm')
+            router.post('addAdmin', [AdminController, 'addAdmin']).as('addAdmin')
             router.delete('admin/:id', [AdminController, 'deleteAdmin']).as('deleteAdmin')
           })
           .as('admin')
@@ -209,7 +213,6 @@ router
         router.get('performance', [AdminController, 'performance']).as('performance')
         router.get('delivry-cost', [AdminController, 'delivryCost']).as('delivryCost')
         router.post('delivry-cost', [AdminController, 'handleDelivryCost']).as('handleDelivryCost')
-        // router.get('delivry-zone', [AdminController, 'delivryZone']).as('delivryZone')
         router.get('show-order/:id', [AdminController, 'showOrder']).as('show-order')
       })
       .prefix('logistics')
@@ -218,9 +221,14 @@ router
     router
       .group(() => {
         router.get('/', [AdminController, 'showFinanceOption']).as('index')
+        router.get('transaction', [AdminController, 'transaction']).as('transaction')
+        router.get('refund', [AdminController, 'refund']).as('refund')
+        router.get('charge-back', [AdminController, 'chargeBack']).as('charge-back')
+        router.get('analytics', [AdminController, 'analytics']).as('analytics')
       })
       .prefix('finances')
       .as('finances')
+
     router.get('others', [AdminController, 'showOthers']).as('others')
 
     router
@@ -242,5 +250,3 @@ router
   .use(middleware.auth())
   .prefix('/admin-space')
   .as('admin')
-
-// router.ws('/ws', [WsController, 'calculateDeliveryFee'])

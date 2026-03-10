@@ -1,7 +1,102 @@
-- Voir les statistiques du site 
+{{-- - Voir les statistiques du site 
 - Statistiques de vente
 - Statistiques de trafic
 - Statistiques des utilisateurs
 - Statistiques des produits
 - Statistiques de la logistique
-- Statistiques financières
+- Statistiques financières --}}
+
+
+@component('component/layouts/app')
+@slot('title')
+    Statistiques Générales
+@end
+
+@slot('main')
+<div class="min-h-screen bg-gray-50">
+    <div class="flex flex-col md:flex-row">
+        @include('component/partials/aside-navigation-for-admin')
+        
+        <main class="flex-1 p-4 md:p-8">
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Statistiques du site</h1>
+                <p class="text-gray-500 text-sm mt-1">Analysez les performances globales, de la logistique aux finances de votre plateforme.</p>
+            </header>
+
+            {{-- Grille des Statistiques --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                {{-- STATISTIQUES DE VENTE --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-emerald-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Ventes</h3>
+                    <p class="text-sm text-gray-500 mt-1">Volume de commandes, revenus bruts et évolution des ventes quotidiennes.</p>
+                </a>
+
+                {{-- STATISTIQUES DE TRAFIC --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Trafic</h3>
+                    <p class="text-sm text-gray-500 mt-1">Nombre de visiteurs uniques, pages vues et sources de provenance.</p>
+                </a>
+
+                {{-- STATISTIQUES UTILISATEURS --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-indigo-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Utilisateurs</h3>
+                    <p class="text-sm text-gray-500 mt-1">Nouveaux inscrits, taux de rétention et activité des clients.</p>
+                </a>
+
+                {{-- STATISTIQUES PRODUITS --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-amber-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Produits</h3>
+                    <p class="text-sm text-gray-500 mt-1">Top des ventes, produits les plus consultés et gestion des stocks.</p>
+                </a>
+
+                {{-- STATISTIQUES LOGISTIQUE --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-sky-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-sky-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            <path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Logistique</h3>
+                    <p class="text-sm text-gray-500 mt-1">Délais de livraison, zones les plus desservies et suivi des colis.</p>
+                </a>
+
+                {{-- STATISTIQUES FINANCIÈRES --}}
+                <a href="#" class="group p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-violet-600/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-violet-600 group-hover:text-white transition-all duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 022 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg">Finances</h3>
+                    <p class="text-sm text-gray-500 mt-1">Analyse des marges, panier moyen (AOV) et bénéfices nets.</p>
+                </a>
+
+            </div>
+        </main>
+    </div>
+</div>
+@endslot
+@endcomponent
