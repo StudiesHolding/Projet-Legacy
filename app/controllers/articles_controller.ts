@@ -161,6 +161,7 @@ export default class ArticlesController {
       .preload('agrofood')
       .preload('lifestyle')
       .preload('cosmetic')
+      .preload('seller')
       .firstOrFail()
 
     if (await bouncer.with('ArticlePolicy').denies('show', article)) {

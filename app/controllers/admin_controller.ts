@@ -20,8 +20,8 @@ export default class AdminController {
 
   public async home({ view }: HttpContext) {
     const pendingArticles = await Article.query()
-      .where('is_validated', 'true')
-      .where('status', 'accepted')
+      .where('is_validated', 'false')
+      .where('status', 'pending')
     const userCount = await User.query()
       .where('role', 'client')
       .count('* as total')
@@ -107,7 +107,7 @@ export default class AdminController {
     // 1. On récupère les articles avec leurs relations pour éviter le problème de N+1 queries
     // (On charge l'utilisateur qui a posté et les images)
     const articles = await Article.query()
-      .preload('seller')
+      // .preload('seller')
       .preload('images')
       .orderBy('createdAt', 'desc')
     // .paginate(10)
