@@ -1,7 +1,9 @@
 import { createUserValidator } from '#validators/register'
-import { stepTwoValidator } from '#validators/step_two'
+// import { stepTwoValidator } from '#validators/step_two'
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import string from '@adonisjs/core/helpers/string'
+import Seller from '#models/seller'
 
 const REGISTER_SUPPLIER_1_ROUTE = 'register-supplier-1'
 const REGISTER_SUPPLIER_2_ROUTE = 'register-supplier-2'
@@ -14,7 +16,10 @@ export default class SellerRegistrationsController {
     console.log('badaboom')
     console.log('**************************** badaboom *******************************')
     const payload = await request.validateUsing(createUserValidator)
-    session.put(SESSION_KEY, payload)
+    const slug = string.slug(request.input('name'))
+    const updatedPayload = { ...payload, slug }
+
+    session.put(SESSION_KEY, updatedPayload)
     return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
   }
 
@@ -26,7 +31,7 @@ export default class SellerRegistrationsController {
     return response.redirect().toRoute(REGISTER_SUPPLIER_2_ROUTE)
   }
 
-  public async finalize({ request, response, auth, session }: HttpContext) {
+  public async finalize({ response, auth, session }: HttpContext) {
     const stepOneData = session.get(SESSION_KEY)
     if (!stepOneData || typeof stepOneData !== 'object') {
       session.flash(
@@ -35,15 +40,12 @@ export default class SellerRegistrationsController {
       )
       return response.redirect().toRoute(REGISTER_SUPPLIER_1_ROUTE)
     }
-
-    // const stepTwoData = await request.validateUsing(stepTwoValidator)
-
+    console.log('*****************************************************', stepOneData)
     try {
-      const user = await User.create({
+      const user = await Seller.create({
         ...stepOneData,
         role: DEFAULT_ROLE,
       })
-      // ...stepTwoData,
       await auth.use('web').login(user)
 
       return response.redirect().toRoute(DASHBOARD_SELLER_ROUTE)

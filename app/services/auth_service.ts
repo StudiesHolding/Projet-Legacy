@@ -32,7 +32,6 @@ export default class AuthService {
         .subject('Vérification de votre compte')
         .htmlView('mail/email-verification', { data, otpCode })
     })
-    console.log('5')
   }
 
   public async verifyOtp(email: string, otp: string) {

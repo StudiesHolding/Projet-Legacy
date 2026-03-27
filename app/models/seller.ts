@@ -12,6 +12,9 @@ export default class Seller extends User {
   declare location: string
 
   @column()
+  declare slug: string
+
+  @column()
   declare isMember: boolean
 
   @column()

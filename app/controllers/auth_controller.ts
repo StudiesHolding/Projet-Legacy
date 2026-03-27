@@ -6,6 +6,7 @@ import Client from '#models/client'
 import { inject } from '@adonisjs/core'
 import router from '@adonisjs/core/services/router'
 import Seller from '#models/seller'
+import string from '@adonisjs/core/helpers/string'
 
 @inject()
 export default class AuthController {
@@ -26,7 +27,6 @@ export default class AuthController {
     const otp = ctx.request.input('otp')
     const response = await this.authService.verifyOtp(email, otp)
     const data = ctx.session.get('stepOneData')
-    console.log('veriication otp terminé')
     if (response === true) {
       if (data.role === 'client') {
         return this.CreateClient(data, ctx)
@@ -47,21 +47,16 @@ export default class AuthController {
     session.put('stepOneData', data)
     session.put('email', data.email)
     await this.authService.sendOtp(data)
-    console.log('2')
     return response.redirect().toRoute('otp-page')
   }
 
   public async CreateClient(data: any, ctx: HttpContext) {
-    console.log('Data', data)
-    console.log('me voici dans le createClient')
     const newClient = await Client.create({
       name: data.name,
       email: data.email,
       password: data.password,
     })
-    console.log("création de l'utilisateur terminé")
     await ctx.auth.use('web').login(newClient)
-    console.log('connexion et redirection')
     const url = router.makeUrl('dashboard-client')
     return {
       status: 200,
@@ -107,25 +102,23 @@ export default class AuthController {
   public async logout({ auth, response }: HttpContext) {
     console.log('deconnexion en cours')
     await auth.use('web').logout()
-    console.log('deconnexion en cours')
     return response.redirect().toRoute('login')
   }
 
   public async finalize(ctx: HttpContext) {
     const stepOneData = ctx.session.get('stepOneData')
     const stepTwoData = await ctx.request.validateUsing(registerStepTwoValidator)
-    console.log('malien')
     const newSeller = await Seller.create({
       name: stepOneData.name,
       email: stepOneData.email,
       password: stepOneData.password,
       role: 'seller',
+      slug: string.slug(stepOneData.name),
       isVerify: true,
       isMember: stepTwoData.is_member,
       memberCode: stepTwoData.member_code,
       location: stepTwoData.location,
     })
-    console.log('mboléman')
 
     await ctx.auth.use('web').login(newSeller)
 

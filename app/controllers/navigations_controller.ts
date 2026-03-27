@@ -6,6 +6,7 @@ import Order from '#models/order'
 import OrderItem from '#models/order_item'
 import env from '#start/env'
 import type { HttpContext } from '@adonisjs/core/http'
+import Seller from '#models/seller'
 
 export default class NavigationsController {
   public async home({ view, request }: HttpContext) {
@@ -105,7 +106,6 @@ export default class NavigationsController {
       .preload('cosmetic')
       .firstOrFail()
 
-    // 3. Articles suggérés
     const otherArticles = await Article.query()
       .where('sellerId', article.sellerId)
       .whereNot('id', article.id)
@@ -131,6 +131,7 @@ export default class NavigationsController {
     session.put('targetUrl', targetUrl)
     return view.render('pages/login')
   }
+
   public async showOtpPage({ view }: HttpContext) {
     return view.render('pages/otp-verification')
   }
@@ -162,7 +163,6 @@ export default class NavigationsController {
   }
 
   public async showSellerDashboard({ auth, view }: HttpContext) {
-    console.log('yakuza')
     const user = await auth.authenticate()
     const test = await OrderItem.query().where('seller_id', user.id).orderBy('id', 'desc')
     const pendingOrders = await Order.query()
@@ -172,7 +172,6 @@ export default class NavigationsController {
       .preload('order_item')
       .orderBy('id', 'desc')
 
-    console.log('yakuza 2')
     const orders = await Order.query()
       .whereHas('order_item', (query) => {
         query.where('seller_id', user.id)
@@ -252,5 +251,15 @@ export default class NavigationsController {
     const user = await auth.authenticate()
     const phones = await PhoneNumber.query().where('user_id', user.id)
     return view.render('pages/dashboard/client/profile', { user, phones })
+  }
+
+  public async showSeller({ params, view }: HttpContext) {
+    const seller = await Seller.query()
+      .where('slug', params.name)
+      .where('role', 'seller')
+      .preload('articles')
+      .firstOrFail()
+
+    return view.render('pages/catalogue/show-seller', { seller })
   }
 }

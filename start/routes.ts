@@ -18,12 +18,12 @@ const ArticlesController = () => import('#controllers/articles_controller')
 const ImagesController = () => import('#controllers/images_controller')
 const NavigationsController = () => import('#controllers/navigations_controller')
 const CartsController = () => import('#controllers/carts_controller')
-// const WsController = () => import('#controllers/ws_controller')
 
 router.get('/', [NavigationsController, 'home']).as('home')
 router.get('catalogue/:slug', [NavigationsController, 'showArticleBySlug']).as('show.product')
 router.get('checkout', [NavigationsController, 'checkout']).as('checkout')
 router.get('login', [NavigationsController, 'login']).as('login')
+router.get('seller/:name', [NavigationsController, 'showSeller']).as('showSeller')
 router
   .get('register-client', [NavigationsController, 'registerClient'])
   .as('register-client')
@@ -99,12 +99,12 @@ router
 
 router
   .group(() => {
-    router.get('/cart/getCart', [CartsController, 'getCart']).as('api.cart.get')
-    router.get('/cart/addToCart', [CartsController, 'addToCart']).as('api.cart.add')
-    router.delete('/cart/:id', [CartsController, 'removeToCart']).as('api.cart.remove')
-    router.delete('/cart', [CartsController, 'clearCart']).as('api.cart.clear')
+    router.get('cart/getCart', [CartsController, 'getCart']).as('api.cart.get')
+    router.get('cart/addToCart', [CartsController, 'addToCart']).as('api.cart.add')
+    router.delete('cart/:id', [CartsController, 'removeToCart']).as('api.cart.remove')
+    router.delete('cart', [CartsController, 'clearCart']).as('api.cart.clear')
     router
-      .post('/otpVerification', [AuthController, 'handleOtpVerification'])
+      .post('otpVerification', [AuthController, 'handleOtpVerification'])
       .as('verify-otp')
       .use(middleware.guest())
   })
@@ -116,7 +116,7 @@ router
     router.post('process/:id', [OrdersController, 'update']).as('order.update')
     router.get('show-order/:id', [OrdersController, 'show']).as('order.show')
   })
-  .prefix('/dashboard/')
+  .prefix('dashboard/')
   .use(middleware.auth())
 
 router
@@ -143,7 +143,7 @@ router
 
 router
   .group(() => {
-    router.get('/login', [AdminController, 'login']).as('login')
+    router.get('login', [AdminController, 'login']).as('login')
     router.get('register/:email', [AdminController, 'registerAdmin']).as('register')
     router.post('/login', [AdminController, 'handleLogin']).as('handleLogin')
     router.post('register', [AdminController, 'storeAdmin']).as('registerAdmin')
